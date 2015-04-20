@@ -26,4 +26,7 @@
   void graph_print_info(graph_t);
   void graph_delete(graph_t *);
 
+
+void set_pos (pos_t *p, double x, double y);
+
 #endif

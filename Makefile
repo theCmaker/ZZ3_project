@@ -1,19 +1,19 @@
 #Compilateur et options de compilation
 CC=gcc
-CFLAGS=-Wall -ansi -pedantic -Wextra -g
+CFLAGS=-Wall -ansi -pedantic -Wextra -g -lm
 
 #Fichiers du projet
-SOURCES=main.c graph.c
+SOURCES=main.c graph.c calcul.c
 OBJECTS=$(SOURCES:.c=.o)
 
 #Nom du programme
 EXEC=main
 
 $(EXEC): $(OBJECTS)
-	$(CC) $(CFLAGS) $^ -o $(EXEC)
+	$(CC)  $^ -o $(EXEC) $(CFLAGS)
 
 .c.o:
-	$(CC) -c $(CFLAGS) $*.c
+	$(CC) -c $*.c $(CFLAGS)
 
 clean:
 	rm $(OBJECTS) $(EXEC)
