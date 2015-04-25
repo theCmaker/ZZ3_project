@@ -1,10 +1,7 @@
 #ifndef __GRAPH_H__
 #define __GRAPH_H__
 
-  typedef struct _pos_t {
-    double x;
-    double y;
-  } pos_t;
+#include "position.h"
 
   typedef struct _p_spd_t {
     pos_t p;
@@ -25,8 +22,5 @@
   int graph_save(graph_t, char *);
   void graph_print_info(graph_t);
   void graph_delete(graph_t *);
-
-
-void set_pos (pos_t *p, double x, double y);
 
 #endif

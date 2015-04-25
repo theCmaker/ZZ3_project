@@ -1,12 +1,18 @@
 #include <stdio.h>
 #include <math.h>
 #include "graph.h"
+#include "calcul.h"
+#include "position.h"
 
 int main(int argc, char *argv[]) {
   graph_t G;
+  pos_t pos;
+  set_pos(&pos,0,0);
+  printf(" 0 est fini ? %d ",finite(0.0));
   if (argc > 1) {
     if (graph_load(&G,argv[1])) {
       graph_print_info(G);
+      test_interception(&G, &pos,0,0);
       graph_delete(&G);
     }
   } else {

@@ -4,10 +4,6 @@
 
 #define SIZE_BUF 100
 
-void set_pos (pos_t *p, double x, double y) {
-  p->x = x;
-  p->y = y;
-}
 
 void get_next_line(char *buf, FILE *file){
   do {
