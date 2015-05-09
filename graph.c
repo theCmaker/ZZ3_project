@@ -8,13 +8,15 @@
 void get_next_line(char *buf, FILE *file){
   do {
     fgets(buf,SIZE_BUF,file);
-  } while (buf[0] == '#');
+  } while (buf[0] == '#'); /* Ignorer les commentaires, i.e. lignes commencant par # */
 }
 
 int graph_init_moves(graph_t *G) {
   int res = 0;
+  /* Allocation mobiles */
   if ((G->moves = (p_spd_t*) malloc((G->mob_nb)*sizeof(p_spd_t)))) {
     res = 1;
+    /* Allocation depots */
     if (!(G->dep_pos = (pos_t*) malloc((G->dep_nb)*sizeof(pos_t)))) {
       res = 0;
       free(G->moves);
@@ -43,7 +45,8 @@ int graph_load(graph_t *G, char *f) {
     get_next_line(buf,file);
     sscanf(buf,"%d %lf",&G->inter_nb,&G->inter_spd);
 
-    if (graph_init_moves(G)) {
+    if (graph_init_moves(G)) { /* allocation reussie */
+      res = 1;
 
       /* Coord depots */
       for (i = 0; i < G->dep_nb; ++i) {
@@ -58,12 +61,8 @@ int graph_load(graph_t *G, char *f) {
         sscanf(buf,"%lf %lf %lf %lf",&x,&y,&(G->moves[i].vx),&(G->moves[i].vy));
         set_pos(&(G->moves[i].p),x ,y);
       }
-
-    } else {
-      res = 0;
     }
     fclose(file);
-    res = 1;
   }
   return res;
 }
@@ -84,11 +83,32 @@ void graph_print_info(graph_t G) {
   }
 }
 
-/*int graph_save(graph_t G, char *f) {
-  return 0;
-}*/
+int graph_save(graph_t G, char *f) {
+  int res = 0;
+  int i;
+  FILE *file;
+  if ((file = fopen(f,"w+"))) {
+    res = 1;
+    /* Depots */
+    fprintf(file, "%d\n",G.dep_nb);
+    /* Mobiles */
+    fprintf(file, "%d\n",G.mob_nb);
+    /* Interceptors */
+    fprintf(file, "%d %f\n",G.inter_nb, G.inter_spd);
+    /* Depots positions */
+    for (i = 0; i < G.dep_nb; ++i) {
+      fprintf(file,"%f %f\n",G.dep_pos[i].x,G.dep_pos[i].y);
+    }
+    /* Mobiles positions and speeds */
+    for (i = 0; i < G.mob_nb; ++i) {
+      fprintf(file,"%f %f %f %f\n",G.moves[i].p.x,G.moves[i].p.y,G.moves[i].vx,G.moves[i].vy);
+    }
+    fclose(file);
+  }
+  return res;
+}
 
 void graph_delete(graph_t *G) {
-  free(G->dep_pos);
-  free(G->moves);
+  free(G->dep_pos); /* Depots */
+  free(G->moves);   /* Mobiles */
 }
