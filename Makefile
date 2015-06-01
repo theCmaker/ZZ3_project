@@ -3,7 +3,7 @@ CC=gcc
 CFLAGS=-Wall -ansi -pedantic -Wextra -g -lm
 
 #Fichiers du projet
-SOURCES=main.c graph.c calcul.c position.c solution.c
+SOURCES=main.c graph.c calcul.c position.c solution.c sln.c
 OBJECTS=$(SOURCES:.c=.o)
 
 #Nom du programme
