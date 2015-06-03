@@ -129,7 +129,7 @@ double compute_alpha(double a, double b, double c){
   return res;
 }
 
-void test_interception(graph_t* G, pos_t* pos, int idm,int t){
+void test_interception(graph_t* G, pos_t* pos, int idm,double t){
   double date, alpha;
   pos_t position;
   date = compute_interception(G,pos,idm,t,&alpha);
@@ -141,8 +141,12 @@ void test_interception(graph_t* G, pos_t* pos, int idm,int t){
   printf("La position du mobile %d a la date t = %f est %f %f\n",idm,date,position.x,position.y);
 }
 
-pos_t compute_pos_intercep(graph_t* G, double alpha, pos_t pos, int t){
+pos_t compute_pos_intercep(graph_t* G, double alpha, pos_t pos, double t){
   pos_t pos_res;
+  AFFICHER(pos.x);
+  AFFICHER(cos(alpha));
+  AFFICHER(G->inter_spd);
+  AFFICHER(t);
   set_pos(&pos_res,pos.x + t*cos(alpha)*G->inter_spd, pos.y + t*sin(alpha)*G->inter_spd);
   return pos_res;
 }
