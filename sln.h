@@ -1,8 +1,12 @@
 #ifndef __SOLUTION_H__
 #define __SOLUTION_H__
 
-#include "graph.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
 #include "position.h"
+#include "graph.h"
+#include "calcul.h"
 
 typedef struct cellule {
   int id_mob; /*Identifiant du mobile*/
@@ -32,6 +36,12 @@ double get_ftime(sln_t* sol);
 
 /*Libere la structure et met le pointeur à NULL*/
 void free_sln(sln_t** sol);
+
+/* Heuristique H0: le plus rapide a intercepter */
+int heuristique_plus_rapide(graph_t *);
+
+/* Heuristique H1: sequence */
+int heuristique_sequence(graph_t *);
 
 /*Fonction de test unitaire de toutes les fonctions de solutions*/
 void test_soln();

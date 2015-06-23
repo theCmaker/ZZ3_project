@@ -1,7 +1,7 @@
 #ifndef __CALCUL_H__
 #define __CALCUL_H__
 
-#define DEBUG
+/*#define DEBUG*/
 
 #ifndef DEBUG
 #define AFFICHER(X)
@@ -10,6 +10,11 @@
 #ifdef DEBUG
 #define AFFICHER(X) printf("La variable "#X" vaut %f \n",X);
 #endif
+
+#include <stdio.h>
+#include <math.h>
+#include "graph.h"
+#include "position.h"
 
 /*Calcul la position du mobile idm a la date t du graphe G*/
 pos_t compute_position(graph_t* G,int idm,double t);
@@ -25,7 +30,6 @@ double compute_alpha(double a, double b, double c);
 
 /*Fonction de test unitaire de l'interception d'un mobile*/
 void test_interception(graph_t* G, pos_t* pos, int idm,double t);
-
 
 /*Calcul la distance entre deux mobiles a une date t
 double compute_distance(graph_t* G,int id1,int id2,double t); utilite ?*/

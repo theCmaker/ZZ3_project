@@ -1,0 +1,91 @@
+\input{settings/mintedSettings}
+\usepackage{MnSymbol}
+\newminted{c}{
+  linenos                = true,
+  breaklines             = true,
+  frame                  = single,
+  breakautoindent        = true,
+  breaksymbolleft        = $\lhookrightarrow$,
+  breaksymbolindentleft  = 10pt,
+  breaksymbolsepleft     = 2pt,
+  breaksymbolright       = $\rhookleftarrow$,
+  breaksymbolindentright = 10pt,
+  breaksymbolsepright    = 2pt,
+  label                  = Code C,
+  texcomments            = true
+}
+
+\newmintedfile{c}{
+  linenos                = true,
+  breaklines             = true,
+  frame                  = single,
+  breakautoindent        = true,
+  breaksymbolleft        = $\lhookrightarrow$,
+  breaksymbolindentleft  = 10pt,
+  breaksymbolsepleft     = 2pt,
+  breaksymbolright       = $\rhookleftarrow$,
+  breaksymbolindentright = 10pt,
+  breaksymbolsepright    = 2pt,
+  label                  = Code C,
+  texcomments            = false
+}
+
+\newmintinline{c}{
+}
+
+% --------------------------------------------- 
+% --------------- How to use it --------------- 
+% --------------------------------------------- 
+%                                               
+% Specific environment: ccode and ccode*
+% ccode  does not accept options
+% ccode* needs an argument that contains the
+%        required options
+%
+% \begin{ccode*}{gobble=2}
+%   #include <stdio.h>
+%   #include "fun.h"
+% 
+%   #define N 15
+% 
+%   typedef struct alpha {
+%     int           number;
+%     char          letter;
+%     struct alpha *next;
+%   } alpha_t;
+% 
+%   int main (int argc, char **argv) {
+%     int i = 0;
+%     for (i = 0; i < N; ++i) {
+%       printf("Hello World! %d\n",10);
+%     } 
+%     return EXIT_SUCCESS; /* Comment */
+%   }//TODO: next comment is a very long one, so long that it's reaching the right side of the frame. \Smiley{}
+% 
+%   void display (alpha_t x) {
+%     printf("%d, %c",x.number, x.letter);
+%   }
+% \end{ccode*}
+%
+% ---------------------------------------------
+% Inline use: among the text: cinline
+%
+% \cinline{printf}
+%
+% ---------------------------------------------
+% Highlighting source code from file: cfile
+%
+% \cfile{main.c}
+%
+% ---------------------------------------------
+% listing environment, the same as figure, with
+% captions etc.
+%
+% \begin{listing}[H]
+%   %Your code here
+%   \caption{Example of a listing.}
+%   \label{lst:example}
+% \end{listing}
+%
+% ---------------------------------------------
+% ---------------------------------------------

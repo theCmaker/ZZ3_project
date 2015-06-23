@@ -1,0 +1,132 @@
+% Chained List
+% Author: Pierre-Loup Pissavy
+\usepackage{pgf,tikz}
+\usetikzlibrary{calc,arrows}
+\usepackage{amsmath}
+
+\makeatletter
+
+% Chain shape
+\pgfdeclareshape{chain2}{
+  % The 'minimum width' and 'minimum height' keys, not the content, determine
+  % the size
+  \savedanchor\northeast{%
+    \pgfmathsetlength\pgf@x{\pgfshapeminwidth}%
+    \pgfmathsetlength\pgf@y{\pgfshapeminheight}%
+    \pgf@x=0.5\pgf@x
+    \pgf@y=0.5\pgf@y
+  }
+  % This is redundant, but makes some things easier:
+  \savedanchor\southwest{%
+    \pgfmathsetlength\pgf@x{\pgfshapeminwidth}%
+    \pgfmathsetlength\pgf@y{\pgfshapeminheight}%
+    \pgf@x=-0.5\pgf@x
+    \pgf@y=-0.5\pgf@y
+  }
+  % Inherit from rectangle
+  \inheritanchorborder[from=rectangle]
+
+  % Define same anchor a normal rectangle has
+  \anchor{center}{\pgfpointorigin}
+  \anchor{north}{\northeast \pgf@x=-.66\pgf@x}
+  \anchor{east}{\northeast \pgf@y=0pt}
+  \anchor{south}{\southwest \pgf@x=.5\pgf@x}
+  \anchor{west}{\southwest \pgf@y=0pt}
+  \anchor{north east}{\northeast}
+  \anchor{north west}{\northeast \pgf@x=-\pgf@x}
+  \anchor{south west}{\southwest}
+  \anchor{south east}{\southwest \pgf@x=-\pgf@x}
+
+  % Define anchors
+
+  \anchor{text}{
+    \pgf@process{\southwest}%
+    \pgf@x=.66\pgf@x%
+    \pgf@y=0\pgf@y%
+    \advance\pgf@x by -0.5\wd\pgfnodeparttextbox%
+    \advance\pgf@y by -0.5\ht\pgfnodeparttextbox%
+    \advance\pgf@y by +.5\dp\pgfnodeparttextbox%
+  }
+  \anchor{ptr1}{
+    \pgf@process{\pgfpointorigin}%
+    \advance\pgf@x by -0.5\wd\pgfnodeparttextbox%
+    \advance\pgf@y by -0.5\ht\pgfnodeparttextbox%
+    \advance\pgf@y by +.5\dp\pgfnodeparttextbox%
+  }
+  \anchor{ptr2}{
+    \pgf@process{\northeast}%
+    \pgf@x=.66\pgf@x%
+    \pgf@y=0\pgf@y%
+    \advance\pgf@x by -0.5\wd\pgfnodeparttextbox%
+    \advance\pgf@y by -0.5\ht\pgfnodeparttextbox%
+    \advance\pgf@y by +.5\dp\pgfnodeparttextbox%
+  }
+  \anchor{next}{
+    \pgf@process{\northeast}%
+    \pgf@x=0.66\pgf@x%
+    \pgf@y=0\pgf@y%
+  }
+  % Draw the rectangle box
+  \backgroundpath{
+    % Rectangle box
+    \pgfpathrectanglecorners{\southwest}{\northeast}
+    \pgfpathrectanglecorners{\southwest \pgf@x=0.33\pgf@x}{\northeast \pgf@x=0.33\pgf@x}%Separator
+    \pgfmathsetlength\pgf@x{1.6ex} % size depends
+    \pgfclosepath
+  }
+}
+% Ptr shape
+\pgfdeclareshape{ptr}{
+  % The 'minimum width' and 'minimum height' keys, not the content, determine
+  % the size
+  \savedanchor\northeast{%
+    \pgfmathsetlength\pgf@x{\pgfshapeminwidth}%
+    \pgfmathsetlength\pgf@y{\pgfshapeminheight}%
+    \pgf@x=0.5\pgf@x
+    \pgf@y=0.5\pgf@y
+  }
+  % This is redundant, but makes some things easier:
+  \savedanchor\southwest{%
+    \pgfmathsetlength\pgf@x{\pgfshapeminwidth}%
+    \pgfmathsetlength\pgf@y{\pgfshapeminheight}%
+    \pgf@x=-0.5\pgf@x
+    \pgf@y=-0.5\pgf@y
+  }
+  % Inherit from rectangle
+  \inheritanchorborder[from=rectangle]
+
+  % Define same anchor a normal rectangle has
+  \anchor{center}{\pgfpointorigin}
+  \anchor{north}{\northeast \pgf@x=0pt}
+  \anchor{east}{\northeast \pgf@y=0pt}
+  \anchor{south}{\southwest \pgf@x=0pt}
+  \anchor{west}{\southwest \pgf@y=0pt}
+  \anchor{north east}{\northeast}
+  \anchor{north west}{\northeast \pgf@x=-\pgf@x}
+  \anchor{south west}{\southwest}
+  \anchor{south east}{\southwest \pgf@x=-\pgf@x}
+
+  % Define anchors
+  \anchor{text}{
+    \pgf@process{\pgfpointorigin}%
+    \pgf@x=.5\pgf@x%
+    \pgf@y=0\pgf@y%
+    \advance\pgf@x by -0.5\wd\pgfnodeparttextbox%
+    \advance\pgf@y by -0.5\ht\pgfnodeparttextbox%
+    \advance\pgf@y by +.5\dp\pgfnodeparttextbox%
+  }
+  \anchor{next}{\pgf@process{\pgfpointorigin}}
+
+  % Draw the rectangle box
+  \backgroundpath{
+    % Rectangle box
+    \pgfpathrectanglecorners{\southwest}{\northeast}
+    \pgfmathsetlength\pgf@x{1.6ex} % size depends
+    \pgfclosepath
+  }
+}
+
+\tikzset{every chain2 node/.style={draw,minimum width=2.1cm,minimum height=0.7cm}}
+\tikzset{every ptr node/.style={draw,minimum width=0.7cm,minimum height=0.7cm}}
+
+\makeatother

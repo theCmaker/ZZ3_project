@@ -1,6 +1,6 @@
 #Compilateur et options de compilation
 CC=gcc
-CFLAGS=-Wall -ansi -pedantic -Wextra -g -lm
+CFLAGS=-Wall -pedantic -Wextra -g -lm
 
 #Fichiers du projet
 SOURCES=main.c graph.c calcul.c position.c solution.c sln.c

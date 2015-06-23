@@ -7,9 +7,14 @@ void set_pos (pos_t *p, double x, double y) {
 }
 
 
-void get_pos(pos_t p, double* x, double *y){
+void get_pos(pos_t p, double* x, double *y) {
   *x = p.x;
   *y = p.y;
+}
+
+void cpy_pos(pos_t p1, pos_t *p2) {
+  p2->x = p1.x;
+  p2->y = p1.y;
 }
 
 

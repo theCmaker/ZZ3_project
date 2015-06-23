@@ -1,0 +1,34 @@
+\input{settings/mintedSettings}
+\usepackage{MnSymbol}
+\newminted{bash}{
+  linenos                = true,
+  breaklines             = true,
+  frame                  = single,
+  breakautoindent        = true,
+  breaksymbolleft        = $\lhookrightarrow$,
+  breaksymbolindentleft  = 10pt,
+  breaksymbolsepleft     = 2pt,
+  breaksymbolright       = $\rhookleftarrow$,
+  breaksymbolindentright = 10pt,
+  breaksymbolsepright    = 2pt,
+  label                  = Code Bash,
+  texcomments            = true
+}
+
+\newmintedfile{bash}{
+  linenos                = true,
+  breaklines             = true,
+  frame                  = single,
+  breakautoindent        = true,
+  breaksymbolleft        = $\lhookrightarrow$,
+  breaksymbolindentleft  = 10pt,
+  breaksymbolsepleft     = 2pt,
+  breaksymbolright       = $\rhookleftarrow$,
+  breaksymbolindentright = 10pt,
+  breaksymbolsepright    = 2pt,
+  label                  = Code Bash,
+  texcomments            = false
+}
+
+\newmintinline{bash}{
+}

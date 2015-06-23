@@ -1,11 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
-#include "graph.h"
-#include "position.h"
-#include "calcul.h"
 #include "sln.h"
-
 
 /*Cree et initialise la structure de solution avec une taille taille*/
 sln_t* create_sln(int taille){
@@ -44,8 +37,7 @@ void add_mobile(sln_t* sol,int id,pos_t pos, double t){
   {
     sol->first = id;
     sol->last = id;
-  }else
-  {
+  } else {
     /*Mise a jour du chainage*/
     sol->tsln[sol->last].next = id;
     sol->tsln[id].prec = sol->last;
@@ -80,6 +72,104 @@ void free_sln(sln_t** sol){
   free((*sol)->tsln);
   free((*sol));
   *sol = NULL;
+}
+
+/* Heuristique H0: le plus rapide a intercepter */
+int heuristique_plus_rapide(graph_t *G) {
+  int res;                /* Valeur de retour: nb de mobiles interceptes */
+  sln_t *sol;             /* Solution */
+  int nb_mobiles;         /* Nombre de mobiles restants */
+  int idm, i;             /* Indice du mobile a intercepter */
+  csln_t *mobcour;
+  
+  double temps;           /* Duree d'interception totale */
+  double tps_min = 0;     /* Duree d'interception minimum */
+  double tps;             /* Duree d'interception calculee */
+
+  double alpha;           /* Angle pour interception */
+  double alpha_min;       /* Angle pour interception la plus rapide */
+
+  pos_t pos_intercepteur; /* Position d'interception */
+
+  /* Initialisation */
+  nb_mobiles = G->mob_nb;
+  sol = create_sln(nb_mobiles);
+  if (sol) {                 /* Solution créée */
+    cpy_pos(G->dep_pos[0],&pos_intercepteur); /* Position initiale intercepteur */
+    temps = 0;                                /* Temps initial */
+
+    while (nb_mobiles > 0 && finite(tps_min)) { /* Il reste des mobiles a intercepter */
+      i = 0;
+      tps_min = 1.0/0.0;     /* Temps defini a +inf, permet de trouver un minimum plus facilement */
+      
+      while (i < G->mob_nb) { /* Parcours de tous les mobiles restants */
+        mobcour = &(sol->tsln[i]); /* Mobile courant */
+
+        if (i != sol->first && mobcour->next == -1 && mobcour->prec == -1) { /* Mobile non intercepte */
+
+          tps = compute_interception(G,&pos_intercepteur,i,temps,&alpha); /* Calcul temps interception */
+          if (tps >= 0 && tps < tps_min) {  /* Interception possible et temps inferieur */
+            tps_min = tps;      /* Sauvegarde temps minimum */
+            idm = i;            /* Sauvegarde indice du min */
+            alpha_min = alpha;  /* Sauvegarde angle */
+          }
+        }
+        ++i; /* Mobile suivant */
+      }
+      if (finite(tps_min)) { /* Mobile interceptable */
+        pos_intercepteur = compute_pos_intercep(G,alpha_min,pos_intercepteur,tps_min); /* Calcul position intercepteur */
+        temps = temps + tps_min;                    /* Ajout du temps */
+        add_mobile(sol,idm,pos_intercepteur,temps); /* Ajout a la solution */
+        nb_mobiles--; /* Actualisation nb mobiles restants a traiter */
+      }
+    }
+    printf("Rapport d'interception / Heuristique H0:\n");
+    print_sln(sol); /* Affichage */
+    free_sln(&sol); /* Libération */
+    res = G->mob_nb - nb_mobiles;
+  } else {
+    res = -1;
+  }
+  return res;
+}
+
+/* Heuristique H1: sequence */
+int heuristique_sequence(graph_t *G) {
+  int res;                /* Valeur de retour: nb de mobiles interceptes */
+  sln_t *sol;             /* Solution */
+  int nb_mobiles = 0;     /* Nombre de mobiles interceptes */
+  int i;                  /* Indice du mobile a intercepter */
+  
+  double temps;           /* Duree d'interception totale */
+  double tps;             /* Duree d'interception calculee */
+
+  double alpha;           /* Angle pour interception */
+
+  pos_t pos_intercepteur; /* Position d'interception */
+
+  /* Initialisation */
+  sol = create_sln(G->mob_nb);
+  if (sol) {                 /* Solution créée */
+    cpy_pos(G->dep_pos[0],&pos_intercepteur); /* Position initiale intercepteur */
+    temps = 0;                                /* Temps initial */
+
+    for (i = 0; i < G->mob_nb; ++i) { /* Il reste des mobiles a intercepter */
+      tps = compute_interception(G,&pos_intercepteur,i,temps,&alpha); /* Calcul temps interception */
+      if (finite(tps) && tps >= 0) {  /* Interception possible et temps inferieur */
+        pos_intercepteur = compute_pos_intercep(G,alpha,pos_intercepteur,tps); /* Calcul position intercepteur */
+        temps += tps;                               /* Ajout du temps */
+        add_mobile(sol,i,pos_intercepteur,temps); /* Ajout a la solution */
+        nb_mobiles++;
+      }
+    }
+    printf("Rapport d'interception / Heuristique H1:\n");
+    print_sln(sol); /* Affichage */
+    free_sln(&sol); /* Libération */
+    res = nb_mobiles;
+  } else {
+    res = -1;
+  }
+  return res;
 }
 
 /*Fonction de test unitaire de toutes les fonctions de solutions*/

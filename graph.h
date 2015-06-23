@@ -1,6 +1,8 @@
 #ifndef __GRAPH_H__
 #define __GRAPH_H__
 
+#include <stdio.h>
+#include <stdlib.h>
 #include "position.h"
 
   typedef struct _p_spd_t {
@@ -20,10 +22,13 @@
 
   /* Lecture depuis un fichier */
   int graph_load(graph_t *, char *);
+  
   /* Ecriture dans un fichier */
   int graph_save(graph_t, char *);
+
   /* Affichage donnees */
   void graph_print_info(graph_t);
+
   /* Suppression structure */
   void graph_delete(graph_t *);
 

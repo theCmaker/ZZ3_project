@@ -1,7 +1,3 @@
-#include <stdio.h>
-#include <math.h>
-#include "graph.h"
-#include "position.h"
 #include "calcul.h"
 
 
@@ -28,19 +24,26 @@ double compute_interception(graph_t* G,pos_t* pos, int idm,int t, double* alpha)
   pos_t tmp = compute_position(G,idm,t);
   double x0,y0;
   get_pos(tmp,&x0,&y0);
-  
+
   /*Variable liees a l'obtention de l'angle alpha */
   double a = y0-y1;
   double b = x1-x0;
   double c = (a*v0x+b*v0y)/v1;
   *alpha = compute_alpha(a,b,c); /*Nombre compris entre -Pi et Pi ou Pi à priori vu la résolution de l'équation*/
-  
+
   /*Variables liees a l'obtention du temps d'interception*/
   double t1, t2;
   double esp = 0.001;
   double tres = -1;
   pos_t pos1, pos2, posm; /*Calcul de position pour verifier l'equation*/
   int ind1 = 0; /*Indicateurs pour savoir si l'interception fonctionne*/
+  
+  /************ AJOUT PILOU *************/
+  /* Suggestion: tester si les positions ne sont pas egales avant de calculer un angle. c'est rare mais ca peut arriver, notamment en faisant des tests sans faire attention (mobiles qui convergent) */
+  if (is_equal(*pos,tmp,esp)) {
+    return 0;
+  }
+  /************ FIN AJOUT ***************/
   
   /*Affichage des variables uniquement si le mode DEBUG est active*/
   AFFICHER(v1);
@@ -70,8 +73,8 @@ double compute_interception(graph_t* G,pos_t* pos, int idm,int t, double* alpha)
     {
       if (is_equal(pos1,posm,esp)) /*Fonction d'egalite de deux position ?*/
       {
-	tres = t1;
-	ind1 = 1;
+      	tres = t1;
+      	ind1 = 1;
       }
     }
     
@@ -88,11 +91,11 @@ double compute_interception(graph_t* G,pos_t* pos, int idm,int t, double* alpha)
       
       if (is_equal(pos2,posm,esp)) /*Fonction d'egalite de deux position ?*/
       {
-	tres = t2;
-	if (ind1 && t2 > t1) /*On regarde si t1 a marche aussi et s'il etait plus faible, on le choisit*/
-	{
-	  tres = t1;
-	}
+      	tres = t2;
+      	if (ind1 && t2 > t1) /*On regarde si t1 a marche aussi et s'il etait plus faible, on le choisit*/
+      	{
+      	  tres = t1;
+      	}
       }
     }
   }
