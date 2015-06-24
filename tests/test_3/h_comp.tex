@@ -1,14 +1,14 @@
+\draw[grided,step=1.0,thin] (0,0) grid (6,24.000000);
 \draw (0,0) -- coordinate (x axis mid) (6,0);
+\draw (0,0) -- coordinate (y axis mid) (0,24.000000);
 \foreach \x in {0,...,6}
   \draw (\x,1pt) -- (\x,-3pt) node[anchor=north] {\x};
-\draw (0,0) -- coordinate (y axis mid) (0,24.000000);
 \node[h0] at (1,13.000000) {$H_0$};
 \node[h1] at (1,11.000000) {$H_1$};
 \foreach \y in {0,2,...,24}
   \draw (1pt,\y) -- (-3pt,\y) node[anchor=east] {\y};
 \draw (3.000000,-2) node[anchor=north] {Nombre de mobiles interceptés};
 \draw (-0.75,12.000000) node[rotate=90,anchor=south] {Temps nécessaire (u.t)};
-\draw[grided,step=1.0,thin] (0,0) grid (6,24.000000);
 \node[h0] at (0,0) {\cross};
 \draw[h0] (0,0.000000) -- (1,2.229610);
 \node[h0] at(1,2.229610) {\cross};
@@ -23,6 +23,8 @@
 \draw[h0] (5,16.138388) -- (6,23.433514);
 \node[h0] at(6,23.433514) {\cross};
 \draw[grided,step=1.0,thin] (0,0) grid (6,27.000000);
+\draw (0,0) -- coordinate (x axis mid) (6,0);
+\draw (0,0) -- coordinate (y axis mid) (0,27.000000);
 \node[h1] at (0,0) {\cross};
 \draw[h1] (0,0.000000) -- (1,2.570891);
 \node[h1] at(1,2.570891) {\cross};

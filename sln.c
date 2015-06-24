@@ -343,17 +343,17 @@ void tikz_compare(char *logdir, int h, sln_t *sol, graph_t *G) {
     }
     f = fopen(file, mode);
     if (f) {
+      fprintf(f,"\\draw[grided,step=1.0,thin] (0,0) grid (%d,%f);\n",G->mob_nb,ceil(get_ftime(sol))); /* Grille */
+      fprintf(f,"\\draw (0,0) -- coordinate (x axis mid) (%d,0);\n", G->mob_nb); /* Abscisses */
+      fprintf(f,"\\draw (0,0) -- coordinate (y axis mid) (0,%f);\n", ceil(get_ftime(sol))); /* Ordonnees */
       if (h == 0) {
-        fprintf(f,"\\draw (0,0) -- coordinate (x axis mid) (%d,0);\n", G->mob_nb); /* Abscisses */
         fprintf(f,"\\foreach \\x in {0,...,%d}\n  \\draw (\\x,1pt) -- (\\x,-3pt) node[anchor=north] {\\x};\n", G->mob_nb); /* Etiquettes abscisses */
-        fprintf(f,"\\draw (0,0) -- coordinate (y axis mid) (0,%f);\n", ceil(get_ftime(sol))); /* Ordonnees */
         fprintf(f,"\\node[h0] at (1,%f) {$H_0$};\n",ceil(get_ftime(sol))/2.+1);
         fprintf(f,"\\node[h1] at (1,%f) {$H_1$};\n",ceil(get_ftime(sol))/2.-1);
         fprintf(f,"\\foreach \\y in {0,%d,...,%d}\n  \\draw (1pt,\\y) -- (-3pt,\\y) node[anchor=east] {\\y};\n", (((int)round(ceil(get_ftime(sol))/10))>0)?(int)round(ceil(get_ftime(sol))/10):1, (int)ceil(get_ftime(sol)));  /* Etiquettes ordonnees */
         fprintf(f,"\\draw (%f,-2) node[anchor=north] {Nombre de mobiles interceptés};\n", ((double) G->mob_nb)/2.);
         fprintf(f,"\\draw (-0.75,%f) node[rotate=90,anchor=south] {Temps nécessaire (u.t)};\n", ceil(get_ftime(sol))/2.);
       }
-      fprintf(f,"\\draw[grided,step=1.0,thin] (0,0) grid (%d,%f);\n",G->mob_nb,ceil(get_ftime(sol))); /* Grille */
 
       cour = sol->first;
       i = 1;

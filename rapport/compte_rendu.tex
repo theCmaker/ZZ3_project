@@ -6,7 +6,7 @@
 \usepackage{tikz} %schémas
 \usetikzlibrary{calc}
 \usepackage{algo} %mise en forme d'algos
-\usepackage{minted} %mise en forme de code source
+\usepackage[chapter]{minted} %mise en forme de code source
 \usepackage{framed} %cadres et bordures
 \usepackage[frenchb]{babel} %langue
 \usepackage{amsmath} %symboles maths
@@ -32,6 +32,7 @@
 \geometry{scale=0.8,centering}
 \frenchbsetup{StandardLists=true}
 \newcommand{\hsp}{\hspace{20pt}}
+\newcommand{\TikZ}{Ti{\color{orange}\textit{k}}Z}
 \newcommand{\blankpage}{\newpage \thispagestyle{empty} \addtocounter{page}{-1} \null \newpage}
 \titleformat{\chapter}[hang]{\LARGE\bfseries}{\thechapter\hsp\textcolor{lightgray}{|}\hsp}{0pt}{\LARGE\bfseries}
 
@@ -76,11 +77,10 @@
 \begin{document}
   \input{titlepage}
   %\blankpage
-  \tableofcontents
-  %\blankpage
-  %redefinition des ecarts apres table des matieres
   \setlength{\parskip}{10pt}
   \setlength{\parindent}{0pt}
+  \tableofcontents
+  %\blankpage
 
   \chapter{Introduction}
     \input{intro}
@@ -94,9 +94,25 @@
   \chapter{Conclusion}
     \input{conclusion}
   
-  \chapter*{Remerciements}
+  \section*{Remerciements}
+    Nous tenons à remercier Christophe DUHAMEL qui nous a accompagné dans tout le cheminement de notre projet et qui nous a conseillé quant aux méthodes à employer pour réaliser nos heuristiques.
 
-  \listoflistings
+    Egalement, nous souhaitons remercier Luc MARCHAND pour son aide dans la détermination du calcul nécessaire à l'obtention de l'angle $\alpha$ permettant d'orienter l'intercepteur, ainsi que Gilles LEBORGNE qui nous a aidé à déterminer si la solution était facilement résolvable.
+
+  \section*{Outils utilisés}
+    Pour la rédaction de ce rapport, nous avons utilisé \LaTeX{} avec le module \TikZ{} pour les graphiques, et \texttt{minted} pour l'affichage des fichiers.
+
+    Le code correspondant aux graphiques est généré par le programme et inclus à la compilation du rapport.
+
+    Notre code source est écrit en langage \texttt{C} et est disponible sur la plateforme GitHub à l'adresse :
+    \begin{center}
+      \href{https://github.com/theCmaker/Projet\_ZZ1}{https://github.com/theCmaker/Projet\_ZZ1}
+    \end{center}
+
   \listoffigures
   \listoftables
+  \begingroup
+    \let\clearpage\relax
+    \listoflistings
+  \endgroup
 \end{document}
