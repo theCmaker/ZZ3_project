@@ -1,5 +1,49 @@
 \section{Problème à modéliser}
+Nous disposons d'un intercepteur dont la vitesse $v_1$ est constante et de $n$ mobiles.
+
+Il nous faut intercepter autant de mobiles que possible en un temps minimal.
 
 \section{Méthodes utilisées}
 
+	\subsection{Notations}
+		Chaque mobile se déplace à vitesse constante $\norm{\vect{v_0}}$ selon une direction déterminée par son vecteur vitesse $\vect{v_0}$.
+
+		On peut décomposer cette vitesse selon les axes du plan:
+		\[ \vect{v_0} = \vPLANco{v_0^x}{v_0^y} \]
+
+		On note la position initiale de l'intercepteur:
+		\[
+		\vect{i}(t=0) = 
+		\left(
+		\begin{array}{c}
+		 x_1 \\
+		 y_1
+		\end{array}
+		\right)
+		\]
+
+	\subsection{Idées}
+	  Une première approche nous mène à supposer qu'il peut être intéressant d'intercepter le mobile que l'on peut atteindre le plus rapidement. 
+
+	  Nous pouvons également tenter d'intercepter les mobiles un par un dans un ordre aléatoire. Cela revient à définir une séquence (aléatoire ou non) et à calculer le temps qu'il sera nécessaire pour les intercepter dans cet ordre (si c'est possible).
+
+	  Dans tous les cas imaginables, il sera nécessaire de déterminer les positions successives de l'intercepteur au cours du temps ainsi que les différentes directions dans lesquelles il devra se déplacer.
+
 \section{Outils proposés}
+	Nous avons construit un ensemble de fonctions:
+	\begin{itemize}
+		\item Calcul de la position d'un mobile à un un instant $t$,
+		\item Calcul de l'angle que doit prendre l'intercepteur pour intercepter un mobile à partir de sa position courante,
+		\item Calcul de la durée nécessaire pour intercepter un mobile à partir de la position courante de l'intercepteur,
+		\item Calcul de la position future de l'intercepteur à partir de sa position courante, de l'angle, et du temps nécessaire.
+	\end{itemize}
+
+	Egalement, nous avons conçu une structure de fichier permettant de fournir au programme de calcul toutes les données relatives aux mobiles (position initiale, vitesse, direction) et à l'intercepteur (position initiale, vitesse). Le format de ce fichier lui permet une évolutivité: nous avons laissé la possibilité de définir plusieurs intercepteurs pour des modifications ultérieures du calcul de parcours en impliquant plusieurs.
+
+	Un exemple de fichier est présenté en fichier \ref{lst:exemple_graph}. Chaque ligne commençant par un croisillon (\texttt{\#}) est un commentaire qui ne sera pas interprété par le programme de calcul.
+
+	\begin{listing}[H]
+		\textfile{exemple_graph.data}
+      	\caption{exemple\_graph.data}
+      	\label{lst:exemple_graph}
+  	\end{listing}

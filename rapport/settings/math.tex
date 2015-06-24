@@ -1,9 +1,9 @@
 %intervals
 \newcommand{\interval}[4]{\mathopen{#1}#2\mathclose{}\mathpunct{};#3\mathclose{#4}}
-\newcommand{\intervalcc}[2]{\interval{[}{#1}{#2}{]}}
-\newcommand{\intervaloc}[2]{\interval{]}{#1}{#2}{]}}
-\newcommand{\intervalco}[2]{\interval{[}{#1}{#2}{[}}
-\newcommand{\intervaloo}[2]{\interval{]}{#1}{#2}{[}}
+\newcommand{\icc}[2]{\interval{[}{#1}{#2}{]}}
+\newcommand{\ioc}[2]{\interval{]}{#1}{#2}{]}}
+\newcommand{\ico}[2]{\interval{[}{#1}{#2}{[}}
+\newcommand{\ioo}[2]{\interval{]}{#1}{#2}{[}}
 \newcommand{\coord}[2]{\interval{(}{#1}{#2}{)}}
 %sets
 \newcommand{\mathset}[1]{\mathbb{#1}}
@@ -27,3 +27,12 @@
 %text
 \newcommand{\qtext}[1]{\quad\text{#1}\quad}
 \newcommand{\qqtext}[1]{\qquad\text{#1}\qquad}
+%compleces
+\renewcommand{\Re}{\mathfrak{Re}}
+\renewcommand{\Im}{\mathfrak{Im}}
+%vectors
+\newcommand{\vect}[1]{\overrightarrow{#1}}
+\newcommand{\vPLANco}[2]{\begin{pmatrix}#1\\#2\end{pmatrix}}
+\newcommand{\vSPACEco}[3]{\begin{pmatrix}#1\\#2\\#3\end{pmatrix}}
+%statistics
+\DeclareMathOperator{\card}{card}

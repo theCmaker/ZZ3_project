@@ -34,7 +34,11 @@
 \newcommand{\hsp}{\hspace{20pt}}
 \newcommand{\blankpage}{\newpage \thispagestyle{empty} \addtocounter{page}{-1} \null \newpage}
 \titleformat{\chapter}[hang]{\LARGE\bfseries}{\thechapter\hsp\textcolor{lightgray}{|}\hsp}{0pt}{\LARGE\bfseries}
+
 \captionsetup[table]{name=\textsc{Tableau}}
+\renewcommand{\listingscaption}{Fichier}
+\renewcommand{\listoflistingscaption}{Liste des fichiers}
+
 \newcommand{\mobile}{\Large{$+$}}
 \newcommand{\cross}{\Large{$\times$}}
 \newcommand{\interceptor}{\Large{$\square$}}
@@ -91,6 +95,8 @@
     \input{conclusion}
   
   \chapter*{Remerciements}
+
+  \listoflistings
   \listoffigures
   \listoftables
 \end{document}

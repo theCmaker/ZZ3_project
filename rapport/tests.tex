@@ -9,7 +9,10 @@ Les vecteurs vitesse et la trajectoire empruntée par les mobiles sont indiqués
 La position initiale de l'intercepteur est repérée par un carré bleu (\tikz[baseline=-0.5ex]{\node[interceptor,inner sep=0,outer sep=0]{\interceptor};}) et ses positions successives par des croix bleues (\tikz[baseline=-0.5ex]{\node[interceptor,inner sep=0,outer sep=0]{\mobile};}). La date de la dernière interception est indiquée au-dessus de la position où elle a lieu.
 
 \section{Test \no1: Tous les mobiles interceptés, séquences différentes}
-  \textfile{../tests/test_1/test_1.data}
+  \begin{listing}[H]
+    \textfile{../tests/test_1/test_1.data}
+    \caption{test\_1.data}
+  \end{listing}
 
   \begin{figure}[H]
     \begin{center}
@@ -49,15 +52,19 @@ La position initiale de l'intercepteur est repérée par un carré bleu (\tikz[b
 
   \begin{figure}[H]
     \centering
+    \boxed{
     \begin{tikzpicture}[yscale=0.5]
       \input{../tests/test_1/h_comp}
-    \end{tikzpicture}
+    \end{tikzpicture}}
     \caption{Comparaison de $H_0$ et de $H_1$: test \no1}
     \label{fig:comp_1}
   \end{figure}
 
 \section{Test \no2: Résultats identiques et mobile non-intercepté}
-  \textfile{../tests/test_2/test_2.data}
+  \begin{listing}[H]
+    \textfile{../tests/test_2/test_2.data}
+    \caption{test\_2.data}
+  \end{listing}
 
   \begin{figure}[H]
     \begin{center}
@@ -97,16 +104,20 @@ La position initiale de l'intercepteur est repérée par un carré bleu (\tikz[b
 
   \begin{figure}[H]
     \centering
+    \boxed{
     \begin{tikzpicture}[yscale=0.5]
       \input{../tests/test_2/h_comp}
-    \end{tikzpicture}
+    \end{tikzpicture}}
     \caption{Comparaison de $H_0$ et de $H_1$: test \no2}
     \label{fig:comp_2}
   \end{figure}
 
 
 \section{Test \no3: Mobiles positionnés aléatoirement}
-  \textfile{../tests/test_3/test_3.data}
+  \begin{listing}[H]
+    \textfile{../tests/test_3/test_3.data}
+    \caption{test\_3.data}
+  \end{listing}
 
   \begin{figure}[H]
     \begin{center}
@@ -146,15 +157,19 @@ La position initiale de l'intercepteur est repérée par un carré bleu (\tikz[b
 
   \begin{figure}[H]
     \centering
+    \boxed{
     \begin{tikzpicture}[yscale=0.2]
       \input{../tests/test_3/h_comp}
-    \end{tikzpicture}
+    \end{tikzpicture}}
     \caption{Comparaison de $H_0$ et de $H_1$: test \no3}
     \label{fig:comp_3}
   \end{figure}
 
   \section{Test \no4: Heuristique $H_1$ plus rapide}
-  \textfile{../tests/test_4/test_4.data}
+  \begin{listing}[H]
+    \textfile{../tests/test_4/test_4.data}
+    \caption{test\_4.data}
+  \end{listing}
 
   \begin{figure}[H]
     \begin{center}
@@ -194,9 +209,10 @@ La position initiale de l'intercepteur est repérée par un carré bleu (\tikz[b
 
   \begin{figure}[H]
     \centering
+    \boxed{
     \begin{tikzpicture}[yscale=0.35]
       \input{../tests/test_4/h_comp}
-    \end{tikzpicture}
+    \end{tikzpicture}}
     \caption{Comparaison de $H_0$ et de $H_1$: test \no4}
     \label{fig:comp_4}
   \end{figure}
