@@ -42,7 +42,7 @@ void free_sln(sln_t** sol);
 int heuristique_plus_rapide(graph_t *, char *);
 
 /* Heuristique H1: sequence */
-int heuristique_sequence(graph_t *, char*);
+int heuristique_sequence(graph_t *, char*, int *, int);
 
 /*Fonction de test unitaire de toutes les fonctions de solutions*/
 void test_soln();

@@ -138,11 +138,11 @@ int heuristique_plus_rapide(graph_t *G, char *logdir) {
 }
 
 /* Heuristique H1: sequence */
-int heuristique_sequence(graph_t *G, char *logdir) {
-  int res;                /* Valeur de retour: nb de mobiles interceptes */
+int heuristique_sequence(graph_t *G, char *logdir, int *seq, int n) {
+  int res = -1;           /* Valeur de retour: nb de mobiles interceptes */
   sln_t *sol;             /* Solution */
   int nb_mobiles = 0;     /* Nombre de mobiles interceptes */
-  int i;                  /* Indice du mobile a intercepter */
+  int i, idm;             /* Rang et indice du mobile a intercepter */
   
   double temps;           /* Duree d'interception totale */
   double tps;             /* Duree d'interception calculee */
@@ -157,12 +157,13 @@ int heuristique_sequence(graph_t *G, char *logdir) {
     cpy_pos(G->dep_pos[0],&pos_intercepteur); /* Position initiale intercepteur */
     temps = 0;                                /* Temps initial */
 
-    for (i = 0; i < G->mob_nb; ++i) { /* Il reste des mobiles a intercepter */
-      tps = compute_interception(G,&pos_intercepteur,i,temps,&alpha); /* Calcul temps interception */
+    for (i = 0; i < n; ++i) { /* Il reste des mobiles a intercepter */
+      idm = seq[i];
+      tps = compute_interception(G,&pos_intercepteur,idm,temps,&alpha); /* Calcul temps interception */
       if (finite(tps) && tps >= 0) {  /* Interception possible et temps inferieur */
         pos_intercepteur = compute_pos_intercep(G,alpha,pos_intercepteur,tps); /* Calcul position intercepteur */
         temps += tps;                               /* Ajout du temps */
-        add_mobile(sol,i,pos_intercepteur,temps); /* Ajout a la solution */
+        add_mobile(sol,idm,pos_intercepteur,temps); /* Ajout a la solution */
         nb_mobiles++;
       }
     }
@@ -195,6 +196,7 @@ void test_soln(){
   free_sln(&sol);
 }
 
+/* Fonction de génération du tableau de résultat d'interception */
 void tex_table_output(char *logdir, int h, sln_t *sol) {
   char *file;
   FILE *f = NULL;
@@ -227,6 +229,7 @@ void tex_table_output(char *logdir, int h, sln_t *sol) {
   }
 }
 
+/* Fonction de calcul des limites de la grille pour affichage du graphiqe */
 void get_bounds(sln_t *sol, graph_t *G, double *xmin, double *xmax, double *ymin, double* ymax) {
   int cour, i;
   cour = sol->first;
@@ -257,6 +260,7 @@ void get_bounds(sln_t *sol, graph_t *G, double *xmin, double *xmax, double *ymin
   }
 }
 
+/* Fonction de génération du graphe de trajectoire de l'intercepteur */
 void tikz_output(char *logdir, int h, sln_t *sol, graph_t *G) {
   char *file;
   FILE *f = NULL;
@@ -324,6 +328,7 @@ void tikz_output(char *logdir, int h, sln_t *sol, graph_t *G) {
   }
 }
 
+/* Fonction de traçage du graphe de comparaison des heuristiques */
 void tikz_compare(char *logdir, int h, sln_t *sol, graph_t *G) {
   char *file;
   FILE *f = NULL;
