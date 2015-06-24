@@ -329,6 +329,7 @@ void tikz_compare(char *logdir, int h, sln_t *sol, graph_t *G) {
   FILE *f = NULL;
   int cour, i;
   double t_prec;
+  char mode[] = "w+";
 
   file = (char*) malloc((strlen(logdir)+16)*sizeof(char));
   if (file) {
@@ -337,7 +338,10 @@ void tikz_compare(char *logdir, int h, sln_t *sol, graph_t *G) {
     } else {
       sprintf(file,"%s/h_comp.tex",logdir);
     }
-    f = fopen(file, "a+");
+    if (h > 0) {
+      mode[0] = 'a';
+    }
+    f = fopen(file, mode);
     if (f) {
       if (h == 0) {
         fprintf(f,"\\draw (0,0) -- coordinate (x axis mid) (%d,0);\n", G->mob_nb); /* Abscisses */
