@@ -1,5 +1,57 @@
 \section{Calcul d'interception}
 
+On modélise le déplacement de l'intercepteur par la fonction suivante : 
+\[
+i(t,\alpha) = 
+\left(
+\begin{array}{r c l}
+ x_1 + t*v_1*cos(\alpha)\\
+ y_1 + t*v_1*sin(\alpha)
+\end{array}
+\right)
+\]
+avec $t \in \Re^+$ et $\alpha \in [-\pi,\pi]$.
+
+On modélise de même la même manière le déplacement du mobile :
+\[
+m(t) = 
+\left(
+\begin{array}{r c l}
+ x_0 + t*v^{x}_0\\
+ y_0 + t*v^{y}_1
+\end{array}
+\right)
+\]
+avec $t \in \Re^+$.
+
+On doit donc résoudre l'équation suivante afin de calculer le temps d'interception d'un mobile:
+
+\[
+\left\{
+\begin{array}{r c l}
+x_1 + t*v_1*cos(\alpha) &=& x_0 + t*v^{x}_0\\
+y_1 + t*v_1*sin(\alpha) &=& y_0 + t*v^{y}_1
+\end{array}
+\right.
+\]
+
+La valeur est donnée par la résolution de l'équation $a*cos(\alpha)+b*sin(\alpha) = c$ avec:
+\[
+\left\{
+\begin{array}{r c l}
+a &=& y_0 - y_1\\
+b &=& x_1 - x_0\\
+c &=& \frac{a*v^{x}_0 +b*v^{y}_1}{v_1}
+\end{array}
+\right.
+\]
+
+On obtient alors 2 possibilités pour la date t : 
+$\frac{-b}{-v^{x}_0 + v_1*cos(\alpha)}$ et
+$\frac{a}{-v^{y}_0 + v_1*sin(\alpha)}$
+
+La fonction d'interception teste alors les positions obtenues avec les deux dates et retient celle qui fonctionne et qui est minimale.
+
 \section{Heuristique $H_0$}
 
 \section{Heuristique $H_1$}
