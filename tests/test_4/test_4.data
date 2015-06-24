@@ -1,0 +1,13 @@
+#nb depots
+1
+#nb mobiles
+4
+#nb intercepteurs / vitesse
+1 2
+#coord depots
+0 0
+#coord mobiles / vitesse mobiles
+2 2 -1 0 
+-1 -1 0 2
+4 5 -1 -0.3
+2 4 0.75 -0.69

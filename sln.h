@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <string.h>
 #include "position.h"
 #include "graph.h"
 #include "calcul.h"
@@ -38,12 +39,20 @@ double get_ftime(sln_t* sol);
 void free_sln(sln_t** sol);
 
 /* Heuristique H0: le plus rapide a intercepter */
-int heuristique_plus_rapide(graph_t *);
+int heuristique_plus_rapide(graph_t *, char *);
 
 /* Heuristique H1: sequence */
-int heuristique_sequence(graph_t *);
+int heuristique_sequence(graph_t *, char*);
 
 /*Fonction de test unitaire de toutes les fonctions de solutions*/
 void test_soln();
 
+/*Fonction de generation de graphique TikZ*/
+void tikz_output(char *, int, sln_t *, graph_t *);
+
+/*Fonction de generation de tableau LaTeX*/
+void tex_table_output(char *, int, sln_t *);
+
+/*Fonction de generation de graphique de comparaison TikZ*/
+void tikz_compare(char *, int, sln_t *, graph_t *);
 #endif

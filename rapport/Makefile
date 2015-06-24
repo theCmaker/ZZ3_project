@@ -1,10 +1,11 @@
 CC=pdflatex
 CFLAGS=-shell-escape
 CONFIG=settings/*.tex
-OBJS=titlepage.tex
+TESTS=../tests/*/*
+OBJS=titlepage.tex intro.tex conclusion.tex problemes.tex tests.tex
 JOBNAME=compte_rendu
 
-$(JOBNAME).pdf: $(JOBNAME).tex $(CONFIG) $(OBJS)
+$(JOBNAME).pdf: $(JOBNAME).tex $(CONFIG) $(OBJS) $(TESTS)
 	$(CC) $(CFLAGS) $< ;
 
 clean: 

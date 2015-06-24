@@ -4,6 +4,7 @@
 \usepackage{graphicx} %images
 \usepackage[usenames,dvipsnames]{xcolor} %couleurs
 \usepackage{tikz} %schémas
+\usetikzlibrary{calc}
 \usepackage{algo} %mise en forme d'algos
 \usepackage{minted} %mise en forme de code source
 \usepackage{framed} %cadres et bordures
@@ -21,7 +22,8 @@
 
 \input{settings/colors}
 \input{settings/algo}
-\input{settings/mintedC}
+\input{settings/math}
+\input{settings/mintedText}
 \input{settings/mintedMakefile}
 \input{settings/mintedBash}
 \input{settings/hyperrefSettings}
@@ -36,13 +38,27 @@
 \newcommand{\hsp}{\hspace{20pt}}
 \newcommand{\blankpage}{\newpage \thispagestyle{empty} \addtocounter{page}{-1} \null \newpage}
 \titleformat{\chapter}[hang]{\LARGE\bfseries}{\thechapter\hsp\textcolor{lightgray}{|}\hsp}{0pt}{\LARGE\bfseries}
+\captionsetup[table]{name=\textsc{Tableau}}
+\newcommand{\mobile}{\Large{$+$}}
+\newcommand{\cross}{\Large{$\times$}}
+\newcommand{\interceptor}{\Large{$\square$}}
+\tikzset{%styles schémas
+    interceptor/.style={thick,color=Blue},  %intercepteur
+    mobile/.style={color=LimeGreen},  %mobile
+    camino/.style={mobile,dashed}, %chemin mobile
+    speed/.style={mobile, thick, >=latex,->}, %vitesse mobile
+    caught/.style={color=OrangeRed},  %mobile attrapé
+    grided/.style={dotted,color=Black!20},    %grille
+    h0/.style={color=Purple},
+    h1/.style={color=RoyalBlue}
+}
 
 % Pages de contenu
 \fancypagestyle{IHA-fancy-style}{%
   \fancyhf{}%
   \fancyhead[R]{\leftmark}
   \fancyfoot[R]{\thepage/\pageref{LastPage}}
-  \fancyfoot[L]{Interception de mobiles}%
+  \fancyfoot[L]{Projet ZZ1 -- Interception de mobiles}%
   \renewcommand{\headrulewidth}{0.4pt}% Ligne de header
   \renewcommand{\footrulewidth}{0.4pt}% Ligne de footer
 }
@@ -50,7 +66,7 @@
 \fancypagestyle{plain}{%
   \fancyhf{}%
   \fancyfoot[R]{\thepage/\pageref{LastPage}}%
-  \fancyfoot[L]{Interception de mobiles}%
+  \fancyfoot[L]{Projet ZZ1 -- Interception de mobiles}%
   \renewcommand{\headrulewidth}{0pt}% pas de ligne de Header
   \renewcommand{\footrulewidth}{0.4pt}% ligne de footer
 }
@@ -59,16 +75,26 @@
 
 \begin{document}
   \input{titlepage}
-  \blankpage
+  %\blankpage
   \tableofcontents
-  \blankpage
+  %\blankpage
   %redefinition des ecarts apres table des matieres
   \setlength{\parskip}{10pt}
   \setlength{\parindent}{0pt}
-  \chapter{Présentation}
 
-  \chapter{Travail effectué}
-
+  \chapter{Introduction}
+    \input{intro}
+  
+  \chapter{Problèmes étudiés}
+    \input{problemes}
+  
+  \chapter{Tests réalisés}
+    \input{tests}
+  
   \chapter{Conclusion}
-
+    \input{conclusion}
+  
+  \chapter*{Remerciements}
+  \listoffigures
+  \listoftables
 \end{document}

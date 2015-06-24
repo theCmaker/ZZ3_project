@@ -75,7 +75,7 @@ void free_sln(sln_t** sol){
 }
 
 /* Heuristique H0: le plus rapide a intercepter */
-int heuristique_plus_rapide(graph_t *G) {
+int heuristique_plus_rapide(graph_t *G, char *logdir) {
   int res;                /* Valeur de retour: nb de mobiles interceptes */
   sln_t *sol;             /* Solution */
   int nb_mobiles;         /* Nombre de mobiles restants */
@@ -106,7 +106,6 @@ int heuristique_plus_rapide(graph_t *G) {
         mobcour = &(sol->tsln[i]); /* Mobile courant */
 
         if (i != sol->first && mobcour->next == -1 && mobcour->prec == -1) { /* Mobile non intercepte */
-
           tps = compute_interception(G,&pos_intercepteur,i,temps,&alpha); /* Calcul temps interception */
           if (tps >= 0 && tps < tps_min) {  /* Interception possible et temps inferieur */
             tps_min = tps;      /* Sauvegarde temps minimum */
@@ -123,8 +122,13 @@ int heuristique_plus_rapide(graph_t *G) {
         nb_mobiles--; /* Actualisation nb mobiles restants a traiter */
       }
     }
-    printf("Rapport d'interception / Heuristique H0:\n");
+    printf("\nRapport d'interception / Heuristique H0:\n");
     print_sln(sol); /* Affichage */
+    if (logdir[0] != '\0') {
+      tikz_output(logdir,0,sol,G);
+      tex_table_output(logdir,0,sol);
+      tikz_compare(logdir,0,sol,G);
+    }
     free_sln(&sol); /* Libération */
     res = G->mob_nb - nb_mobiles;
   } else {
@@ -134,7 +138,7 @@ int heuristique_plus_rapide(graph_t *G) {
 }
 
 /* Heuristique H1: sequence */
-int heuristique_sequence(graph_t *G) {
+int heuristique_sequence(graph_t *G, char *logdir) {
   int res;                /* Valeur de retour: nb de mobiles interceptes */
   sln_t *sol;             /* Solution */
   int nb_mobiles = 0;     /* Nombre de mobiles interceptes */
@@ -162,8 +166,13 @@ int heuristique_sequence(graph_t *G) {
         nb_mobiles++;
       }
     }
-    printf("Rapport d'interception / Heuristique H1:\n");
+    printf("\nRapport d'interception / Heuristique H1:\n");
     print_sln(sol); /* Affichage */
+    if (logdir[0] != '\0') {
+      tikz_output(logdir,1,sol,G);
+      tex_table_output(logdir,1,sol);
+      tikz_compare(logdir,1,sol,G);
+    }
     free_sln(&sol); /* Libération */
     res = nb_mobiles;
   } else {
@@ -186,3 +195,177 @@ void test_soln(){
   free_sln(&sol);
 }
 
+void tex_table_output(char *logdir, int h, sln_t *sol) {
+  char *file;
+  FILE *f = NULL;
+  int cour;
+
+  file = (char*) malloc((strlen(logdir)+16)*sizeof(char));
+  if (file) {
+    if (logdir[strlen(logdir)-1] == '/') {
+      sprintf(file,"%sh%d_table.tex",logdir,h);
+    } else {
+      sprintf(file,"%s/h%d_table.tex",logdir,h);
+    }
+    f = fopen(file, "w+");
+    if (f) {
+      fprintf(f, "\\begin{tabular}{|c|c|c|}\n");
+      fprintf(f, "  \\hline\\textbf{\\No mobile} & \\textbf{Position interception} & \\textbf{Date interception (u.t.)} \\\\ \\hline \n");
+      cour = sol->first;
+      while (cour != -1) {
+        fprintf(f,"  %d\t& $\\coord{%.3f}{%.3f}$\t & $%.4f$ \\\\ \\hline\n",sol->tsln[cour].id_mob,sol->tsln[cour].pos.x,sol->tsln[cour].pos.y,sol->tsln[cour].t);
+        cour = sol->tsln[cour].next;
+      }
+      fprintf(f, "\\end{tabular}\n");
+      fclose(f);
+    } else {
+      fprintf(stderr, "tex_table_output: output file error\n");
+    }
+    free(file);
+  } else {
+    fprintf(stderr, "tex_table_output: memory error\n");
+  }
+}
+
+void get_bounds(sln_t *sol, graph_t *G, double *xmin, double *xmax, double *ymin, double* ymax) {
+  int cour, i;
+  cour = sol->first;
+  while (cour != -1) {
+    if (sol->tsln[cour].pos.x < *xmin) {
+      *xmin = sol->tsln[cour].pos.x;
+    } else if (sol->tsln[cour].pos.x > *xmax) {
+      *xmax = sol->tsln[cour].pos.x;
+    }
+    if (sol->tsln[cour].pos.y < *ymin) {
+      *ymin = sol->tsln[cour].pos.y;
+    } else if (sol->tsln[cour].pos.y > *ymax) {
+      *ymax = sol->tsln[cour].pos.y;
+    }
+    cour = sol->tsln[cour].next;
+  }
+  for (i = 0; i < G->mob_nb; ++i) {
+    if (G->moves[i].p.x < *xmin) {
+      *xmin = G->moves[i].p.x;
+    } else if (G->moves[i].p.x > *xmax) {
+      *xmax = G->moves[i].p.x;
+    }
+    if (G->moves[i].p.y < *ymin) {
+      *ymin = G->moves[i].p.y;
+    } else if (G->moves[i].p.y > *ymax) {
+      *ymax = G->moves[i].p.y;
+    }
+  }
+}
+
+void tikz_output(char *logdir, int h, sln_t *sol, graph_t *G) {
+  char *file;
+  FILE *f = NULL;
+  int cour;
+  int i;
+  double xmin, xmax, ymin, ymax;
+  pos_t intercepteur;
+
+  file = (char*) malloc((strlen(logdir)+16)*sizeof(char));
+  if (file) {
+    /* Creation chemin de fichier */
+    if (logdir[strlen(logdir)-1] == '/') {  /* avec slash */
+      sprintf(file,"%sh%d_graph.tex",logdir,h);
+    } else {                                /* sans slash */
+      sprintf(file,"%s/h%d_graph.tex",logdir,h);
+    }
+
+    /* Ouverture fichier */
+    f = fopen(file, "w+");
+    if (f) {
+      cpy_pos(G->dep_pos[0],&intercepteur); /* Position initiale intercepteur */
+      xmin = intercepteur.x; ymin = intercepteur.y; xmax = intercepteur.x; ymax = intercepteur.y;
+      get_bounds(sol, G, &xmin, &xmax, &ymin, &ymax);
+
+      fprintf(f, "\\draw[grided,step=1.0,thin] (%f,%f) grid (%f,%f);\n",floor(xmin),floor(ymin),xmax,ymax); /* Grille */
+      fprintf(f,"\\draw (%f,0) -- coordinate (x axis mid) (%f,0);\n",floor(xmin), xmax); /* Abscisses */
+      fprintf(f,"\\draw (0,%f) -- coordinate (y axis mid) (0,%f);\n",floor(ymin), ymax); /* Ordonnees */
+      fprintf(f, "\\foreach \\x in {%d,...,%d}\n  \\draw (\\x,1pt) -- (\\x,-3pt) node[anchor=north] {\\x};\n",(int)floor(xmin), (int)floor(xmax)); /* Etiquettes abscisses */
+      fprintf(f, "\\foreach \\y in {%d,...,%d}\n  \\draw (1pt,\\y) -- (-3pt,\\y) node[anchor=east] {\\y};\n",(int)floor(ymin), (int)floor(ymax));  /* Etiquettes ordonnees */
+
+      fprintf(f,"\\node[interceptor] (I%d) at (%f,%f) {\\interceptor};\n",0,G->dep_pos[0].x,G->dep_pos[0].y); /* Position initiale intercepteur */
+
+      /* Positions initiales, vitesses, et noms des mobiles */
+      for (i = 0; i < G->mob_nb; ++i) {
+        fprintf(f,"\\node[mobile,anchor=center] (M%d) at (%f,%f) {\\mobile};\n",i,G->moves[i].p.x,G->moves[i].p.y);
+        fprintf(f,"\\node[mobile] at (M%d.south east) {$M_%d$};\n",i,i);
+        if (G->moves[i].vx != 0 || G->moves[i].vy != 0) {
+          fprintf(f,"\\draw[speed] (M%d.center) -- ($ (M%d.center) + (%f,%f) $);\n",i,i,G->moves[i].vx,G->moves[i].vy);
+        }
+      }
+
+      /* Tracé de la trajectoire de l'intercepteur */
+      cour = sol->first;
+      while (cour != -1) {
+        if (G->moves[sol->tsln[cour].id_mob].vx != 0 || G->moves[sol->tsln[cour].id_mob].vy != 0) {
+          fprintf(f,"\\draw[camino] (M%d) -- (%f,%f);\n",sol->tsln[cour].id_mob,sol->tsln[cour].pos.x,sol->tsln[cour].pos.y);
+        }
+        fprintf(f,"\\draw[interceptor] (%f,%f) -- (%f,%f);\n",intercepteur.x,intercepteur.y,sol->tsln[cour].pos.x,sol->tsln[cour].pos.y);
+        fprintf(f,"\\node[interceptor] at (%f,%f) {\\mobile};\n",sol->tsln[cour].pos.x,sol->tsln[cour].pos.y);
+        fprintf(f, "\\node[caught] at (M%d) {\\mobile};\n", sol->tsln[cour].id_mob);
+        /*fprintf(f,"Id mobile : %d\nPosition d'interception : (%f,%f)\nDate d'interception : %f\n",sol->tsln[cour].id_mob,sol->tsln[cour].pos.x,sol->tsln[cour].pos.y,sol->tsln[cour].t);*/
+        cpy_pos(sol->tsln[cour].pos,&intercepteur);
+        cour = sol->tsln[cour].next;
+      }
+
+      /* Date d'arrivée */
+      fprintf(f, "\\draw[interceptor] (%f,%f) node[anchor=south %s] {$t=%.3f \\text{ u.t.}$};\n", intercepteur.x,intercepteur.y,(intercepteur.x - 2 < xmin)?"west":"east",get_ftime(sol));
+      fclose(f);
+    } else {
+      fprintf(stderr, "tikz_output: output file error\n");
+    }
+    free(file);
+  } else {
+    fprintf(stderr, "tikz_output: memory error\n");
+  }
+}
+
+void tikz_compare(char *logdir, int h, sln_t *sol, graph_t *G) {
+  char *file;
+  FILE *f = NULL;
+  int cour, i;
+  double t_prec;
+
+  file = (char*) malloc((strlen(logdir)+16)*sizeof(char));
+  if (file) {
+    if (logdir[strlen(logdir)-1] == '/') {
+      sprintf(file,"%sh_comp.tex",logdir);
+    } else {
+      sprintf(file,"%s/h_comp.tex",logdir);
+    }
+    f = fopen(file, "a+");
+    if (f) {
+      if (h == 0) {
+        fprintf(f,"\\draw (0,0) -- coordinate (x axis mid) (%d,0);\n", G->mob_nb); /* Abscisses */
+        fprintf(f,"\\foreach \\x in {0,...,%d}\n  \\draw (\\x,1pt) -- (\\x,-3pt) node[anchor=north] {\\x};\n", G->mob_nb); /* Etiquettes abscisses */
+        fprintf(f,"\\draw (0,0) -- coordinate (y axis mid) (0,%f);\n", ceil(get_ftime(sol))); /* Ordonnees */
+        fprintf(f,"\\foreach \\y in {0,%d,...,%d}\n  \\draw (1pt,\\y) -- (-3pt,\\y) node[anchor=east] {\\y};\n", (((int)round(ceil(get_ftime(sol))/10))>0)?(int)round(ceil(get_ftime(sol))/10):1, (int)ceil(get_ftime(sol)));  /* Etiquettes ordonnees */
+        fprintf(f,"\\draw (%f,-2) node[anchor=north] {Nombre de mobiles interceptés};\n", ((double) G->mob_nb)/2.);
+        fprintf(f,"\\draw (-0.75,%f) node[rotate=90,anchor=south] {Temps nécessaire (u.t)};\n", ceil(get_ftime(sol))/2.);
+      }
+      fprintf(f,"\\draw[grided,step=1.0,thin] (0,0) grid (%d,%f);\n",G->mob_nb,ceil(get_ftime(sol))); /* Grille */
+
+      cour = sol->first;
+      i = 1;
+      t_prec = 0;
+      fprintf(f,"\\node[h%d] at (0,0) {\\cross};\n",h);
+      while (cour != -1) {
+        fprintf(f,"\\draw[h%d] (%d,%f) -- (%d,%f);\n",h,i-1,t_prec,i,sol->tsln[cour].t);
+        fprintf(f,"\\node[h%d] at(%d,%f) {\\cross};\n",h,i,sol->tsln[cour].t);
+        t_prec = sol->tsln[cour].t;
+        ++i;
+        cour = sol->tsln[cour].next;
+      }
+      fclose(f);
+    } else {
+      fprintf(stderr, "tikz_compare: output file error\n");
+    }
+    free(file);
+  } else {
+    fprintf(stderr, "tikz_compare: memory error\n");
+  }
+}

@@ -1,0 +1,17 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYGdefaultZsh{}nb depots
+1
+\PYGdefaultZsh{}nb mobiles
+6
+\PYGdefaultZsh{}nb intercepteurs / vitesse
+1 2
+\PYGdefaultZsh{}coord depots
+2 9
+\PYGdefaultZsh{}coord mobiles / vitesse mobiles
+7.140297 8.876400 0 0
+4.767767 5.291864 \PYGdefaultZhy{}0.811979 \PYGdefaultZhy{}0.290230
+\PYGdefaultZhy{}7.277143 \PYGdefaultZhy{}4.215198 0.458222 0.901331
+\PYGdefaultZhy{}9.317039 \PYGdefaultZhy{}8.399123 \PYGdefaultZhy{}0.209148 0.404874
+8.360891 5.869070 \PYGdefaultZhy{}0.505128 0.038969
+2.371453 \PYGdefaultZhy{}8.866265 \PYGdefaultZhy{}0.225212 0.200970
+\end{Verbatim}

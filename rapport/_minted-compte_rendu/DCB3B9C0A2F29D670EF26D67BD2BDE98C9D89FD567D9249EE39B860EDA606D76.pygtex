@@ -1,0 +1,16 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYGdefaultZsh{}nb depots
+1
+\PYGdefaultZsh{}nb mobiles
+5
+\PYGdefaultZsh{}nb intercepteurs / vitesse
+1 2
+\PYGdefaultZsh{}coord depots
+0 0
+\PYGdefaultZsh{}coord mobiles / vitesse mobiles
+2 2 \PYGdefaultZhy{}1.5 0 
+\PYGdefaultZhy{}1 \PYGdefaultZhy{}1 0 2
+4 5 \PYGdefaultZhy{}1 \PYGdefaultZhy{}0.3
+2 4 0.6 \PYGdefaultZhy{}0.69
+\PYGdefaultZhy{}2 \PYGdefaultZhy{}1 1 6
+\end{Verbatim}

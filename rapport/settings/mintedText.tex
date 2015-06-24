@@ -1,0 +1,34 @@
+\input{settings/mintedSettings}
+\usepackage{MnSymbol}
+\newminted{text}{
+  linenos                = false,
+  breaklines             = true,
+  frame                  = single,
+  breakautoindent        = true,
+  breaksymbolleft        = $\lhookrightarrow$,
+  breaksymbolindentleft  = 10pt,
+  breaksymbolsepleft     = 2pt,
+  breaksymbolright       = $\rhookleftarrow$,
+  breaksymbolindentright = 10pt,
+  breaksymbolsepright    = 2pt,
+  label                  = Fichier source,
+  texcomments            = true
+}
+
+\newmintedfile{text}{
+  linenos                = false,
+  breaklines             = true,
+  frame                  = single,
+  breakautoindent        = true,
+  breaksymbolleft        = $\lhookrightarrow$,
+  breaksymbolindentleft  = 10pt,
+  breaksymbolsepleft     = 2pt,
+  breaksymbolright       = $\rhookleftarrow$,
+  breaksymbolindentright = 10pt,
+  breaksymbolsepright    = 2pt,
+  label                  = Fichier source,
+  texcomments            = false
+}
+
+\newmintinline{text}{
+}
