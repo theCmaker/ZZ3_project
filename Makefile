@@ -1,20 +1,27 @@
-#Compilateur et options de compilation
-CC=gcc
-CFLAGS=-Wall -pedantic -Wextra -g -lm
+# project name (generate executable with this name)
+TARGET   = main
 
-#Fichiers du projet
-SOURCES=main.c graph.c calcul.c position.c solution.c sln.c
-OBJECTS=$(SOURCES:.c=.o)
+CC       = gcc
+# compiling flags here
+CFLAGS   = -g -Wall -Wextra -pedantic -Iinclude
+LIBS		 = -lm
 
-#Nom du programme
-EXEC=main
+# change these to set the proper directories where each files shoould be
+SRCDIR   = src
+INCDIR	 = include
+OBJDIR   = obj
+BINDIR   = bin
 
-$(EXEC): $(OBJECTS)
-	$(CC)  $^ -o $(EXEC) $(CFLAGS)
+SOURCES  := $(wildcard $(SRCDIR)/*.c)
+INCLUDES := $(wildcard $(INCDIR)/*.h)
+OBJECTS  := $(SOURCES:$(SRCDIR)/%.c=$(OBJDIR)/%.o)
 
-.c.o:
-	$(CC) -c $*.c $(CFLAGS)
+$(BINDIR)/$(TARGET): $(OBJECTS)
+	$(CC) -o $@ $(CFLAGS) $(OBJECTS) $(LIBS)
 
+$(OBJECTS): $(OBJDIR)/%.o : $(SRCDIR)/%.c
+	$(CC) $(CFLAGS) -c $< -o $@ $(LIBS)
+
+.PHONEY: clean
 clean:
-	rm $(OBJECTS) $(EXEC)
-
+	rm -f $(OBJDIR)/*.o
