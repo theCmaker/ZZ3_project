@@ -57,7 +57,7 @@ La fonction d'interception teste alors les positions obtenues avec les deux date
 
 	Ainsi le premier mobile intercepté n'est pas nécessairement le plus proche. En effet, il suffit qu'il s'éloigne de la position initiale de l'intercepteur tandis qu'un autre, plus éloigné au départ s'en rapproche suffisamment vite pour que l'intercepteur commence par intercepter ce dernier.
 
-	A chaque étape de recherche du temps d'interception minimal, nous conservons les paramètres d'orientation de l'intercepteur et le temps calculé.
+	A chaque étape de recherche du temps d'interception minimal, nous conservons les paramètres d'orientation de l'intercepteur et le temps calculé, cela permet ainsi de limiter le nombre de calculs.
 
 \section{Heuristique $H_1$}
 	La seconde méthode heuristique que nous proposons permet, à partir d'une séquence donnée définissant l'ordre dans lequel les mobiles doivent être interceptés, de calculer le temps qui sera nécessaire pour intercepter tous les mobiles qui sont accessibles tout en respectant l'ordre demandé.

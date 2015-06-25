@@ -81,6 +81,12 @@
   \setlength{\parindent}{0pt}
   \tableofcontents
   %\blankpage
+  \listoffigures
+  \listoftables
+  \begingroup
+    \let\clearpage\relax
+    \listoflistings
+  \endgroup
 
   \chapter{Introduction}
     \input{intro}
@@ -108,11 +114,4 @@
     \begin{center}
       \href{https://github.com/theCmaker/Projet\_ZZ1}{https://github.com/theCmaker/Projet\_ZZ1}
     \end{center}
-
-  \listoffigures
-  \listoftables
-  \begingroup
-    \let\clearpage\relax
-    \listoflistings
-  \endgroup
 \end{document}
