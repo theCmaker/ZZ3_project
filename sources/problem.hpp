@@ -5,13 +5,14 @@
 #include <iostream>
 #include "interceptor.hpp"
 #include "mobile.hpp"
+#include "depot.hpp"
 
 class Problem
 {
 	private:
 		std::vector<Interceptor> 	_interceptors;
 		std::vector<Mobile> 		_mobiles;
-		//std::vector<Depot>		_depots;
+		std::vector<Depot>			_depots;
 	
 	public:
 		Problem();
