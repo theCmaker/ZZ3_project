@@ -1,4 +1,5 @@
 #include "mobile.hpp"
+#include <cmath>
 
 Mobile::Mobile()
 {
@@ -24,14 +25,19 @@ Mobile::Mobile(Distance x, Distance y, Distance dx, Distance dy)
 Mobile::~Mobile() {}
 
 //Getters
-const Location & Mobile::position()
+const Location & Mobile::position() const
 {
 	return _position;
 }
 
-const Direction & Mobile::direction()
+const Direction & Mobile::direction() const
 {
 	return _direction;
+}
+
+Speed Mobile::speed() const
+{
+	return std::sqrt(_direction._sx * _direction._sx + _direction._sy * _direction._sy);
 }
 
 //Setters
@@ -45,4 +51,10 @@ Mobile & Mobile::direction(const Direction & d)
 {
 	_direction = d;
 	return *this;
+}
+
+std::ostream & operator<< (std::ostream & o, const Mobile & m)
+{
+	o << "[pos(" << m.position()._x << "," << m.position()._y << ");dir(" << m.direction()._sx << "," << m.direction()._sy << ");spd(" << m.speed() << ")]";
+	return o;
 }

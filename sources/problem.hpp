@@ -7,20 +7,32 @@
 #include "mobile.hpp"
 #include "depot.hpp"
 
+typedef std::vector<Interceptor> VInterceptors;
+typedef std::vector<Mobile> VMobiles;
+typedef std::vector<Depot> VDepots;
+
 class Problem
 {
 	private:
-		std::vector<Interceptor> 	_interceptors;
-		std::vector<Mobile> 		_mobiles;
-		std::vector<Depot>			_depots;
-	
+		VInterceptors	_interceptors;
+		VMobiles		_mobiles;
+		VDepots		_depots;
 	public:
 		Problem();
-		Problem(std::string);
+		Problem(const char *);
 		Problem(Problem &);
 		~Problem();
-		
-		
+
+		//Getters
+		unsigned nbInterceptors() const;
+		unsigned nbMobiles() const;
+		unsigned nbDepots() const;
+
+		const VMobiles & mobiles() const;
+		const VInterceptors & interceptors() const;
+		const VDepots & depots() const;
 };
+
+std::ostream & operator<< (std::ostream &, const Problem &);
 
 #endif

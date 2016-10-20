@@ -13,9 +13,18 @@ class Depot
 	
 	public:
 		Depot();
+		Depot(Distance, Distance);
 		Depot(Location &, Interceptor &);
+		Depot(Location &);
 		~Depot();
-	
+
+		//Getters
+		const Location & position() const;
+
+		//Setters
+		Depot & position(const Location &);
 };
+
+std::ostream & operator<< (std::ostream &, const Depot &);
 
 #endif
