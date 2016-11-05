@@ -1,0 +1,23 @@
+NB REPOS
+2
+
+NB MOBILES
+5
+
+NB INTERCEPTORS
+2
+
+MOBILES
+1. 2. -1. 0.
+0. 3. 0. -1.
+2. 5. 1. 0.3
+4. 1. 0.5 0.5
+-1. -2. -0.5 0.5
+
+INTERCEPTORS
+0. 0. 2.
+12. 12. 2.
+
+REPOS
+0. 0.
+3. 4.
