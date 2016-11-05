@@ -8,17 +8,19 @@
 class Depot
 {
 	private:
+		unsigned 					_id;
 		Location					_position;
 		std::vector<Interceptor>	_interceptors;
 	
 	public:
-		Depot();
-		Depot(Distance, Distance);
-		Depot(Location &, Interceptor &);
-		Depot(Location &);
+		Depot(unsigned = 0);
+		Depot(Distance, Distance, unsigned = 0);
+		Depot(Location &, Interceptor &, unsigned = 0);
+		Depot(Location &, unsigned = 0);
 		~Depot();
 
 		//Getters
+		const unsigned & id() const;
 		const Location & position() const;
 
 		//Setters

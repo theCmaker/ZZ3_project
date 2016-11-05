@@ -1,29 +1,33 @@
 #include "depot.hpp"
 
-Depot::Depot()
-{
-	_position._x = 0.;
-	_position._y = 0.;
-}
+Depot::Depot(unsigned id) :
+	_id(id),
+	_position(0.,0.)
+{}
 
-Depot::Depot(Distance x, Distance y)
-{
-	_position._x = x;
-	_position._y = y;
-}
+Depot::Depot(Distance x, Distance y, unsigned id) :
+	_id(id),
+	_position(x,y)
+{}
 
-Depot::Depot(Location & l, Interceptor & i)
+Depot::Depot(Location & l, Interceptor & i, unsigned id) :
+	_id(id),
+	_position(l)
 {
-	_position = l;
 	_interceptors.push_back(i);
 }
 
-Depot::Depot(Location & l)
-{
-	_position = l;
-}
+Depot::Depot(Location & l, unsigned id) :
+	_id(id),
+	_position(l)
+{}
 
 Depot::~Depot() {}
+
+const unsigned & Depot::id() const
+{
+	return _id;
+}
 
 const Location & Depot::position() const
 {
@@ -38,6 +42,6 @@ Depot & Depot::position(const Location & l)
 
 std::ostream & operator<< (std::ostream & o, const Depot & d)
 {
-	o << "[pos(" << d.position()._x << "," << d.position()._y << ")]";
+	o << "[" << d.id() << " pos(" << d.position()._x << "," << d.position()._y << ")]";
 	return o;
 }
