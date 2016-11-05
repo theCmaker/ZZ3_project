@@ -7,17 +7,20 @@
 class Mobile
 {
 	private:
+		unsigned 	_id;
 		Location	_position;
 		Direction	_direction;
 
 	public:
-		Mobile();
-		Mobile(Location &, Direction &);
-		Mobile(Distance, Distance, Distance, Distance);
+		Mobile(unsigned = 0);
+		Mobile(Location &, Direction &, unsigned = 0);
+		Mobile(Distance, Distance, Distance, Distance, unsigned = 0);
 		~Mobile();
 
 		//Getters
+		const unsigned & id() const;
 		const Location 	& position() const;
+		Location position(Time) const;
 		const Direction & direction() const;
 			  Speed		  speed() const;
 
