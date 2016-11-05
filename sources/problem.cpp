@@ -34,20 +34,20 @@ Problem::Problem(const char * filename)
 				} else if (buf == "MOBILES") {
 					unsigned i = 0;
 					while (i < nb_mobiles && ifs >> x >> y >> dx >> dy && std::getline(ifs,buf)) {
+						_mobiles.push_back(Mobile(x,y,dx,dy,i));
 						++i;
-						_mobiles.push_back(Mobile(x,y,dx,dy));
 					}
 				} else if (buf == "INTERCEPTORS") {
 					unsigned i = 0;
 					while (i < nb_interceptors && ifs >> x >> y >> s && std::getline(ifs,buf)) {
+						_interceptors.push_back(Interceptor(x,y,s,i));
 						++i;
-						_interceptors.push_back(Interceptor(x,y,s));
 					}
 				} else if (buf == "REPOS") {
 					unsigned i = 0;
 					while (i < nb_repos && ifs >> x >> y && std::getline(ifs,buf)) {
+						_depots.push_back(Depot(x,y,i));
 						++i;
-						_depots.push_back(Depot(x,y));
 					}
 				}
 			}
