@@ -24,6 +24,8 @@ typedef struct _Location
 
 std::ostream & operator<< (std::ostream &, const Location &);
 
+bool operator== (const struct _Location &, const struct _Location &);
+
 
 //******************************************************
 // Direction
@@ -38,5 +40,7 @@ typedef struct _Direction
 } Direction;
 
 std::ostream & operator<< (std::ostream &, const Direction &);
+
+bool operator== (const struct _Direction &, const struct _Direction &);
 
 #endif

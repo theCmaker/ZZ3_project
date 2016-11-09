@@ -23,6 +23,16 @@ std::ostream & operator<< (std::ostream & o, const Location & l)
 	return o;
 }
 
+bool operator== (const struct _Location & l1, const struct _Location & l2)
+{
+	bool res = false;
+	if(l1._x == l2._x && l1._y == l2._y)
+	{
+		res = true;
+	}
+	return res;
+}
+
 
 //******************************************************
 // Direction
@@ -37,4 +47,14 @@ std::ostream & operator<< (std::ostream & o, const Direction & d)
 {
 	o << "(" << d._sx << "," << d._sy << ")";
 	return o;
+}
+
+bool operator== (const struct _Direction & d1, const struct _Direction & d2)
+{
+	bool res = false;
+	if(d1._sx == d2._sx && d1._sy == d2._sy)
+	{
+		res = true;
+	}
+	return res;
 }
