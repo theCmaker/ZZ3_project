@@ -2,6 +2,9 @@
 #include <limits>
 #include <cmath>
 
+std::vector<std::string> Tikzifyer::_styles;
+Tikzifyer::Initializer Tikzifyer::__init;
+
 Tikzifyer::Tikzifyer() :
 	_top_left(std::numeric_limits<Distance>::infinity(), -std::numeric_limits<Distance>::infinity()),
 	_bottom_right(-std::numeric_limits<Distance>::infinity(), std::numeric_limits<Distance>::infinity()),
@@ -48,6 +51,16 @@ Distance Tikzifyer::ymin() const
 Distance Tikzifyer::ymax() const
 {
 	return _top_left._y;
+}
+
+const std::string & Tikzifyer::style(unsigned index)
+{
+	return Tikzifyer::_styles[index % Tikzifyer::_styles.size()];
+}
+
+void Tikzifyer::addStyle(const std::string & style)
+{
+	Tikzifyer::_styles.push_back(style);
 }
 
 void Tikzifyer::clear()
@@ -144,6 +157,7 @@ std::ostream & operator<< (std::ostream & o, const Tikzifyer & t) {
 	// Interception paths
 	Location interception_coords, interceptor_coords;
 	const Solution * solution;
+	unsigned solution_index = 0;
 	for (VPSolutions::const_iterator solutionptr = t.solutions().begin(); solutionptr != t.solutions().end(); ++solutionptr)
 	{
 		solution = *solutionptr;
@@ -155,9 +169,9 @@ std::ostream & operator<< (std::ostream & o, const Tikzifyer & t) {
 				interception_coords = step->_mobile.position(step->_date);
 				if (step->_mobile.speed() > 0.) // Draw the path taken by the mobile
 				{
-		  			o << R"(\draw[camino] (M)" << step->_mobile.id() << ".center) -- " << interception_coords << ";" << std::endl;
+					o << R"(\draw[camino] (M)" << step->_mobile.id() << ".center) -- " << interception_coords << ";" << std::endl;
 				}
-				o << R"(\draw[interceptor] )" << interceptor_coords << " -- " << interception_coords << ';' << std::endl;	// Draw the interceptor path
+				o << R"(\draw[)" << Tikzifyer::style(solution_index) << "] " << interceptor_coords << " -- " << interception_coords << ';' << std::endl;	// Draw the interceptor path
 				o << R"(\node[interceptor] at )" << interception_coords << R"( {\mobile};)" << std::endl;	// Mark the interception place
 				//o << R"(\node[caught] at (M)" << step->_mobile.id() << R"() {\mobile};)" << std::endl; 		// Update mobile state
 				interceptor_coords = interception_coords; // Update interceptor's position
@@ -170,6 +184,7 @@ std::ostream & operator<< (std::ostream & o, const Tikzifyer & t) {
 					<< solution->last_interception_time(*interceptor) << "$};" << std::endl;
 			}
 		}
+		++solution_index;
 	}
 	return o;
 }

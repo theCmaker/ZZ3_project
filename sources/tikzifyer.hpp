@@ -24,6 +24,9 @@ public:
 	Distance ymin() const;
 	Distance ymax() const;
 
+	static const std::string & style(unsigned);
+	static void addStyle(const std::string &);
+
 	void clear();
 
 private:
@@ -35,6 +38,15 @@ private:
 	// Data
 	const Problem * _problem;
 	VPSolutions _solutions;
+
+	// Line styles
+	static std::vector<std::string> _styles;
+	struct Initializer {
+		Initializer() {
+			Tikzifyer::addStyle("interceptor");
+		}
+	};
+	static Initializer __init;
 };
 
 std::ostream & operator<< (std::ostream &, const Tikzifyer &);
