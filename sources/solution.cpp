@@ -62,7 +62,12 @@ void Solution::append(const Interceptor & i, const Mobile & m, const Time & d)
 
 Time Solution::last_interception_time(int interceptor_index) const
 {
-	return _sequence[_interceptors[(unsigned) interceptor_index]._last]._date;
+	return _sequence[(unsigned) _interceptors[(unsigned) interceptor_index]._last]._date;
+}
+
+Time Solution::last_interception_time(const Interceptor & i) const
+{
+	return _sequence[(unsigned) _interceptors[i.id()]._last]._date;
 }
 
 Solution::interceptor_t Solution::operator[] (unsigned i)
@@ -82,6 +87,11 @@ bool Solution::is_caught(const Mobile & m) const
 	// i != _solution[current_interceptor->id()]._first && _solution.mobile(i)._next == -1 && _solution.mobile(i)._prev == -1
 }
 
+Location Solution::catch_position (const Mobile & m) const
+{
+	return m.position(_sequence[m.id()]._date);
+}
+
 Solution::solution_t Solution::mobile(int i)
 {
 	return _sequence[i];
@@ -92,6 +102,57 @@ const Solution::solution_t Solution::mobile(int i) const
 	return _sequence[i];
 }
 
+//******************************************************
+// ITERATORS
+//******************************************************
+
+Solution::iterator::iterator(const Solution & s, const Interceptor & i) :
+	_solution(s),
+	_position(s._interceptors[i.id()]._first)
+{}
+
+Solution::iterator::iterator(const Solution & s, const Interceptor &, bool) :
+	_solution(s),
+	_position(-1)
+{}
+
+Solution::iterator::~iterator() {}
+
+Solution::solution_t Solution::iterator::operator* ()
+{
+	return _solution._sequence[(unsigned) _position];
+}
+
+const Solution::solution_t * Solution::iterator::operator-> ()
+{
+	return &(_solution._sequence[(unsigned) _position]);
+}
+
+Solution::iterator & Solution::iterator::operator++ ()
+{
+	_position = _solution._sequence[(unsigned) _position]._next;
+	return *this;
+}
+
+bool Solution::iterator::operator!= (Solution::iterator itr)
+{
+	return _position != itr._position;
+}
+
+Solution::iterator Solution::begin(const Interceptor & i) const
+{
+	return Solution::iterator(*this, i);
+}
+
+Solution::iterator Solution::end(const Interceptor & i) const
+{
+	return Solution::iterator(*this, i, false);
+}
+
+bool Solution::isEmpty(const Interceptor & i) const
+{
+	return (_interceptors[i.id()]._first == -1);
+}
 
 std::ostream & operator<< (std::ostream & o, const Solution & s)
 {

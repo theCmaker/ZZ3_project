@@ -4,7 +4,7 @@
 #include <list>
 #include "problem.hpp"
 
-class Solution 
+class Solution
 {
 public:
 	typedef struct _solution
@@ -24,7 +24,7 @@ public:
 
 	typedef struct _interceptorseq {
 		const Interceptor & _interceptor;
-		
+
 		//Mobiles
 		int _first;
 		int _last;
@@ -36,7 +36,7 @@ public:
 	} interceptor_t;
 private:
 	const Problem & _problem;
-	std::vector<solution_t> 	_sequence;
+	std::vector<solution_t>		_sequence;
 	std::vector<interceptor_t>  _interceptors;
 
 	//Interceptors
@@ -49,7 +49,8 @@ public:
 
 	void append(unsigned, unsigned, const Time &);
 	void append(const Interceptor &, const Mobile &, const Time &);
-	Time last_interception_time(int) const ;
+	Time last_interception_time(int) const;
+	Time last_interception_time(const Interceptor &) const;
 
 	int first() const;
 	int last() const;
@@ -58,9 +59,29 @@ public:
 	const interceptor_t operator[] (unsigned) const;
 
 	bool is_caught (const Mobile &) const;
-	
+	Location catch_position (const Mobile &) const;
+
 	solution_t mobile(int i);
 	const solution_t mobile(int i) const;
+
+	class iterator
+	{
+	private:
+		const Solution & _solution;
+		int _position;
+	public:
+		iterator(const Solution &, const Interceptor &);
+		iterator(const Solution &, const Interceptor &, bool);
+		~iterator();
+		solution_t operator* ();
+		const solution_t * operator-> ();
+		iterator & operator++ ();
+		bool operator!= (Solution::iterator);
+	};
+
+	Solution::iterator begin(const Interceptor &) const;
+	Solution::iterator end(const Interceptor &) const;
+	bool isEmpty(const Interceptor &) const;
 };
 
 std::ostream & operator<< (std::ostream &, const Solution &);
