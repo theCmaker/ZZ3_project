@@ -52,6 +52,7 @@ void Heuristic_sequence::run(const std::vector<unsigned> & sequence)
 		best_time = std::numeric_limits<Time>::infinity();		// Guess there is no solution
 		for (VInterceptors::const_iterator current_interceptor = _problem.interceptors().begin(); current_interceptor != _problem.interceptors().end(); ++current_interceptor)
 		{	// Walk through the interceptors
+			j = current_interceptor->id();
 			needed_time = current_interceptor->computeInterception(interceptor_location[j],*current_mobile,interceptor_time[j],alpha); // Compute interception time for current mobile by current interceptor
 			if (needed_time >= 0 && needed_time < best_time)
 			{  // Current interceptor can catch current mobile earlier
