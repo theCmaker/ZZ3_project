@@ -37,6 +37,7 @@ set ( ZZ3_HEADERS
       sources/problem.hpp
       sources/solution.hpp
       sources/units.hpp
+      sources/tikzifyer.hpp
     )
 
 set ( ZZ3_SOURCES
@@ -48,6 +49,7 @@ set ( ZZ3_SOURCES
       sources/problem.cpp
       sources/solution.cpp
       sources/units.cpp
+      sources/tikzifyer.cpp
     )
 
 set ( ZZ3_HEADERS_TEST
