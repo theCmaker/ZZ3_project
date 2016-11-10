@@ -10,7 +10,8 @@ public:
 	virtual ~Heuristic_sequence();
 
 	void run();
-	
+	void run(const std::vector<unsigned> &);
+
 };
 
 #endif
