@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include "heuristic_fastest.hpp"
+#include "heuristic_sequence.hpp"
 #include "tikzifyer.hpp"
 
 int main(int argc, const char *argv[]){
@@ -16,8 +17,13 @@ int main(int argc, const char *argv[]){
 		Heuristic_fastest h0(p);
 		h0.run();
 
+		Heuristic_sequence h1(p);
+		h1.run();
+
 		tikzify(h0.solution());
+		tikzify(h1.solution());
 		std::cout << h0 << std::endl;
+		std::cout << h1 << std::endl;
 		tikz_output_test_file << tikzify ;
 	}
 	return 0;
