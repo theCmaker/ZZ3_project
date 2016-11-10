@@ -10,12 +10,11 @@ class Depot
 	private:
 		unsigned 					_id;
 		Location					_position;
-		std::vector<Interceptor>	_interceptors;
+		std::vector<const Interceptor*>	_interceptors;
 	
 	public:
 		Depot(unsigned = 0);
 		Depot(Distance, Distance, unsigned = 0);
-		Depot(Location &, Interceptor &, unsigned = 0);
 		Depot(Location &, unsigned = 0);
 		~Depot();
 
@@ -25,6 +24,9 @@ class Depot
 
 		//Setters
 		Depot & position(const Location &);
+
+		//Methods
+		Depot & addInterceptor(const Interceptor &);
 };
 
 std::ostream & operator<< (std::ostream &, const Depot &);

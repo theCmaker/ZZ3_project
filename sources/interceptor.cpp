@@ -1,4 +1,5 @@
 #include "interceptor.hpp"
+#include "depot.hpp"
 #include <cmath>
 
 Interceptor::Interceptor(unsigned id) :
@@ -16,6 +17,12 @@ Interceptor::Interceptor(Location & l, Speed s, unsigned id) :
 Interceptor::Interceptor(Distance x, Distance y, Speed s, unsigned id) :
 	_id(id),
 	_position(x,y),
+	_speed(s)
+{}
+
+Interceptor::Interceptor(const Depot & d, Speed s, unsigned id) :
+	_id(id),
+	_position(d.position()),
 	_speed(s)
 {}
 
@@ -51,13 +58,13 @@ Interceptor & Interceptor::speed(const Speed s)
 
 //Methods
 
-void Interceptor::compute_position(double alpha, Location & pos, Time t) const
+void Interceptor::computePosition(double alpha, Location & pos, Time t) const
 {
 	pos._x = pos._x + t * std::cos(alpha) * _speed;
 	pos._y = pos._y + t * std::sin(alpha) * _speed;
 }
 
-double Interceptor::compute_alpha(double a, double b, double c)
+double Interceptor::computeAlpha(double a, double b, double c)
 {
   double res = 42;
   double pi = M_PI;
@@ -87,7 +94,7 @@ double Interceptor::compute_alpha(double a, double b, double c)
   return res;
 }
 
-Time Interceptor::compute_interception(Location position, const Mobile & m, Time t, double & alpha) const
+Time Interceptor::computeInterception(Location position, const Mobile & m, Time t, double & alpha) const
 {
   //std::cout << __func__ << ": t is " << t << std::endl;
   //std::cout << __func__ << ": interceptor position is " << position << std::endl;
@@ -103,7 +110,7 @@ Time Interceptor::compute_interception(Location position, const Mobile & m, Time
   double a = l0._y-l1._y;
   double b = l1._x-l0._x;
   double c = (a*v0._sx+b*v0._sy)/v1;
-  alpha = Interceptor::compute_alpha(a,b,c); /*Nombre compris entre -Pi et Pi ou Pi à priori vu la résolution de l'équation*/
+  alpha = Interceptor::computeAlpha(a,b,c); /*Nombre compris entre -Pi et Pi ou Pi à priori vu la résolution de l'équation*/
 
   /*Variables liees a l'obtention du temps d'interception*/
   Time t1, t2;
@@ -146,7 +153,7 @@ Time Interceptor::compute_interception(Location position, const Mobile & m, Time
 	  /*Puis la 2eme*/
 	  if (std::isfinite(t2) && t2 >= 0)
 	  {
-		compute_position(alpha,l1,t2);
+		computePosition(alpha,l1,t2);
 		l0 = m.position(t2+t);
 		//std::cout << __func__ << "-B " << l1 << l0 << std::endl;
 		//std::cout << __func__ << "-B " << alpha << std::endl;

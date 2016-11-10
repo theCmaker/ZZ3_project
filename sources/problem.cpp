@@ -10,7 +10,8 @@ Problem::Problem(const char * filename)
 {
 	unsigned	nb_repos = 0,
 				nb_mobiles = 0,
-				nb_interceptors = 0;
+				nb_interceptors = 0,
+				d = 0;
 	Distance	x = 0,
 				y = 0;
 	Speed		dx = 0,
@@ -25,28 +26,29 @@ Problem::Problem(const char * filename)
 			std::cout << "File is empty!" << std::endl;
 		} else {
 			while (std::getline(ifs,buf)) {
-				if (buf == "NB REPOS") {
+				if (buf.compare(0,8,"NB REPOS") == 0) {
 					ifs >> nb_repos;
-				} else if (buf == "NB MOBILES") {
+				} else if (buf.compare(0,10,"NB MOBILES") == 0) {
 					ifs >> nb_mobiles;
-				} else if (buf == "NB INTERCEPTORS") {
+				} else if (buf.compare(0,15,"NB INTERCEPTORS") == 0) {
 					ifs >> nb_interceptors;
-				} else if (buf == "MOBILES") {
+				} else if (buf.compare(0,7,"MOBILES") == 0) {
 					unsigned i = 0;
-					while (i < nb_mobiles && ifs >> x >> y >> dx >> dy && std::getline(ifs,buf)) {
-						_mobiles.push_back(Mobile(x,y,dx,dy,i));
+					while (i < nb_mobiles && ifs >> x >> y >> dx >> dy) {
+						_mobiles.emplace_back(x,y,dx,dy,i);
 						++i;
 					}
-				} else if (buf == "INTERCEPTORS") {
+				} else if (buf.compare(0,12,"INTERCEPTORS") == 0) {
 					unsigned i = 0;
-					while (i < nb_interceptors && ifs >> x >> y >> s && std::getline(ifs,buf)) {
-						_interceptors.push_back(Interceptor(x,y,s,i));
+					while (i < nb_interceptors && ifs >> d >> s) {
+						_interceptors.emplace_back(_depots[d],s,i);
+						_depots[d].addInterceptor(_interceptors.back());
 						++i;
 					}
-				} else if (buf == "REPOS") {
+				} else if (buf.compare(0,5,"REPOS") == 0) {
 					unsigned i = 0;
-					while (i < nb_repos && ifs >> x >> y && std::getline(ifs,buf)) {
-						_depots.push_back(Depot(x,y,i));
+					while (i < nb_repos && ifs >> x >> y ) {
+						_depots.emplace_back(x,y,i);
 						++i;
 					}
 				}

@@ -10,13 +10,6 @@ Depot::Depot(Distance x, Distance y, unsigned id) :
 	_position(x,y)
 {}
 
-Depot::Depot(Location & l, Interceptor & i, unsigned id) :
-	_id(id),
-	_position(l)
-{
-	_interceptors.push_back(i);
-}
-
 Depot::Depot(Location & l, unsigned id) :
 	_id(id),
 	_position(l)
@@ -37,6 +30,11 @@ const Location & Depot::position() const
 Depot & Depot::position(const Location & l)
 {
 	_position = l;
+	return *this;
+}
+
+Depot & Depot::addInterceptor(const Interceptor & i) {
+	_interceptors.push_back(&i);
 	return *this;
 }
 

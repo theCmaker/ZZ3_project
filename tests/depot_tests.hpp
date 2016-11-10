@@ -29,23 +29,6 @@ TEST (DepotTest, ConstructorDistance)
 }
 
 //----------------------------------------------------------------------------3
-TEST (DepotTest, ConstructorLocInter)
-{
-	Location l;
-	l._x = 1.;
-	l._y = 1.;
-	
-	Interceptor i;
-	
-	Depot d(l,i);
-	
-	EXPECT_DOUBLE_EQ(d.position()._x, l._x);
-	EXPECT_DOUBLE_EQ(d.position()._y, l._y);
-	
-	// + tester le vecteur _interceptors
-}
-
-//----------------------------------------------------------------------------4
 TEST (DepotTest, ConstructorLocation)
 {
 	Location l;

@@ -59,7 +59,7 @@ void Heuristic_fastest::run()
 				while (j < _problem.nbInterceptors())
 				{	// Walk through the interceptors
 					current_interceptor = &(_problem.interceptors()[j]);	// Define the interceptor candidate
-					needed_time = current_interceptor->compute_interception(interceptor_location[j],*current_mobile,interceptor_time[j],alpha); // Compute interception time for current mobile by current interceptor
+					needed_time = current_interceptor->computeInterception(interceptor_location[j],*current_mobile,interceptor_time[j],alpha); // Compute interception time for current mobile by current interceptor
 					if (needed_time >= 0 && needed_time < best_time)
 					{  // Current mobile is catchable before best mobile
 						best_time = needed_time;				// Backup best time

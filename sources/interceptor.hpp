@@ -5,6 +5,8 @@
 #include "mobile.hpp"
 #include <iostream>
 
+class Depot;
+
 class Interceptor
 {
 	private:
@@ -12,29 +14,30 @@ class Interceptor
 		Location	_position;
 		Speed		_speed;
 
-		static double compute_alpha(double, double, double);
+		static double computeAlpha(double, double, double);
 
 
 	public:
 		Interceptor(unsigned = 0);
 		Interceptor(Location &, Speed, unsigned = 0);
 		Interceptor(Distance, Distance, Speed, unsigned = 0);
+		Interceptor(const Depot &, Speed, unsigned = 0);
 		~Interceptor();
 
 		// Getters
-		const unsigned & id() const;
-		const Location &	position() const;
-			  Speed			speed() const;
+		const unsigned & id() 		const;
+		const Location & position() const;
+			  Speed		 speed() 	const;
 
 
 		// Setters
-		Interceptor &		position(const Location &);
-		Interceptor &		speed(const Speed);
+		Interceptor &	position(const Location &);
+		Interceptor &	speed(const Speed);
 
 
 		// Methods
-		void compute_position(double, Location &, Time) const;
-		Time compute_interception(Location, const Mobile &, Time, double &) const;
+		void computePosition(double, Location &, Time) const;
+		Time computeInterception(Location, const Mobile &, Time, double &) const;
 
 };
 

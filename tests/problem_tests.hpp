@@ -46,10 +46,9 @@ TEST (ProblemTest, ConstructorFile)
 	EXPECT_EQ(p.mobiles()[4].direction(), Direction(-0.5,0.5));
 	
 	// depots
-	EXPECT_EQ(p.nbDepots(), 2u);
+	EXPECT_EQ(p.nbDepots(), 1u);
 	
 	EXPECT_EQ(p.depots()[0].position(), Location(0.,0.));
-	EXPECT_EQ(p.depots()[1].position(), Location(3.,4.));
 
 }
 
@@ -83,7 +82,7 @@ TEST (ProblemTest, ConstructorFile2)
 	EXPECT_EQ(p.nbDepots(), 2u);
 	
 	EXPECT_EQ(p.depots()[0].position(), Location(0.,0.));
-	EXPECT_EQ(p.depots()[1].position(), Location(3.,4.));
+	EXPECT_EQ(p.depots()[1].position(), Location(1.,1.));
 	
 }
 
