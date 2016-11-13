@@ -32,6 +32,7 @@ set ( ZZ3_HEADERS
       sources/depot.hpp
       sources/heuristic.hpp
       sources/heuristic_fastest.hpp
+      sources/heuristic_sequence.hpp
       sources/interceptor.hpp
       sources/mobile.hpp
       sources/problem.hpp
@@ -44,6 +45,7 @@ set ( ZZ3_SOURCES
       sources/depot.cpp
       sources/heuristic.cpp
       sources/heuristic_fastest.cpp
+      sources/heuristic_sequence.cpp
       sources/interceptor.cpp
       sources/mobile.cpp
       sources/problem.cpp
