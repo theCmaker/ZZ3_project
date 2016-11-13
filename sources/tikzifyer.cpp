@@ -121,6 +121,8 @@ void Tikzifyer::operator() (const Solution & s)
 }
 
 std::ostream & operator<< (std::ostream & o, const Tikzifyer & t) {
+	std::string color_options;
+	bool 		caught_flag;
 	int xmin = int(floor(t.xmin())),
 		xmax = int(ceil(t.xmax())),
 		ymin = int(floor(t.ymin())),
@@ -145,12 +147,19 @@ std::ostream & operator<< (std::ostream & o, const Tikzifyer & t) {
 	// Mobiles
 	for (VMobiles::const_iterator mobile = t.mobiles().begin(); mobile != t.mobiles().end(); ++mobile)
 	{
-		//TODO: if the mobile is never caught, change the color
-		o << R"(\node[mobile,anchor=center] (M)" << mobile->id() << ") at " << mobile->position() << R"( {\mobile};)" << std::endl; // Symbol
-		o << R"(\node[mobile] at (M)" << mobile->id() << ".south east) {$M_" << mobile->id() << "$};" << std::endl; // Label
+		// Compute the pen color for drawing the mobile
+		caught_flag = false;
+		for (auto s : t.solutions())
+		{
+			caught_flag = caught_flag || s->is_caught(*mobile);
+		}
+		color_options = (caught_flag ? "" : ",color=red");
+
+		o << R"(\node[mobile,anchor=center)" << color_options << "] (M" << mobile->id() << ") at " << mobile->position() << R"( {\mobile};)" << std::endl; // Symbol
+		o << R"(\node[mobile)" << color_options <<"] at (M" << mobile->id() << ".south east) {$M_" << mobile->id() << "$};" << std::endl; // Label
 		if (mobile->speed() > 0.)
 		{
-		  o << R"(\draw[speed] (M)" << mobile->id() << ".center) -- ($ (M" << mobile->id() << ".center) + " << mobile->direction() << " $);" << std::endl; // Arrow
+		  o << R"(\draw[speed)" << color_options << "] (M" << mobile->id() << ".center) -- ($ (M" << mobile->id() << ".center) + " << mobile->direction() << " $);" << std::endl; // Arrow
 		}
 	}
 
@@ -179,7 +188,7 @@ std::ostream & operator<< (std::ostream & o, const Tikzifyer & t) {
 			// End date
 			if (! solution->isEmpty(*interceptor))
 			{
-				o << R"(\draw[interceptor] )" << interceptor_coords << " node[anchor=" << ((interceptor_coords._y - 1 < ymin)?"south":"north") << " " 
+				o << R"(\draw[)" << Tikzifyer::style(solution_index) << "]" << interceptor_coords << " node[anchor=" << ((interceptor_coords._y - 1 < ymin)?"south":"north") << " " 
 					<< ((interceptor_coords._x - 3 < xmin)?"west":"east") <<"] {$t_{" << interceptor->id() << "}=" 
 					<< solution->last_interception_time(*interceptor) << "$};" << std::endl;
 			}
