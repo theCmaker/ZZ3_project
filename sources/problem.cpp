@@ -28,10 +28,13 @@ Problem::Problem(const char * filename)
 			while (std::getline(ifs,buf)) {
 				if (buf.compare(0,8,"NB REPOS") == 0) {
 					ifs >> nb_repos;
+					_depots.reserve(nb_repos);
 				} else if (buf.compare(0,10,"NB MOBILES") == 0) {
 					ifs >> nb_mobiles;
+					_mobiles.reserve(nb_mobiles);
 				} else if (buf.compare(0,15,"NB INTERCEPTORS") == 0) {
 					ifs >> nb_interceptors;
+					_interceptors.reserve(nb_interceptors);
 				} else if (buf.compare(0,7,"MOBILES") == 0) {
 					unsigned i = 0;
 					while (i < nb_mobiles && ifs >> x >> y >> dx >> dy) {

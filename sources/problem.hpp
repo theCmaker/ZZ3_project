@@ -16,7 +16,7 @@ class Problem
 	private:
 		VInterceptors	_interceptors;
 		VMobiles		_mobiles;
-		VDepots		_depots;
+		VDepots			_depots;
 	public:
 		Problem();
 		Problem(const char *);
