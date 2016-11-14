@@ -121,8 +121,8 @@ void Tikzifyer::operator() (const Solution & s)
 }
 
 std::ostream & operator<< (std::ostream & o, const Tikzifyer & t) {
-	std::string color_options;
-	bool 		caught_flag;
+	std::string	color_options;
+	bool		caught_flag;
 	int xmin = int(floor(t.xmin())),
 		xmax = int(ceil(t.xmax())),
 		ymin = int(floor(t.ymin())),
@@ -137,11 +137,17 @@ std::ostream & operator<< (std::ostream & o, const Tikzifyer & t) {
 	o << R"(\foreach \y in {)" << ymin << ",...," << ymax << "}" << std::endl << R"(\draw[color=Gray] (1pt,\y) -- (-3pt,\y) node[anchor=east] {\y};)" << std::endl;	// Ordinates labels
 
 	// Interceptors
-	for (VInterceptors::const_iterator interceptor = t.interceptors().begin(); interceptor != t.interceptors().end(); ++interceptor)
+	for (auto depot = t.problem().depots().begin(); depot != t.problem().depots().end(); ++depot)
 	{
-		o << R"(\node[interceptor] (I)" << interceptor->id() << ") at " << interceptor->position() << R"( {\interceptor};)" << std::endl; 	// Symbol
-		o << R"(\node[interceptor] at (I)" << interceptor->id() << ".south east) {$I_" << interceptor->id() << "$};" << std::endl; 		// Labels
-		//TODO: Define label position from the number of interceptors on the repo
+		int interlabel_angle = 360 / depot->interceptors().size();	// Angle between two consecutive labels
+		double label_distance = std::max(0.4,std::min(1.,depot->interceptors().size()*0.05));	// Label distance to the symbol, in [0.4,1]
+		int label_angle = 315;	// -45 degrees, default angle
+		for (auto interceptor : depot->interceptors())
+		{
+			o << R"(\node[interceptor] (I)" << interceptor->id() << ") at " << interceptor->position() << R"( {\interceptor};)" << std::endl;	// Symbol
+			o << R"(\node[interceptor] at ($ (I)" << interceptor->id() << ") + (" << label_angle << ":" << label_distance << ") $) {$I_" << interceptor->id() << "$};" << std::endl;		// Labels
+			label_angle += interlabel_angle;
+		}
 	}
 
 	// Mobiles
@@ -156,7 +162,7 @@ std::ostream & operator<< (std::ostream & o, const Tikzifyer & t) {
 		color_options = (caught_flag ? "" : ",color=red");
 
 		o << R"(\node[mobile,anchor=center)" << color_options << "] (M" << mobile->id() << ") at " << mobile->position() << R"( {\mobile};)" << std::endl; // Symbol
-		o << R"(\node[mobile)" << color_options <<"] at (M" << mobile->id() << ".south east) {$M_" << mobile->id() << "$};" << std::endl; // Label
+		o << R"(\node[mobile)" << color_options <<"] at (M" << mobile->id() << ".south east) {$M_{" << mobile->id() << "}$};" << std::endl; // Label
 		if (mobile->speed() > 0.)
 		{
 		  o << R"(\draw[speed)" << color_options << "] (M" << mobile->id() << ".center) -- ($ (M" << mobile->id() << ".center) + " << mobile->direction() << " $);" << std::endl; // Arrow
@@ -182,14 +188,13 @@ std::ostream & operator<< (std::ostream & o, const Tikzifyer & t) {
 				}
 				o << R"(\draw[)" << Tikzifyer::style(solution_index) << "] " << interceptor_coords << " -- " << interception_coords << ';' << std::endl;	// Draw the interceptor path
 				o << R"(\node[interceptor] at )" << interception_coords << R"( {\mobile};)" << std::endl;	// Mark the interception place
-				//o << R"(\node[caught] at (M)" << step->_mobile.id() << R"() {\mobile};)" << std::endl; 		// Update mobile state
 				interceptor_coords = interception_coords; // Update interceptor's position
 			}
 			// End date
 			if (! solution->isEmpty(*interceptor))
 			{
-				o << R"(\draw[)" << Tikzifyer::style(solution_index) << "]" << interceptor_coords << " node[anchor=" << ((interceptor_coords._y - 1 < ymin)?"south":"north") << " " 
-					<< ((interceptor_coords._x - 3 < xmin)?"west":"east") <<"] {$t_{" << interceptor->id() << "}=" 
+				o << R"(\draw[)" << Tikzifyer::style(solution_index) << "]" << interceptor_coords << " node[anchor=" << ((interceptor_coords._y - 1 < ymin)?"south":"north") << " "
+					<< ((interceptor_coords._x - 3 < xmin)?"west":"east") <<"] {$t_{" << interceptor->id() << "}="
 					<< solution->last_interception_time(*interceptor) << "$};" << std::endl;
 			}
 		}

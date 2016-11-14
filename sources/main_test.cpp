@@ -6,8 +6,8 @@
 
 int main(int argc, const char *argv[]){
 	if (argc > 1) {
-		Tikzifyer::addStyle(",color=Green");
-		Tikzifyer::addStyle(",color=OrangeRed");
+		Tikzifyer::addStyle("thick,color=Green");
+		Tikzifyer::addStyle("thick,color=OrangeRed");
 		Tikzifyer tikzify;
 		std::ofstream tikz_output_test_file("../tests/tikz-content.tex");
 
