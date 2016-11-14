@@ -32,7 +32,6 @@ void Solution::append(unsigned interceptor_index, unsigned mobile_index, const T
 		_first = interceptor_index;
 		_last = interceptor_index;
 	} else if (inter_sequence->_first == -1) {
-		inter_sequence->_next = -1;
 		_interceptors[(unsigned) _last]._next = interceptor_index;
 		_last = interceptor_index;
 	}
@@ -42,7 +41,7 @@ void Solution::append(unsigned interceptor_index, unsigned mobile_index, const T
 	} else { //Cas classique
 		_sequence[(unsigned) inter_sequence->_last]._next = mobile_index;
 	}
-	_sequence[mobile_index]._prev = _last;
+	_sequence[mobile_index]._prev = inter_sequence->_last;
 	_sequence[mobile_index]._next = -1;
 	inter_sequence->_last = mobile_index;
 	//Interception info
@@ -83,8 +82,6 @@ const Solution::interceptor_t Solution::operator[] (unsigned i) const
 bool Solution::is_caught(const Mobile & m) const
 {
 	return (_sequence[m.id()]._date >= 0.);
-	// old solution working with only one interceptor....
-	// i != _solution[current_interceptor->id()]._first && _solution.mobile(i)._next == -1 && _solution.mobile(i)._prev == -1
 }
 
 Location Solution::catch_position (const Mobile & m) const
