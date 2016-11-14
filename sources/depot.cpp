@@ -27,6 +27,11 @@ const Location & Depot::position() const
 	return _position;
 }
 
+const Depot::VInterceptorPtrs & Depot::interceptors() const
+{
+	return _interceptors;
+}
+
 Depot & Depot::position(const Location & l)
 {
 	_position = l;
