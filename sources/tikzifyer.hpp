@@ -41,12 +41,6 @@ private:
 
 	// Line styles
 	static std::vector<std::string> _styles;
-	struct Initializer {
-		Initializer() {
-			Tikzifyer::addStyle("interceptor");
-		}
-	};
-	static Initializer __init;
 };
 
 std::ostream & operator<< (std::ostream &, const Tikzifyer &);

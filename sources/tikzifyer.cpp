@@ -2,8 +2,7 @@
 #include <limits>
 #include <cmath>
 
-std::vector<std::string> Tikzifyer::_styles;
-Tikzifyer::Initializer Tikzifyer::__init;
+std::vector<std::string> Tikzifyer::_styles({"interceptor"});
 
 Tikzifyer::Tikzifyer() :
 	_top_left(std::numeric_limits<Distance>::infinity(), -std::numeric_limits<Distance>::infinity()),
