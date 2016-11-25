@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <chrono>
 #include "heuristic_fastest.hpp"
 #include "heuristic_sequence.hpp"
 #include "tikzifyer.hpp"
@@ -15,9 +16,12 @@ int main(int argc, const char *argv[]){
 		std::cout << p << std::endl;
 
 		tikzify(p);
-
 		Heuristic_fastest h0(p);
+		auto start = std::chrono::steady_clock::now();
 		h0.run();
+		auto end = std::chrono::steady_clock::now();
+		std::chrono::duration<double,std::micro> diff = end-start;
+		std::cout << "Computing time: " << diff.count() << "µs" << std::endl;
 
 		Heuristic_sequence h1a(p);
 		h1a.run();
