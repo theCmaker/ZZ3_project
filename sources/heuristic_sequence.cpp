@@ -12,10 +12,8 @@ Heuristic_sequence::~Heuristic_sequence() {}
 
 void Heuristic_sequence::run()
 {
-	unsigned n = 0;
-	std::vector<unsigned> vec;
-	vec.reserve(_problem.nbMobiles());
-	std::generate_n(std::back_inserter(vec),_problem.nbMobiles(),[n]()mutable { return n++; });
+	std::vector<unsigned> vec(_problem.nbMobiles());
+	std::iota(vec.begin(),vec.end(),0u);
 	run(vec);
 }
 
