@@ -7,22 +7,25 @@
 class Solution
 {
 public:
-	typedef struct _solution
+	struct MobileNode
 	{
-		Time			_date;
-		const Mobile  & _mobile;
+		//Metadata
+		Time				_date;
+		const Mobile	  & _mobile;
 		const Interceptor * _interceptor;
 
-		//Mobiles
+		//Mobiles chained list
 		int _next;
 		int _prev;
 
-		_solution(const Mobile & m, const Time d, const Interceptor * i) : _date(d), _mobile(m), _interceptor(i), _next(-1), _prev(-1)  {};
-		_solution(const Mobile & m) : _date(-1.), _mobile(m), _interceptor(nullptr), _next(-1), _prev(-1)  {};
+		//Constructors
+		MobileNode(const Mobile &, const Time, const Interceptor *);
+		MobileNode(const Mobile &);
+	};
 
-	} solution_t;
-
-	typedef struct _interceptorseq {
+	struct InterceptorNode
+	{
+		//Metadata
 		const Interceptor & _interceptor;
 
 		//Mobiles
@@ -32,12 +35,26 @@ public:
 		//Interceptors
 		int _next;
 
-		_interceptorseq(const Interceptor & i) : _interceptor(i), _first(-1), _last(-1), _next(-1) {};
-	} interceptor_t;
+		//Constructors
+		InterceptorNode(const Interceptor &);
+	};
+
+	class iterator
+	{
+	private:
+		const MobileNode * _solution;
+	public:
+		iterator(const MobileNode *);
+		~iterator();
+		MobileNode operator* ();
+		const MobileNode * operator-> ();
+		iterator & operator++ ();
+		bool operator!= (iterator);
+	};
 private:
-	const Problem & _problem;
-	std::vector<solution_t>		_sequence;
-	std::vector<interceptor_t>  _interceptors;
+	const Problem				  & _problem;
+	std::vector<MobileNode>			_sequence;
+	std::vector<InterceptorNode>	_interceptors;
 
 	//Interceptors
 	int _first;
@@ -55,29 +72,14 @@ public:
 	int first() const;
 	int last() const;
 
-	interceptor_t operator[] (unsigned);
-	const interceptor_t operator[] (unsigned) const;
+	InterceptorNode operator[] (unsigned);
+	const InterceptorNode operator[] (unsigned) const;
 
 	bool is_caught (const Mobile &) const;
 	Location catch_position (const Mobile &) const;
 
-	solution_t mobile(int i);
-	const solution_t mobile(int i) const;
-
-	class iterator
-	{
-	private:
-		const Solution & _solution;
-		int _position;
-	public:
-		iterator(const Solution &, const Interceptor &);
-		iterator(const Solution &, const Interceptor &, bool);
-		~iterator();
-		solution_t operator* ();
-		const solution_t * operator-> ();
-		iterator & operator++ ();
-		bool operator!= (Solution::iterator);
-	};
+	MobileNode mobile(unsigned i);
+	const MobileNode mobile(unsigned i) const;
 
 	Solution::iterator begin(const Interceptor &) const;
 	Solution::iterator end(const Interceptor &) const;
