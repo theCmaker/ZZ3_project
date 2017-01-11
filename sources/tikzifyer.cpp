@@ -138,14 +138,17 @@ std::ostream & operator<< (std::ostream & o, const Tikzifyer & t) {
 	// Interceptors
 	for (auto depot = t.problem().depots().begin(); depot != t.problem().depots().end(); ++depot)
 	{
-		int interlabel_angle = 360 / depot->interceptors().size();	// Angle between two consecutive labels
-		double label_distance = std::max(0.4,std::min(1.,depot->interceptors().size()*0.05));	// Label distance to the symbol, in [0.4,1]
-		int label_angle = 315;	// -45 degrees, default angle
-		for (auto interceptor : depot->interceptors())
-		{
-			o << R"(\node[interceptor] (I)" << interceptor->id() << ") at " << interceptor->position() << R"( {\interceptor};)" << std::endl;	// Symbol
-			o << R"(\node[interceptor] at ($ (I)" << interceptor->id() << ") + (" << label_angle << ":" << label_distance << ") $) {$I_" << interceptor->id() << "$};" << std::endl;		// Labels
-			label_angle += interlabel_angle;
+		o << R"(\node[interceptor] (D)" << depot->id() << ") at " << depot->position() << R"( {\interceptor};)" << std::endl;	// Symbol
+		if (depot->interceptors().size()) {
+			int interlabel_angle = 360 / depot->interceptors().size();	// Angle between two consecutive labels
+			double label_distance = std::max(0.4,std::min(1.,depot->interceptors().size()*0.05));	// Label distance to the symbol, in [0.4,1]
+			int label_angle = 315;	// -45 degrees, default angle
+			for (auto interceptor : depot->interceptors())
+			{
+				o << R"(\node (I)" << interceptor->id() << ") at (D" << depot->id() << R"() {};)" << std::endl;	// Anchor
+				o << R"(\node[interceptor] at ($ (I)" << interceptor->id() << ") + (" << label_angle << ":" << label_distance << ") $) {$I_" << interceptor->id() << "$};" << std::endl;		// Labels
+				label_angle += interlabel_angle;
+			}
 		}
 	}
 
