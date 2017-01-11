@@ -5,25 +5,29 @@
 Interceptor::Interceptor(unsigned id) :
 	_id(id),
 	_position(0.,0.),
-	_speed(0.)
+	_speed(0.),
+	_depot(nullptr)
 {}
 
 Interceptor::Interceptor(Location & l, Speed s, unsigned id) :
 	_id(id),
 	_position(l),
-	_speed(s)
+	_speed(s),
+	_depot(nullptr)
 {}
 
 Interceptor::Interceptor(Distance x, Distance y, Speed s, unsigned id) :
 	_id(id),
 	_position(x,y),
-	_speed(s)
+	_speed(s),
+	_depot(nullptr)
 {}
 
 Interceptor::Interceptor(const Depot & d, Speed s, unsigned id) :
 	_id(id),
 	_position(d.position()),
-	_speed(s)
+	_speed(s),
+	_depot(&d)
 {}
 
 Interceptor::~Interceptor() {}
@@ -41,6 +45,11 @@ const Location & Interceptor::position() const
 Speed Interceptor::speed() const
 {
 	return _speed;
+}
+
+const Depot * Interceptor::depot() const
+{
+	return _depot;
 }
 
 // Setters
@@ -66,109 +75,109 @@ void Interceptor::computePosition(double alpha, Location & pos, Time t) const
 
 double Interceptor::computeAlpha(double a, double b, double c)
 {
-  double res = 42;
-  double pi = M_PI;
-  double a2 = a * a;
-  double b2 = b * b;
-  double c2 = c * c;
+	double res = 42;
+	double pi = M_PI;
+	double a2 = a * a;
+	double b2 = b * b;
+	double c2 = c * c;
 
-  if ((c+a)== 0)
-  {
-	res = pi;
-	if ( b != 0 && (a2+b2) != 0)
+	if ((c+a)== 0)
 	{
-	  res = -2*atan(a/b);
+		res = pi;
+		if ( b != 0 && (a2+b2) != 0)
+		{
+			res = -2*atan(a/b);
+		}
 	}
-  }
-  else
-  {
-	if ((-b*sqrt(a2+b2-c2)+a2+a*c+b2) != 0)
+	else
 	{
-	  res = 2*atan((b-sqrt(a2+b2-c2))/(a+c));
+		if ((-b*sqrt(a2+b2-c2)+a2+a*c+b2) != 0)
+		{
+			res = 2*atan((b-sqrt(a2+b2-c2))/(a+c));
+		}
+		if ((b*sqrt(a2+b2-c2)+a2+a*c+b2) != 0)
+		{
+			res = 2*atan((sqrt(a2+b2-c2)+b)/(a+c));
+		}
 	}
-	if ((b*sqrt(a2+b2-c2)+a2+a*c+b2) != 0)
-	{
-	  res = 2*atan((sqrt(a2+b2-c2)+b)/(a+c));
-	}
-  }
-  return res;
+	return res;
 }
 
 Time Interceptor::computeInterception(Location position, const Mobile & m, Time t, double & alpha) const
 {
-  //std::cout << __func__ << ": t is " << t << std::endl;
-  //std::cout << __func__ << ": interceptor position is " << position << std::endl;
-  /*Variables liees a l'intercepteur */
-  Speed v1 = _speed;
-  Location l1 = position;
+	//std::cout << __func__ << ": t is " << t << std::endl;
+	//std::cout << __func__ << ": interceptor position is " << position << std::endl;
+	/*Variables liees a l'intercepteur */
+	Speed v1 = _speed;
+	Location l1 = position;
 
-  /*Variables liees au mobile traite*/
-  Direction v0 = m.direction();
-  Location l0 = m.position(t);
+	/*Variables liees au mobile traite*/
+	Direction v0 = m.direction();
+	Location l0 = m.position(t);
 
-  /*Variable liees a l'obtention de l'angle alpha */
-  double a = l0._y-l1._y;
-  double b = l1._x-l0._x;
-  double c = (a*v0._sx+b*v0._sy)/v1;
-  alpha = Interceptor::computeAlpha(a,b,c); /*Nombre compris entre -Pi et Pi ou Pi à priori vu la résolution de l'équation*/
+	/*Variable liees a l'obtention de l'angle alpha */
+	double a = l0._y-l1._y;
+	double b = l1._x-l0._x;
+	double c = (a*v0._sx+b*v0._sy)/v1;
+	alpha = Interceptor::computeAlpha(a,b,c); /*Nombre compris entre -Pi et Pi ou Pi à priori vu la résolution de l'équation*/
 
-  /*Variables liees a l'obtention du temps d'interception*/
-  Time t1, t2;
-  Distance epsilon = 0.0001;
-  double tres = -1;
-  //pos_t pos1, pos2, posm; /*Calcul de position pour verifier l'equation*/
-  int ind1 = 0; /*Indicateurs pour savoir si l'interception fonctionne*/
+	/*Variables liees a l'obtention du temps d'interception*/
+	Time t1, t2;
+	Distance epsilon = 0.0001;
+	double tres = -1;
+	//pos_t pos1, pos2, posm; /*Calcul de position pour verifier l'equation*/
+	int ind1 = 0; /*Indicateurs pour savoir si l'interception fonctionne*/
 
-  /* Suggestion: tester si les positions ne sont pas egales avant de calculer un angle.
+	/* Suggestion: tester si les positions ne sont pas egales avant de calculer un angle.
   c'est rare mais ca peut arriver, notamment en faisant des tests sans faire attention
   (mobiles qui convergent) */
-  if (l0.equals(l1,epsilon)) {
+	if (l0.equals(l1,epsilon)) {
 
-	tres = 0.; /* temps d'interception nul, on est déjà au bon endroit */
+		tres = 0.; /* temps d'interception nul, on est déjà au bon endroit */
 
-  } else {
-	if (alpha != 42) /* Code d'erreur (manque d'inspiration) */
-	{
-	  t1 =  -b/(-v0._sx+v1*cos(alpha));
-	  t2 =  a/(-v0._sy+v1*sin(alpha));
-	  // AFFICHER(t1);
-	  // AFFICHER(t2);
-
-	  /*Pour choisir la bonne date, il suffit de prendre celle qui marche et si les deux fonctionnent, on prend la date la plus faible*/
-	  //std::cout << "t1:" << t1 << " t2:" << t2 << std::endl;
-	  /* On gere d'abord la premiere date*/
-	  if (std::isfinite(t1) && t1 >= 0)
-	  {
-		//compute_position(alpha,l1,t1);
-		//l0 = m.position(t1+t);
-		//std::cout << __func__ << "-A " << l1 << l0 << std::endl;
-		//std::cout << __func__ << "-A " << alpha << std::endl;
-		if (l0.equals(l1,epsilon)) /*Fonction d'egalite de deux position ?*/
+	} else {
+		if (alpha != 42) /* Code d'erreur (manque d'inspiration) */
 		{
-			tres = t1;
-			ind1 = 1;
-		}
-	  }
-	  l1 = position;
-	  /*Puis la 2eme*/
-	  if (std::isfinite(t2) && t2 >= 0)
-	  {
-		computePosition(alpha,l1,t2);
-		l0 = m.position(t2+t);
-		//std::cout << __func__ << "-B " << l1 << l0 << std::endl;
-		//std::cout << __func__ << "-B " << alpha << std::endl;
-		if (l0.equals(l1,epsilon)) /*Fonction d'egalite de deux position ?*/
-		{
-			tres = t2;
-			if (ind1 && t2 > t1) /*On regarde si t1 a marche aussi et s'il etait plus faible, on le choisit*/
+			t1 =  -b/(-v0._sx+v1*cos(alpha));
+			t2 =  a/(-v0._sy+v1*sin(alpha));
+			// AFFICHER(t1);
+			// AFFICHER(t2);
+
+			/*Pour choisir la bonne date, il suffit de prendre celle qui marche et si les deux fonctionnent, on prend la date la plus faible*/
+			//std::cout << "t1:" << t1 << " t2:" << t2 << std::endl;
+			/* On gere d'abord la premiere date*/
+			if (std::isfinite(t1) && t1 >= 0)
 			{
-			  tres = t1;
+				//compute_position(alpha,l1,t1);
+				//l0 = m.position(t1+t);
+				//std::cout << __func__ << "-A " << l1 << l0 << std::endl;
+				//std::cout << __func__ << "-A " << alpha << std::endl;
+				if (l0.equals(l1,epsilon)) /*Fonction d'egalite de deux position ?*/
+				{
+					tres = t1;
+					ind1 = 1;
+				}
+			}
+			l1 = position;
+			/*Puis la 2eme*/
+			if (std::isfinite(t2) && t2 >= 0)
+			{
+				computePosition(alpha,l1,t2);
+				l0 = m.position(t2+t);
+				//std::cout << __func__ << "-B " << l1 << l0 << std::endl;
+				//std::cout << __func__ << "-B " << alpha << std::endl;
+				if (l0.equals(l1,epsilon)) /*Fonction d'egalite de deux position ?*/
+				{
+					tres = t2;
+					if (ind1 && t2 > t1) /*On regarde si t1 a marche aussi et s'il etait plus faible, on le choisit*/
+					{
+						tres = t1;
+					}
+				}
 			}
 		}
-	  }
 	}
-  }
-  return tres;
+	return tres;
 }
 
 

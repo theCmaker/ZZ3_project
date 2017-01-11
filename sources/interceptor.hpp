@@ -13,6 +13,7 @@ class Interceptor
 		unsigned	_id;
 		Location	_position;
 		Speed		_speed;
+		const Depot *_depot;
 
 		static double computeAlpha(double, double, double);
 
@@ -26,8 +27,9 @@ class Interceptor
 
 		// Getters
 		const unsigned & id() 		const;
-		const Location & position() const;
-			  Speed		 speed() 	const;
+		const Location & position()	const;
+			  Speed		 speed()	const;
+		const Depot	   * depot()	const;
 
 
 		// Setters
@@ -36,8 +38,8 @@ class Interceptor
 
 
 		// Methods
-		void computePosition(double, Location &, Time) const;
-		Time computeInterception(Location, const Mobile &, Time, double &) const;
+		void computePosition(double, Location &, Time)	const;
+		Time computeInterception(Location, const Mobile &, Time, double &)	const;
 
 };
 
