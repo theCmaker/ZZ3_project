@@ -16,8 +16,10 @@ public:
 	virtual ~Heuristic();
 
 	const Solution & solution() const;
+		  Solution & solution();
 	const Problem & problem() const;
 	const std::string name() const;
+
 
 	virtual void run() = 0;
 };

@@ -9,6 +9,11 @@ const Solution & Heuristic::solution() const
 	return _solution;
 }
 
+Solution & Heuristic::solution()
+{
+	return _solution;
+}
+
 const Problem & Heuristic::problem() const
 {
 	return _problem;
