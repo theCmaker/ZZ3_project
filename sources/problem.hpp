@@ -19,6 +19,7 @@ class Problem
 		VDepots			_depots;
 	public:
 		Problem();
+		Problem(unsigned,unsigned,unsigned,bool=false);
 		Problem(const char *);
 		Problem(Problem &);
 		~Problem();
@@ -31,6 +32,8 @@ class Problem
 		const VMobiles & mobiles() const;
 		const VInterceptors & interceptors() const;
 		const VDepots & depots() const;
+
+		void write(const char *) const;
 };
 
 std::ostream & operator<< (std::ostream &, const Problem &);

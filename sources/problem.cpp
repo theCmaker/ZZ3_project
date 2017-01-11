@@ -2,9 +2,37 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <random>
 
 
 Problem::Problem() {}
+
+Problem::Problem(unsigned nb_interceptors, unsigned nb_mobiles, unsigned nb_depots, bool)
+{
+	static std::mt19937 gen;
+	unsigned depot_index;
+	_interceptors.reserve(nb_interceptors);
+	_mobiles.reserve(nb_mobiles);
+	_depots.reserve(nb_depots);
+	std::uniform_int_distribution<unsigned> depot(0u, nb_depots-1);
+	std::uniform_real_distribution<Distance> position(-10., 10.);
+	std::uniform_real_distribution<Distance> mob_speed(-2., 2.);
+	std::uniform_real_distribution<Distance> inter_speed(2., 5.);
+	for (unsigned i = 0; i < nb_mobiles; ++i)
+	{
+		_mobiles.emplace_back(position(gen),position(gen),mob_speed(gen),mob_speed(gen),i);
+	}
+	for (unsigned i = 0; i < nb_depots; ++i)
+	{
+		_depots.emplace_back(position(gen),position(gen),i);
+	}
+	for (unsigned i = 0; i < nb_interceptors; ++i)
+	{
+		depot_index = depot(gen);
+		_interceptors.emplace_back(_depots[depot_index],inter_speed(gen),i);
+		_depots[depot_index].addInterceptor(_interceptors.back());
+	}
+}
 
 Problem::Problem(const char * filename)
 {
@@ -94,6 +122,32 @@ const VInterceptors & Problem::interceptors() const
 const VDepots & Problem::depots() const
 {
 	return _depots;
+}
+
+void Problem::write(const char * filename) const
+{
+	std::ofstream output(filename);
+	output << "NB REPOS" << std::endl;
+	output << this->nbDepots() << std::endl;
+	output << "REPOS" << std::endl;
+	for (VDepots::const_iterator i = _depots.begin(); i != _depots.end(); ++i)
+	{
+		output << i->position()._x << ' ' << i->position()._y << std::endl;
+	}
+	output << "NB MOBILES" << std::endl;
+	output << this->nbMobiles() << std::endl;
+	output << "MOBILES" << std::endl;
+	for (VMobiles::const_iterator i = _mobiles.begin(); i != _mobiles.end(); ++i)
+	{
+		output << i->position()._x << ' ' << i->position()._y << ' ' <<  i->direction()._sx << ' ' << i->direction()._sy << std::endl;
+	}
+	output << "NB INTERCEPTORS" << std::endl;
+	output << this->nbInterceptors() << std::endl;
+	output << "INTERCEPTORS" << std::endl;
+	for (VInterceptors::const_iterator i = _interceptors.begin(); i != _interceptors.end(); ++i)
+	{
+		output << i->depot()->id() << ' ' << i->speed() << std::endl;
+	}
 }
 
 std::ostream & operator<< (std::ostream & o, const Problem & p) {
