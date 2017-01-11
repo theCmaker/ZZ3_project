@@ -16,12 +16,20 @@ int main(int argc, const char *argv[]){
 		std::cout << p << std::endl;
 
 		tikzify(p);
-		Heuristic_fastest h0(p);
+		Heuristic_fastest<> h0a(p);
+		Heuristic_fastest<SimpleCachePolicy> h0b(p);
+
 		auto start = std::chrono::steady_clock::now();
-		h0.run();
+		h0a.run();
 		auto end = std::chrono::steady_clock::now();
 		std::chrono::duration<double,std::micro> diff = end-start;
-		std::cout << "Computing time: " << diff.count() << "µs" << std::endl;
+		std::cout << "H0 >>> Computing time (without cache): " << diff.count() << "µs" << std::endl;
+
+		start = std::chrono::steady_clock::now();
+		h0b.run();
+		end = std::chrono::steady_clock::now();
+		diff = end-start;
+		std::cout << "H0 >>> Computing time (with cache): " << diff.count() << "µs" << std::endl;
 
 		Heuristic_sequence h1a(p);
 		h1a.run();
@@ -30,10 +38,11 @@ int main(int argc, const char *argv[]){
 		std::vector<unsigned> expected_sequence({2,0,1});
 		h1b.run(expected_sequence);
 
-		tikzify(h0.solution());
+		tikzify(h0b.solution());
 		tikzify(h1a.solution());
 		tikzify(h1b.solution());
-		std::cout << h0 << std::endl;
+		std::cout << h0a << std::endl;
+		std::cout << h0b << std::endl;
 		std::cout << h1a << std::endl;
 		std::cout << h1b << std::endl;
 		tikz_output_test_file << tikzify ;
