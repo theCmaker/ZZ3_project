@@ -91,7 +91,7 @@ void Solution::append(const Interceptor & i, const Mobile & m, const Time & d)
 	append(i.id(), m.id(), d);
 }
 
-Time Solution::last_interception_time() const
+Time Solution::worst_interception_time() const
 {
 	Time worst_duration = 0.;
 	Time duration;
