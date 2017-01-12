@@ -21,7 +21,8 @@ class InsertMove : public Move
 	private:
 		const Mobile & 			_mobile_in;		// mobile to insert
 		int						_mobile_prev;	// insertion of the mobile will be after this one
-		const Interceptor & 	_interceptor;	// interceptor for the wanted route 
+		const Interceptor & 	_interceptor;	// interceptor for the wanted route
+		Time					_interception_date; // time of interception of _mobile_in
 		
 	public:
 		InsertMove(Problem &, const Mobile &, int, const Interceptor &);
