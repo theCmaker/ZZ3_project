@@ -27,6 +27,7 @@ TEST (FastestTest, Test_5m_1i)
 	
 	// mobile 4 ; pos(-2.384821,-0.615179) ; t(2.769642)
 	EXPECT_EQ(s.mobile(1)._next,4);
+	//EXPECT_NEAR(s.mobile(4)._mobile.position(s.mobile(4)._date),Location(-2.384821,-0.615179),1e-6);
 	EXPECT_NEAR(s.mobile(4)._mobile.position(s.mobile(4)._date)._x,-2.384821,1e-6);
 	EXPECT_NEAR(s.mobile(4)._mobile.position(s.mobile(4)._date)._y,-0.615179,1e-6);
 	EXPECT_NEAR(s.mobile(4)._date,2.769642,1e-6);
