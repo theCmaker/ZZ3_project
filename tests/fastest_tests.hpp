@@ -7,7 +7,7 @@
 TEST (FastestTest, Test_5m_1i)
 {
 	Problem p("../examples/test_5m_1i");
-	Heuristic_fastest h0(p);
+	Heuristic_fastest<> h0(p);
 	h0.run();
 	
 	Solution s = h0.solution();
@@ -61,7 +61,7 @@ TEST (FastestTest, Test_5m_2i)
 TEST (FastestTest, Test_6m_1i)
 {
 	Problem p("../examples/test_6m_1i");
-	Heuristic_fastest h0(p);
+	Heuristic_fastest<> h0(p);
 	h0.run();
 	
 	Solution s = h0.solution();
