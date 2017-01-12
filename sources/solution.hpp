@@ -66,6 +66,7 @@ public:
 
 	void append(unsigned, unsigned, const Time &);
 	void append(const Interceptor &, const Mobile &, const Time &);
+	Time last_interception_time() const;
 	Time last_interception_time(int) const;
 	Time last_interception_time(const Interceptor &) const;
 

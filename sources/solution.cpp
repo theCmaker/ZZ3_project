@@ -91,6 +91,19 @@ void Solution::append(const Interceptor & i, const Mobile & m, const Time & d)
 	append(i.id(), m.id(), d);
 }
 
+Time Solution::last_interception_time() const
+{
+	Time worst_duration = 0.;
+	Time duration;
+	for (VInterceptors::const_iterator interceptor = _problem.interceptors().cbegin(); interceptor != _problem.interceptors().cend(); ++interceptor) {
+		duration = last_interception_time(*interceptor);
+		if (worst_duration < duration) {
+			worst_duration = duration;
+		}
+	}
+	return worst_duration;
+}
+
 Time Solution::last_interception_time(int interceptor_index) const
 {
 	return _sequence[(unsigned) _interceptors[(unsigned) interceptor_index]._last]._date;
