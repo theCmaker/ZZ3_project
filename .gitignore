@@ -32,6 +32,8 @@
 *.swp
 *~
 
+#User files
+CMakeLists.txt.user
 
 #TeX temporary files
 *.out 
@@ -42,5 +44,7 @@
 *.aux
 minted-*/*
 
-
-
+#Directories
+build/*
+#Temporary. Will be removed later. Useless to commit the documentation for now.
+doc/*
