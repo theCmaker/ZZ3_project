@@ -238,6 +238,12 @@ public:
 	bool isEmpty(const Interceptor &) const;
 };
 
+/**
+ * @brief Appends to the stream the string representation of the Solution
+ * @param o output stream
+ * @param s solution to be appended to o
+ * @return stream to chain calls
+ */
 std::ostream & operator<< (std::ostream &, const Solution &);
 
 #endif
