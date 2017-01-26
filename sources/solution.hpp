@@ -209,13 +209,13 @@ public:
 	 * @param i mobile index
 	 * @return interception parameters
 	 */
-	MobileNode mobile(unsigned);
+	MobileNode & mobile(unsigned);
 	/**
 	 * @brief Get interception info on a mobile (const).
 	 * @param i mobile index
 	 * @return interception parameters
 	 */
-	const MobileNode mobile(unsigned) const;
+	const MobileNode & mobile(unsigned) const;
 
 	/**
 	 * @brief Get an iterator to the first intercepted mobile of a route.

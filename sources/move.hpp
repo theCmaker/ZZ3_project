@@ -28,7 +28,7 @@ class InsertMove : public Move
 		InsertMove(Problem &, const Mobile &, int, const Interceptor &);
 		virtual ~InsertMove();
 		
-		virtual bool scan(const Solution &);
+		bool scan(const Solution &);
 		virtual void commit(Solution &);
 };
 

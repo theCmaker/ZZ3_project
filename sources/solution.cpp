@@ -134,12 +134,12 @@ Location Solution::catch_position (const Mobile & m) const
 	return m.position(_sequence[m.id()]._date);
 }
 
-Solution::MobileNode Solution::mobile(unsigned i)
+Solution::MobileNode & Solution::mobile(unsigned i)
 {
 	return _sequence[i];
 }
 
-const Solution::MobileNode Solution::mobile(unsigned i) const
+const Solution::MobileNode & Solution::mobile(unsigned i) const
 {
 	return _sequence[i];
 }
