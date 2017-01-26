@@ -91,7 +91,7 @@ void Solution::append(const Interceptor & i, const Mobile & m, const Time & d)
 	append(i.id(), m.id(), d);
 }
 
-Time Solution::worst_interception_time() const
+Time Solution::worstInterceptionTime() const
 {
 	Time worst_duration = 0.;
 	Time duration;
@@ -112,6 +112,42 @@ Time Solution::last_interception_time(int interceptor_index) const
 Time Solution::last_interception_time(const Interceptor & i) const
 {
 	return _sequence[(unsigned) _interceptors[i.id()]._last]._date;
+}
+
+unsigned Solution::bestInterceptionCount() const
+{
+	unsigned best = 0u;
+	unsigned count;
+	for (VInterceptors::const_iterator interceptor = _problem.interceptors().cbegin(); interceptor != _problem.interceptors().cend(); ++interceptor) {
+		count = 0u;
+		for (Solution::iterator mobile = begin(*interceptor);
+			 mobile != end(*interceptor);
+			 ++mobile)
+		{
+			++count;
+		}
+		if (count > best) {
+			best = count;
+		}
+	}
+	return best;
+}
+
+unsigned Solution::totalInterceptionCount() const
+{
+	unsigned count = 0u;
+	for (VInterceptors::const_iterator interceptor = _problem.interceptors().cbegin();
+		 interceptor != _problem.interceptors().cend();
+		 ++interceptor)
+	{
+		for (Solution::iterator mobile = begin(*interceptor);
+			 mobile != end(*interceptor);
+			 ++mobile)
+		{
+			++count;
+		}
+	}
+	return count;
 }
 
 Solution::InterceptorNode Solution::operator[] (unsigned i)

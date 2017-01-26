@@ -77,11 +77,11 @@ bool InsertMove::scan(const Solution & solution)
 		std::cout << "during while" << std::endl;
 	}
 	
-	std::cout << "Worst interception time: " << solution.worst_interception_time() << std::endl;
+	std::cout << "Worst interception time: " << solution.worstInterceptionTime() << std::endl;
 	std::cout << "New interception time: " << interception_time << std::endl;
 									 
 	// compares time of interception between the update route and the worse route (in time)
-	if (!std::isfinite(interception_time) || solution.worst_interception_time() < interception_time)
+	if (!std::isfinite(interception_time) || solution.worstInterceptionTime() < interception_time)
 	{
 		improved = false;
 	}

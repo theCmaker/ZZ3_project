@@ -152,7 +152,7 @@ public:
 	 * @brief Get the last interception date for all routes.
 	 * @return The last interception date for all routes
 	 */
-	Time worst_interception_time() const;
+	Time worstInterceptionTime() const;
 	/**
 	 * @brief Get the last interception date for the given interceptor (route) id.
 	 * @param interceptor_index the route or interceptor id.
@@ -166,6 +166,15 @@ public:
 	 */
 	Time last_interception_time(const Interceptor &) const;
 
+	/**
+	 * @brief Get the highest amount of caught mobiles (by route)
+	 */
+	unsigned bestInterceptionCount() const;
+
+	/**
+	 * @brief Get the number of caught mobiles (all routes)
+	 */
+	unsigned totalInterceptionCount() const;
 	/**
 	 * @brief Get first route index.
 	 * @return First route index (interceptor)
