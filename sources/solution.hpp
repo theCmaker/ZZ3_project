@@ -1,6 +1,6 @@
 /**
  * @file solution.hpp
- * @brief Implementation of a solution. Gears the interceptions.
+ * @brief Implementation of a Solution. Gears the interceptions.
  */
 
 #ifndef __SOLUTION_HPP__

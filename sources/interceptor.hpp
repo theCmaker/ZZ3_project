@@ -1,10 +1,10 @@
 /**
  * @file interceptor.hpp
- * @brief Implementation of an interceptor
+ * @brief Implementation of an Interceptor.
  */
 
-#ifndef __INTERPETOR_HPP__
-#define __INTERPETOR_HPP__
+#ifndef __INTERCEPTOR_HPP__
+#define __INTERCEPTOR_HPP__
 
 #include "units.hpp"
 #include "mobile.hpp"
@@ -12,6 +12,10 @@
 
 class Depot;
 
+/**
+ * @brief Describes an interceptor i.e. a mobile unit with direction change
+ * abilities.
+ */
 class Interceptor
 {
 	private:
@@ -24,7 +28,7 @@ class Interceptor
 		 * @brief Computes the angle to change the direction.
 		 * @return The angle alpha.
 		 */
-		static double computeAlpha(double, double, double);
+		static double computeAlpha(double a, double b, double c);
 
 
 	public:
@@ -110,7 +114,7 @@ class Interceptor
 		 * @param pos Current position. Updated by the method.
 		 * @param t Travelling duration.
 		 */
-		void computePosition(double, Location &, Time)	const;
+		void computePosition(double alpha, Location & pos, Time t)	const;
 		
 		/**
 		 * @brief Computes the date when the mobile is catched.
@@ -125,8 +129,11 @@ class Interceptor
 };
 
 /**
- * @brief operator<< displays the values of an interceptor.
+ * @brief Display the values of an interceptor.
+ * @param o the output stream
+ * @param i the mobile
+ * @return the output stream (chained instructions)
  */
-std::ostream & operator << (std::ostream &, const Interceptor &);
+std::ostream & operator << (std::ostream & o, const Interceptor & i);
 
 #endif

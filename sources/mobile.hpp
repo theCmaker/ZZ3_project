@@ -1,33 +1,91 @@
+/**
+ * @file mobile.hpp
+ * @brief Implementation of a Mobile.
+ */
 #ifndef __MOBILE_H__
 #define __MOBILE_H__
 
 #include "units.hpp"
 #include <iostream>
 
+/**
+ * @brief Describe a mobile i.e. a mobile unit running at  constant speed into a defined direction.
+ */
 class Mobile
 {
 	private:
-		unsigned 	_id;
-		Location	_position;
-		Direction	_direction;
+		unsigned 	_id;		///< The id of the mobile
+		Location	_position;	///< The initial position of a mobile
+		Direction	_direction;	///< The moving direction
 
 	public:
-		Mobile(unsigned = 0);
-		Mobile(Location &, Direction &, unsigned = 0);
-		Mobile(Distance, Distance, Distance, Distance, unsigned = 0);
+		/**
+		 * @brief Constructor.
+		 * @param id Mobile id
+		 */
+		Mobile(unsigned id = 0);
+		/**
+		 * @brief Constructor.
+		 * @param l Mobile initial position
+		 * @param d Mobile direction
+		 * @param id Mobile id
+		 */
+		Mobile(Location & l, Direction & d, unsigned id = 0);
+		/**
+		 * @brief Constructor.
+		 * @param x Initial X position
+		 * @param y Initial Y position
+		 * @param dx X speed
+		 * @param dy Y speed
+		 * @param id Mobile id
+		 */
+		Mobile(Distance x, Distance y, Distance dx, Distance dy, unsigned id = 0);
+		/**
+		 * @brief Destructor.
+		 */
 		~Mobile();
 
 		//Getters
+		/**
+		 * @brief Get the mobile id.
+		 */
 		const unsigned & id() const;
+		/**
+		 * @brief Get the initial position.
+		 */
 		const Location 	& position() const;
-		Location position(Time) const;
+		/**
+		 * @brief Get the mobile position at a defined date.
+		 * @param t Date
+		 */
+		Location position(Time t) const;
+		/**
+		 * @brief Get the mobile direction.
+		 */
 		const Direction & direction() const;
+		/**
+		 * @brief Get the mobile speed.
+		 */
 			  Speed		  speed() const;
 
 		//Setters
-		Mobile & position(const Location &);
-		Mobile & direction(const Direction &);
+		/**
+		 * @brief Define the mobile initial position
+		 * @param p initial position
+		 */
+		Mobile & position(const Location & p);
+		/**
+		 * @brief Define the mobile direction
+		 * @param d direction
+		 */
+		Mobile & direction(const Direction & d);
 };
 
-std::ostream & operator<< (std::ostream &, const Mobile &);
+/**
+ * @brief Display the values of a mobile.
+ * @param o the output stream
+ * @param m the mobile
+ * @return the output stream (chained instructions)
+ */
+std::ostream & operator<< (std::ostream & o, const Mobile & m);
 #endif

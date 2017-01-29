@@ -1,3 +1,7 @@
+/**
+ * @file heuristic_fastest.hpp
+ * @brief Provide a good solution with the lowest interception time.
+ */
 #ifndef __HEURISTIC_FASTEST_HPP__
 #define __HEURISTIC_FASTEST_HPP__
 
@@ -7,11 +11,24 @@
 #include <limits>
 #include <algorithm>
 
+/**
+ *	@brief Fastest heuristic. The mobile to be caught is the one that needs the
+ * shortest time to be intercepted by any interceptor.
+ *
+ * A cache policy can be used to get results faster.
+ */
 template <class CachePolicy = NoCachePolicy>
 class Heuristic_fastest : public Heuristic
 {
 public:
-	Heuristic_fastest(const Problem &);
+	/**
+	 * @brief Constructor.
+	 * @param p Problem data
+	 */
+	Heuristic_fastest(const Problem & p);
+	/**
+	 * @brief Destructor.
+	 */
 	virtual ~Heuristic_fastest();
 
 	void run();
