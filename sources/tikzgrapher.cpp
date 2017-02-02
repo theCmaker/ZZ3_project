@@ -75,7 +75,7 @@ std::ostream &operator<<(std::ostream & o, const TikzGrapher & t)
 			{
 				o << R"(\draw[)" << TikzGrapher::style(route_index) << "]" << position;
 
-				for (Solution::iterator step = solution->begin(*interceptor);
+				for (Solution::const_iterator step = solution->begin(*interceptor);
 					 step != solution->end(*interceptor);
 					 ++step)
 				{

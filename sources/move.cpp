@@ -18,7 +18,7 @@ bool InsertMove::scan(const Solution & solution)
 	Time interception_time = 0;
 	double alpha;
 	// iterator of the first MobileNode of the route (case: insertion ahead)
-	Solution::iterator mobile_it = solution.begin(_interceptor);
+	Solution::const_iterator mobile_it = solution.begin(_interceptor);
 	Location interceptor_position = _interceptor.position();
 	
 	std::cout << "scan init" << std::endl;
@@ -35,7 +35,7 @@ bool InsertMove::scan(const Solution & solution)
 		// increment the iterator to the mobile after _mobile_prev
 		const Solution::MobileNode & mobile_tmp = solution.mobile(_mobile_prev);
 		//std::cout << "next: " << mobile_tmp._next << "prev: " << mobile_tmp._prev << "mobile: " << mobile_tmp._mobile << std::endl;
-		mobile_it = Solution::iterator(&mobile_tmp);	
+		mobile_it = Solution::const_iterator(&mobile_tmp);
 		++mobile_it;
 		//std::cout << "next: " << mobile_it->_next << "prev: " << mobile_it->_prev << "mobile: " << mobile_it->_mobile << std::endl;
 		
@@ -96,7 +96,7 @@ void InsertMove::commit(Solution & solution)
 	// insertion ahead or creation of a route
 	if(_mobile_prev < 0)
 	{
-		// solution.prepend(...) TODO
+		solution.prepend(_interceptor, _mobile_in, _interception_date);
 	}
 	// if insertion at end
 	else if(solution.mobile(_mobile_prev)._next < 0)
@@ -105,6 +105,6 @@ void InsertMove::commit(Solution & solution)
 	}
 	else
 	{
-		// solution.insertAfter(...) TODO
+		solution.insertAfter(_mobile_prev, _interceptor, _mobile_in, _interception_date);
 	}
 }

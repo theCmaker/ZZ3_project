@@ -181,7 +181,7 @@ std::ostream & operator<< (std::ostream & o, const Tikzifyer & t) {
 		for (VInterceptors::const_iterator interceptor = t.interceptors().begin(); interceptor != t.interceptors().end(); ++interceptor)
 		{
 			interceptor_coords = interceptor->position();
-			for (Solution::iterator step = solution->begin(*interceptor); step != solution->end(*interceptor); ++step)
+			for (Solution::const_iterator step = solution->begin(*interceptor); step != solution->end(*interceptor); ++step)
 			{
 				interception_coords = step->_mobile.position(step->_date);
 				if (step->_mobile.speed() > 0.) // Draw the path taken by the mobile

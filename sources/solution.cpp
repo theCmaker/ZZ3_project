@@ -91,6 +91,81 @@ void Solution::append(const Interceptor & i, const Mobile & m, const Time & d)
 	append(i.id(), m.id(), d);
 }
 
+void Solution::prepend(unsigned interceptor_index, unsigned mobile_index, const Time &d)
+{
+	InterceptorNode * inter_sequence = &(_interceptors[interceptor_index]);
+	if (_first == -1)
+	{
+		// Empty list of routes
+		_first = interceptor_index;
+		_last = interceptor_index;
+	} else if (inter_sequence->_first == -1) {
+		// Empty route, add it to the list of non-empty routes.
+		_interceptors[(unsigned) _last]._next = interceptor_index;
+		_last = interceptor_index;
+	}
+	if (inter_sequence->_first == -1)
+	{
+		// Empty route
+		inter_sequence->_last = mobile_index;
+	} else {
+		// Classical case
+		_sequence[(unsigned) inter_sequence->_first]._prev = mobile_index;
+	}
+	_sequence[mobile_index]._prev = -1;
+	_sequence[mobile_index]._next = inter_sequence->_first;
+	inter_sequence->_first = mobile_index;
+	//Interception info
+	_sequence[mobile_index]._date = d;
+	_sequence[mobile_index]._interceptor = &(inter_sequence->_interceptor);
+}
+
+void Solution::prepend(const Interceptor & i, const Mobile & m, const Time & d)
+{
+	prepend(i.id(), m.id(), d);
+}
+
+void Solution::insertAfter(unsigned prev_mobile_index, unsigned interceptor_index, unsigned mobile_index, const Time & d)
+{
+	InterceptorNode * inter_sequence = &(_interceptors[interceptor_index]);
+
+	_sequence[mobile_index]._prev = (int) prev_mobile_index;
+	_sequence[mobile_index]._next = _sequence[prev_mobile_index]._next;
+	_sequence[prev_mobile_index]._next = (int) mobile_index;
+	if (_sequence[mobile_index]._next == -1) {
+		// Current insertion is done at the end of the route
+		inter_sequence->_last = mobile_index;
+	}
+	//Interception info
+	_sequence[mobile_index]._date = d;
+	_sequence[mobile_index]._interceptor = &(inter_sequence->_interceptor);
+}
+
+void Solution::insertAfter(const Mobile & m_prev, const Interceptor & i, const Mobile & m, const Time & d)
+{
+	insertAfter(m_prev.id(), i.id(), m.id(), d);
+}
+
+Time Solution::recomputeFrom(unsigned mobile_index)
+{
+	double alpha;
+	const Interceptor & interceptor = *(_sequence[mobile_index]._interceptor);
+	Solution::iterator itr(&(_sequence[mobile_index]));
+	Time interception_date = itr->_date;
+	Location interceptor_position = itr->_mobile.position(interception_date);
+
+	while (++itr != end(interceptor)) {
+		interception_date += interceptor.computeInterception(interceptor_position, itr->_mobile, interception_date,alpha);
+		itr->_date = interception_date;
+	}
+	return interception_date;
+}
+
+Time Solution::recomputeFrom(const Mobile & m)
+{
+	return recomputeFrom(m.id());
+}
+
 Time Solution::worstInterceptionTime() const
 {
 	Time worst_duration = 0.;
@@ -111,7 +186,11 @@ Time Solution::last_interception_time(int interceptor_index) const
 
 Time Solution::last_interception_time(const Interceptor & i) const
 {
-	return _sequence[(unsigned) _interceptors[i.id()]._last]._date;
+	Time duration = -1.;
+	if (_interceptors[i.id()]._last != -1) {
+		duration = _sequence[(unsigned) _interceptors[i.id()]._last]._date;
+	}
+	return duration;
 }
 
 unsigned Solution::bestInterceptionCount() const
@@ -120,7 +199,7 @@ unsigned Solution::bestInterceptionCount() const
 	unsigned count;
 	for (VInterceptors::const_iterator interceptor = _problem.interceptors().cbegin(); interceptor != _problem.interceptors().cend(); ++interceptor) {
 		count = 0u;
-		for (Solution::iterator mobile = begin(*interceptor);
+		for (Solution::const_iterator mobile = begin(*interceptor);
 			 mobile != end(*interceptor);
 			 ++mobile)
 		{
@@ -140,7 +219,7 @@ unsigned Solution::totalInterceptionCount() const
 		 interceptor != _problem.interceptors().cend();
 		 ++interceptor)
 	{
-		for (Solution::iterator mobile = begin(*interceptor);
+		for (Solution::const_iterator mobile = begin(*interceptor);
 			 mobile != end(*interceptor);
 			 ++mobile)
 		{
@@ -180,37 +259,47 @@ const Solution::MobileNode & Solution::mobile(unsigned i) const
 	return _sequence[i];
 }
 
+Solution::iterator Solution::begin(const Interceptor & i)
+{
+	return Solution::iterator(&(_sequence[0]) + _interceptors[i.id()]._first);
+}
+
+Solution::iterator Solution::end(const Interceptor &)
+{
+	return Solution::iterator(&(_sequence[0]) - 1);
+}
+
 bool Solution::isEmpty(const Interceptor & i) const
 {
 	return (_interceptors[i.id()]._first == -1);
 }
 
-Solution::iterator Solution::begin(const Interceptor & i) const
+Solution::const_iterator Solution::begin(const Interceptor & i) const
 {
-	return Solution::iterator(&(_sequence[0]) + _interceptors[i.id()]._first);
+	return Solution::const_iterator(&(_sequence[0]) + _interceptors[i.id()]._first);
 }
 
-Solution::iterator Solution::end(const Interceptor & i) const
+Solution::const_iterator Solution::end(const Interceptor & i) const
 {
-	return Solution::iterator(&(_sequence[0]) - 1);
+	return Solution::const_iterator(&(_sequence[0]) - 1);
 }
 
 //******************************************************
 // ITERATORS
 //******************************************************
 
-Solution::iterator::iterator(const Solution::MobileNode * s) :
+Solution::iterator::iterator(MobileNode *s) :
 	_solution(s)
 {}
 
 Solution::iterator::~iterator() {}
 
-Solution::MobileNode Solution::iterator::operator* ()
+Solution::MobileNode & Solution::iterator::operator* ()
 {
 	return *_solution;
 }
 
-const Solution::MobileNode * Solution::iterator::operator-> ()
+Solution::MobileNode * Solution::iterator::operator-> ()
 {
 	return _solution;
 }
@@ -222,6 +311,37 @@ Solution::iterator & Solution::iterator::operator++ ()
 }
 
 bool Solution::iterator::operator!= (Solution::iterator itr)
+{
+	return _solution != itr._solution;
+}
+
+//******************************************************
+// CONST ITERATORS
+//******************************************************
+
+Solution::const_iterator::const_iterator(const MobileNode *s) :
+	_solution(s)
+{}
+
+Solution::const_iterator::~const_iterator() {}
+
+const Solution::MobileNode & Solution::const_iterator::operator* () const
+{
+	return *_solution;
+}
+
+const Solution::MobileNode * Solution::const_iterator::operator-> () const
+{
+	return _solution;
+}
+
+Solution::const_iterator & Solution::const_iterator::operator++ ()
+{
+	_solution = _solution - int(_solution->_mobile.id()) + _solution->_next;
+	return *this;
+}
+
+bool Solution::const_iterator::operator!= (Solution::const_iterator itr)
 {
 	return _solution != itr._solution;
 }
