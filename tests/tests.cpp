@@ -7,10 +7,12 @@
 #include "fastest_tests.hpp"
 #include "sequential_tests.hpp"
 #include "insertmove_tests.hpp"
+#include "deletemove_tests.hpp"
+#include "crossmove_tests.hpp"
 
 int main(int argc,char * argv[]) {
  ::testing::InitGoogleTest(&argc,argv);
  //::testing::GTEST_FLAG(filter) = "SequentialTest*:FastestTest*:ProblemTest.ConstructorFile*";
- ::testing::GTEST_FLAG(filter) = "InsertMoveTest*";
+ ::testing::GTEST_FLAG(filter) = "CrossMoveTest*"; //"InsertMoveTest*:DeleteMoveTest*";
  return RUN_ALL_TESTS();
 }

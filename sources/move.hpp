@@ -81,12 +81,15 @@ class InsertMove : public Move
 /**
  * @brief Movement to delete a mobile in a given route.
  */
-class DeleteMove : public Move //TODO not implemented
+class DeleteMove : public Move
 {
 	private:
+		const Mobile & 			_mobile_out;
+		int						_mobile_prev;
+		const Interceptor & 	_interceptor;
 		
 	public:
-		DeleteMove(Problem &);
+		DeleteMove(Problem & p, const Mobile & m_out, int m_prev, const Interceptor & i);
 		virtual ~DeleteMove();
 		
 		virtual bool scan(const Solution &);
@@ -96,28 +99,15 @@ class DeleteMove : public Move //TODO not implemented
 /**
  * @brief Movement to cross two routes.
  */
-class CrossMove : public Move //TODO not implemented
+class CrossMove : public Move
 {
 	private:
+		int _mobile[2];
+		
 		
 	public:
-		CrossMove(Problem &);
+		CrossMove(Problem & p, int m0, int m1);
 		virtual ~CrossMove();
-		
-		virtual bool scan(const Solution &);
-		virtual void commit(Solution &);
-};
-
-/**
- * @brief Movement to replace a mobile by another in a given route.
- */
-class ReplaceMove : public Move //TODO not implemented
-{
-	private:
-		
-	public:
-		ReplaceMove(Problem &);
-		virtual ~ReplaceMove();
 		
 		virtual bool scan(const Solution &);
 		virtual void commit(Solution &);
