@@ -2,6 +2,7 @@
 #include <cmath>
 
 std::vector<std::string> TikzGrapher::_styles({"interceptor"});
+std::vector<std::string> TikzGrapher::_marks({"\\pgfuseplotmark{star}"});
 
 TikzGrapher::TikzGrapher()
 {
@@ -27,6 +28,16 @@ const std::string & TikzGrapher::style(unsigned index)
 void TikzGrapher::addStyle(const std::string & style)
 {
 	TikzGrapher::_styles.push_back(style);
+}
+
+const std::string &TikzGrapher::mark(unsigned index)
+{
+	return TikzGrapher::_marks[index % TikzGrapher::_marks.size()];
+}
+
+void TikzGrapher::addMark(const std::string & mark)
+{
+	TikzGrapher::_marks.push_back(mark);
 }
 
 std::ostream &operator<<(std::ostream & o, const TikzGrapher & t)
@@ -73,7 +84,7 @@ std::ostream &operator<<(std::ostream & o, const TikzGrapher & t)
 					o << " -| " << position;
 
 				}
-				o << ";" << std::endl;
+				o << " node[pos=1.0,mark size=5pt] {" << TikzGrapher::mark(route_index) << "};" << std::endl;
 				position._y -= 1.;
 
 				o << R"(\draw[dashed,)" << TikzGrapher::style(route_index) << "]" << position;

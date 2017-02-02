@@ -48,9 +48,22 @@ public:
 	 */
 	static void addStyle(const std::string & style);
 
+	/**
+	 * @brief Get the marker string for a route / solution.
+	 * @param index route or solution index
+	 * @return point marker string
+	 */
+	static const std::string & mark(unsigned index);
+	/**
+	 * @brief Add a new mark.
+	 * @param mark point marker string
+	 */
+	static void addMark(const std::string & mark);
+
 private:
 	// Line styles
 	static std::vector<std::string> _styles; ///< Line styles (Tikz line style strings)
+	static std::vector<std::string> _marks; ///< Point markers
 };
 
 /**
