@@ -81,12 +81,15 @@ class InsertMove : public Move
 /**
  * @brief Movement to delete a mobile in a given route.
  */
-class DeleteMove : public Move //TODO not implemented
+class DeleteMove : public Move
 {
 	private:
+		const Mobile & 			_mobile_out;
+		int						_mobile_prev;
+		const Interceptor & 	_interceptor;
 		
 	public:
-		DeleteMove(Problem &);
+		DeleteMove(Problem &, const Mobile & m_out, int m_prev, const Interceptor & i);
 		virtual ~DeleteMove();
 		
 		virtual bool scan(const Solution &);

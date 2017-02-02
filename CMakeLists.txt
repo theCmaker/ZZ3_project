@@ -67,6 +67,7 @@ set ( ZZ3_HEADERS_TEST
 	  tests/fastest_tests.hpp
 	  tests/sequential_tests.hpp
 	  tests/insertmove_tests.hpp
+	  tests/deletemove_tests.hpp
     )
 
 set ( ZZ3_SOURCES_TEST
