@@ -157,7 +157,7 @@ bool DeleteMove::scan(const Solution & solution)
 
 void DeleteMove::commit(Solution & solution)
 {
-	//solution.remove(_mobile_out);
+	solution.remove(_mobile_out);
 }
 
 // implementation of CrossMove
