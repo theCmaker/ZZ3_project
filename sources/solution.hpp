@@ -62,6 +62,7 @@ public:
 
 		//Interceptors
 		int _next;		///< Next route (for another interceptor)
+		int _prev;		///< Previous route (for another interceptor)
 
 		//Constructors
 		/**
@@ -223,6 +224,18 @@ public:
 	 * @param d interception date
 	 */
 	void insertAfter(const Mobile & m_prev, const Interceptor & i, const Mobile & m, const Time & d);
+
+	/**
+	 * @brief Remove a mobile from its route.
+	 * @param m mobile to be removed
+	 */
+	void remove(const Mobile & m);
+
+	/**
+	 * @brief Remove a mobile from its route.
+	 * @param mobile_index index of the mobile to be removed
+	 */
+	void remove(unsigned mobile_index);
 
 	/**
 	 * @brief Recompute the interception dates in a route, starting from the given mobile index.
