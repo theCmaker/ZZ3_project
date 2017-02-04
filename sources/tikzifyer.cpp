@@ -112,9 +112,9 @@ void Tikzifyer::operator() (const Solution & s)
 	_solutions.push_back(&s);
 	for (VMobiles::const_iterator mobile = _problem->mobiles().begin(); mobile != _problem->mobiles().end(); mobile++)
 	{
-		if (s.is_caught(*mobile))
+		if (s.isCaught(*mobile))
 		{
-			addToBounds(s.catch_position(*mobile));
+			addToBounds(s.catchPosition(*mobile));
 		}
 	}
 }
@@ -159,7 +159,7 @@ std::ostream & operator<< (std::ostream & o, const Tikzifyer & t) {
 		caught_flag = false;
 		for (auto s : t.solutions())
 		{
-			caught_flag = caught_flag || s->is_caught(*mobile);
+			caught_flag = caught_flag || s->isCaught(*mobile);
 		}
 		color_options = (caught_flag ? "" : ",color=red");
 
@@ -197,7 +197,7 @@ std::ostream & operator<< (std::ostream & o, const Tikzifyer & t) {
 			{
 				o << R"(\draw[)" << Tikzifyer::style(solution_index) << "]" << interceptor_coords << " node[anchor=" << ((interceptor_coords._y - 1 < ymin)?"south":"north") << " "
 					<< ((interceptor_coords._x - 3 < xmin)?"west":"east") <<"] {$t_{" << interceptor->id() << "}="
-					<< solution->last_interception_time(*interceptor) << "$};" << std::endl;
+					<< solution->lastInterceptionTime(*interceptor) << "$};" << std::endl;
 			}
 		}
 		++solution_index;

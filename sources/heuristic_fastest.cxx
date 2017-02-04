@@ -138,7 +138,7 @@ void Heuristic_fastest<CachePolicy>::run()
 			while (i < _problem.nbMobiles())
 			{	// Walk through the mobiles
 				current_mobile = &(_problem.mobiles()[i]); //&(_solution.mobile(i)._mobile);	// Define the mobile candidate
-				if (! _solution.is_caught(*current_mobile))
+				if (! _solution.isCaught(*current_mobile))
 				{	// The mobile has not been caught yet
 					j = 0;
 					while (j < _problem.nbInterceptors())

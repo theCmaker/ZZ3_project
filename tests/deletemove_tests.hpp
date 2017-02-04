@@ -27,8 +27,8 @@ TEST (DeleteMoveTest, Scan_DeletionAtEnd_true)
 	DeleteMove move(p, m, 1, i);
 	resultScan = move.scan(s);
 	
-	std::cout << "Interceptor 0 last time: " << s.last_interception_time(p.interceptors()[0]) << std::endl;
-	std::cout << "Interceptor 1 last time: " << s.last_interception_time(p.interceptors()[1]) << std::endl;
+	std::cout << "Interceptor 0 last time: " << s.lastInterceptionTime(p.interceptors()[0]) << std::endl;
+	std::cout << "Interceptor 1 last time: " << s.lastInterceptionTime(p.interceptors()[1]) << std::endl;
 	
 	EXPECT_TRUE(resultScan);
 }
@@ -73,8 +73,8 @@ TEST (DeleteMoveTest, Scan_DeletionInTheMiddle_true)
 	DeleteMove move(p, m, 0, i);
 	resultScan = move.scan(s);
 	
-	std::cout << "Interceptor 0 last time: " << s.last_interception_time(p.interceptors()[0]) << std::endl;
-	std::cout << "Interceptor 1 last time: " << s.last_interception_time(p.interceptors()[1]) << std::endl;
+	std::cout << "Interceptor 0 last time: " << s.lastInterceptionTime(p.interceptors()[0]) << std::endl;
+	std::cout << "Interceptor 1 last time: " << s.lastInterceptionTime(p.interceptors()[1]) << std::endl;
 	
 	EXPECT_TRUE(resultScan);
 }
@@ -119,8 +119,8 @@ TEST (DeleteMoveTest, Scan_DeletionAhead_true)
 	DeleteMove move(p, m, -1, i);
 	resultScan = move.scan(s);
 	
-	std::cout << "Interceptor 0 last time: " << s.last_interception_time(p.interceptors()[0]) << std::endl;
-	std::cout << "Interceptor 1 last time: " << s.last_interception_time(p.interceptors()[1]) << std::endl;
+	std::cout << "Interceptor 0 last time: " << s.lastInterceptionTime(p.interceptors()[0]) << std::endl;
+	std::cout << "Interceptor 1 last time: " << s.lastInterceptionTime(p.interceptors()[1]) << std::endl;
 	
 	EXPECT_TRUE(resultScan);
 }

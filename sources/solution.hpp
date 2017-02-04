@@ -260,13 +260,13 @@ public:
 	 * @param interceptor_index the route or interceptor id.
 	 * @return last interception date for interceptor id interceptor_index
 	 */
-	Time last_interception_time(int interceptor_index) const;
+	Time lastInterceptionTime(int interceptor_index) const;
 	/**
 	 * @brief Get the last interception date for the given interceptor.
 	 * @param i interceptor
 	 * @return last interception date for interceptor i
 	 */
-	Time last_interception_time(const Interceptor & i) const;
+	Time lastInterceptionTime(const Interceptor & i) const;
 
 	/**
 	 * @brief Get the highest amount of caught mobiles (by route)
@@ -306,14 +306,14 @@ public:
 	 * @param m mobile
 	 * @return true if the given mobile has been intercepted
 	 */
-	bool is_caught (const Mobile &) const;
+	bool isCaught (const Mobile &) const;
 	/**
 	 * @brief Get the interception position of a mobile.
 	 * @param m mobile
 	 * @return interception position
 	 * @warning answer is right if the mobile has been intercepted
 	 */
-	Location catch_position (const Mobile &) const;
+	Location catchPosition (const Mobile &) const;
 
 	/**
 	 * @brief Get interception info on a mobile.

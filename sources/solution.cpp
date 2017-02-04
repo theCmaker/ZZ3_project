@@ -235,7 +235,7 @@ Time Solution::worstInterceptionTime() const
 	Time worst_duration = 0.;
 	Time duration;
 	for (VInterceptors::const_iterator interceptor = _problem.interceptors().cbegin(); interceptor != _problem.interceptors().cend(); ++interceptor) {
-		duration = last_interception_time(*interceptor);
+		duration = lastInterceptionTime(*interceptor);
 		if (worst_duration < duration) {
 			worst_duration = duration;
 		}
@@ -243,12 +243,12 @@ Time Solution::worstInterceptionTime() const
 	return worst_duration;
 }
 
-Time Solution::last_interception_time(int interceptor_index) const
+Time Solution::lastInterceptionTime(int interceptor_index) const
 {
 	return _sequence[(unsigned) _interceptors[(unsigned) interceptor_index]._last]._date;
 }
 
-Time Solution::last_interception_time(const Interceptor & i) const
+Time Solution::lastInterceptionTime(const Interceptor & i) const
 {
 	Time duration = -1.;
 	if (_interceptors[i.id()]._last != -1) {
@@ -303,12 +303,12 @@ const Solution::InterceptorNode Solution::operator[] (unsigned i) const
 	return _interceptors[i];
 }
 
-bool Solution::is_caught(const Mobile & m) const
+bool Solution::isCaught(const Mobile & m) const
 {
 	return (_sequence[m.id()]._date >= 0.);
 }
 
-Location Solution::catch_position (const Mobile & m) const
+Location Solution::catchPosition (const Mobile & m) const
 {
 	return m.position(_sequence[m.id()]._date);
 }

@@ -92,7 +92,7 @@ std::ostream &operator<<(std::ostream & o, const TikzGrapher & t)
 
 				o << " -- " << position << " node[anchor=" << ((position._y - 1 < ymin)?"south":"north") << " "
 						<< ((position._x - 3 < xmin)?"west":"east") <<"] {$t_{" << interceptor->id() << "}="
-						<< solution->last_interception_time(*interceptor) << "$};" << std::endl;
+						<< solution->lastInterceptionTime(*interceptor) << "$};" << std::endl;
 			}
 			++route_index;
 		}

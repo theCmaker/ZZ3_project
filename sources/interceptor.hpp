@@ -65,28 +65,28 @@ class Interceptor
 		Interceptor(const Depot &, Speed, unsigned = 0);
 		
 		/**
-		 *@brief Destructor
+		 * @brief Destructor
 		 */
 		~Interceptor();
 
 		// Getters
 		/**
-		 *@brief Return the id.
+		 * @brief Return the id.
 		 */
 		const unsigned & id() 		const;
 		
 		/**
-		 *@brief Return the position.
+		 * @brief Return the position.
 		 */
 		const Location & position()	const;
 		
 		/**
-		 *@brief Return the velocity.
+		 * @brief Return the velocity.
 		 */
 			  Speed		 speed()	const;
 			  
 		/**
-		 *@brief Return the repository.
+		 * @brief Return the repository.
 		 */
 		const Depot	   * depot()	const;
 

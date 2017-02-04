@@ -203,10 +203,10 @@ bool CrossMove::scan(const Solution & solution)
 	std::cout << "Result Cross0: " << interception_time[0] << std::endl;
 	std::cout << "Result Cross1: " << interception_time[1] << std::endl;
 	
-	std::cout << "Route0: " << solution.last_interception_time(interceptor[0]->id()) << std::endl;
-	std::cout << "Route1: " << solution.last_interception_time(interceptor[1]->id()) << std::endl;
+	std::cout << "Route0: " << solution.lastInterceptionTime(interceptor[0]->id()) << std::endl;
+	std::cout << "Route1: " << solution.lastInterceptionTime(interceptor[1]->id()) << std::endl;
 	
-	improved = std::max(interception_time[0], interception_time[1]) < std::max(solution.last_interception_time(interceptor[0]->id()), solution.last_interception_time(interceptor[1]->id()));
+	improved = std::max(interception_time[0], interception_time[1]) < std::max(solution.lastInterceptionTime(interceptor[0]->id()), solution.lastInterceptionTime(interceptor[1]->id()));
 	
 	return improved;
 }
