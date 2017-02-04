@@ -33,10 +33,6 @@ void Heuristic_sequence::run(const std::vector<unsigned> & sequence)
 	Time best_time = 0.;	// Time needed by best interceptor to catch best mobile
 	Time needed_time;		// Time needed by current interceptor to catch current mobile
 
-	// Angles
-	double alpha;			// Direction to follow for the interceptor
-
-
 	// Compute the last known position and time for each interceptor
 	for (VInterceptors::const_iterator i = _problem.interceptors().begin(); i != _problem.interceptors().end(); ++i)
 	{
@@ -51,7 +47,7 @@ void Heuristic_sequence::run(const std::vector<unsigned> & sequence)
 		for (VInterceptors::const_iterator current_interceptor = _problem.interceptors().begin(); current_interceptor != _problem.interceptors().end(); ++current_interceptor)
 		{	// Walk through the interceptors
 			j = current_interceptor->id();
-			needed_time = current_interceptor->computeInterception(interceptor_location[j],*current_mobile,interceptor_time[j],alpha); // Compute interception time for current mobile by current interceptor
+			needed_time = current_interceptor->computeInterception(interceptor_location[j],*current_mobile,interceptor_time[j]); // Compute interception time for current mobile by current interceptor
 			if (needed_time >= 0 && needed_time < best_time)
 			{  // Current interceptor can catch current mobile earlier
 				best_time = needed_time;				// Backup best time

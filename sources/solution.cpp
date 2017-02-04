@@ -201,7 +201,6 @@ void Solution::remove(unsigned mobile_index)
 
 Time Solution::recomputeFrom(unsigned mobile_index)
 {
-	double alpha;
 	const Interceptor & interceptor = *(_sequence[mobile_index]._interceptor);
 	Solution::iterator itr(&(_sequence[mobile_index]));
 
@@ -217,7 +216,7 @@ Time Solution::recomputeFrom(unsigned mobile_index)
 
 	// Recompute the end of the route.
 	while (itr != end(interceptor)) {
-		interception_date += interceptor.computeInterception(interceptor_position, itr->_mobile, interception_date,alpha);
+		interception_date += interceptor.computeInterception(interceptor_position, itr->_mobile, interception_date);
 		itr->_date = interception_date;
 		interceptor_position = itr->_mobile.position(itr->_date);
 		++itr;

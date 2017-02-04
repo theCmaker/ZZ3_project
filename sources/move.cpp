@@ -16,7 +16,6 @@ bool InsertMove::scan(const Solution & solution)
 {
 	bool improved = true;
 	Time interception_time = 0;
-	double alpha;
 	// iterator of the first MobileNode of the route (case: insertion ahead)
 	Solution::const_iterator mobile_it = solution.begin(_interceptor);
 	Location interceptor_position = _interceptor.position();
@@ -40,8 +39,7 @@ bool InsertMove::scan(const Solution & solution)
 	// sums with the interception time of the mobile inserted 
 	interception_time += _interceptor.computeInterception(interceptor_position,
 										 				  _mobile_in,
-														  interception_time,
-														  alpha);
+														  interception_time);
 														  
 														  
 	interceptor_position = _p.mobiles()[_mobile_in.id()].position(interception_time);
@@ -56,8 +54,7 @@ bool InsertMove::scan(const Solution & solution)
 	{
 		interception_time += _interceptor.computeInterception(interceptor_position,
 															  mobile_it->_mobile,
-															  interception_time,
-															  alpha);
+															  interception_time);
 															  
 		
 		interceptor_position = _p.mobiles()[mobile_it->_mobile.id()].position(interception_time);
@@ -104,7 +101,6 @@ bool DeleteMove::scan(const Solution & solution)
 {
 	bool improved = true;
 	Time interception_time = 0;
-	double alpha;
 	// iterator of the first MobileNode of the route (case: insertion ahead)
 	Solution::const_iterator mobile_it = solution.begin(_interceptor);
 	Location interceptor_position = _interceptor.position();
@@ -133,8 +129,7 @@ bool DeleteMove::scan(const Solution & solution)
 	{
 		interception_time += _interceptor.computeInterception(interceptor_position,
 															  mobile_it->_mobile,
-															  interception_time,
-															  alpha);
+															  interception_time);
 															  
 		
 		interceptor_position = _p.mobiles()[mobile_it->_mobile.id()].position(interception_time);
@@ -173,7 +168,6 @@ bool CrossMove::scan(const Solution & solution)
 {
 	bool improved = true;
 	Time interception_time[2] = {0,0};
-	double alpha;
 	const Interceptor * interceptor[2];
 	Location interceptor_position;
 	int j = 0;
@@ -196,8 +190,7 @@ bool CrossMove::scan(const Solution & solution)
 
 			interception_time[i] += interceptor[i]->computeInterception(interceptor_position,
 																  mobile_it->_mobile,
-																  interception_time[i],
-																  alpha);
+																  interception_time[i]);
 																  
 		
 			interceptor_position = _p.mobiles()[mobile_it->_mobile.id()].position(interception_time[i]);

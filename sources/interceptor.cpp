@@ -103,34 +103,32 @@ double Interceptor::computeAlpha(double a, double b, double c)
 	return res;
 }
 
-Time Interceptor::computeInterception(Location position, const Mobile & m, Time t, double & alpha) const
+Time Interceptor::computeInterception(Location position, const Mobile & m, Time t) const
 {
-	//std::cout << __func__ << ": t is " << t << std::endl;
-	//std::cout << __func__ << ": interceptor position is " << position << std::endl;
-	/*Variables liees a l'intercepteur */
+	double alpha;
+	/* Variables liees a l'intercepteur */
 	Speed v1 = _speed;
 	Location l1 = position;
 
-	/*Variables liees au mobile traite*/
+	/* Variables liees au mobile traite */
 	Direction v0 = m.direction();
 	Location l0 = m.position(t);
 
-	/*Variable liees a l'obtention de l'angle alpha */
+	/* Variable liees a l'obtention de l'angle alpha */
 	double a = l0._y-l1._y;
 	double b = l1._x-l0._x;
 	double c = (a*v0._sx+b*v0._sy)/v1;
-	alpha = Interceptor::computeAlpha(a,b,c); /*Nombre compris entre -Pi et Pi ou Pi à priori vu la résolution de l'équation*/
+	alpha = Interceptor::computeAlpha(a,b,c); /* Nombre compris entre -Pi et Pi ou Pi à priori vu la résolution de l'équation */
 
-	/*Variables liees a l'obtention du temps d'interception*/
+	/* Variables liees a l'obtention du temps d'interception */
 	Time t1, t2;
 	Distance epsilon = 0.0001;
 	double tres = -1;
-	//pos_t pos1, pos2, posm; /*Calcul de position pour verifier l'equation*/
-	int ind1 = 0; /*Indicateurs pour savoir si l'interception fonctionne*/
+	int ind1 = 0; /* Indicateurs pour savoir si l'interception fonctionne */
 
-	/* Suggestion: tester si les positions ne sont pas egales avant de calculer un angle.
-  c'est rare mais ca peut arriver, notamment en faisant des tests sans faire attention
-  (mobiles qui convergent) */
+	/* Tester si les positions ne sont pas egales avant de calculer un angle.
+	c'est rare mais ca peut arriver, notamment en faisant des tests sans faire attention
+	(mobiles qui convergent) */
 	if (l0.equals(l1,epsilon)) {
 
 		tres = 0.; /* temps d'interception nul, on est déjà au bon endroit */
@@ -140,36 +138,31 @@ Time Interceptor::computeInterception(Location position, const Mobile & m, Time 
 		{
 			t1 =  -b/(-v0._sx+v1*cos(alpha));
 			t2 =  a/(-v0._sy+v1*sin(alpha));
-			// AFFICHER(t1);
-			// AFFICHER(t2);
 
-			/*Pour choisir la bonne date, il suffit de prendre celle qui marche et si les deux fonctionnent, on prend la date la plus faible*/
-			//std::cout << "t1:" << t1 << " t2:" << t2 << std::endl;
-			/* On gere d'abord la premiere date*/
+			/* Pour choisir la bonne date, il suffit de prendre celle qui marche et si les deux fonctionnent, on prend la date la plus faible */
+			/* On gere d'abord la premiere date */
 			if (std::isfinite(t1) && t1 >= 0)
 			{
-				//compute_position(alpha,l1,t1);
-				//l0 = m.position(t1+t);
-				//std::cout << __func__ << "-A " << l1 << l0 << std::endl;
-				//std::cout << __func__ << "-A " << alpha << std::endl;
-				if (l0.equals(l1,epsilon)) /*Fonction d'egalite de deux position ?*/
+				computePosition(alpha,l1,t1);
+				l0 = m.position(t1+t);
+
+				if (l0.equals(l1,epsilon)) /* Fonction d'egalite de deux positions */
 				{
 					tres = t1;
 					ind1 = 1;
 				}
 			}
 			l1 = position;
-			/*Puis la 2eme*/
+			/* Puis la 2eme */
 			if (std::isfinite(t2) && t2 >= 0)
 			{
 				computePosition(alpha,l1,t2);
 				l0 = m.position(t2+t);
-				//std::cout << __func__ << "-B " << l1 << l0 << std::endl;
-				//std::cout << __func__ << "-B " << alpha << std::endl;
-				if (l0.equals(l1,epsilon)) /*Fonction d'egalite de deux position ?*/
+
+				if (l0.equals(l1,epsilon)) /* Fonction d'egalite de deux positions */
 				{
 					tres = t2;
-					if (ind1 && t2 > t1) /*On regarde si t1 a marche aussi et s'il etait plus faible, on le choisit*/
+					if (ind1 && t2 > t1) /* On regarde si t1 a marche aussi et s'il etait plus faible, on le choisit */
 					{
 						tres = t1;
 					}

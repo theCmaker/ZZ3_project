@@ -40,10 +40,6 @@ void Heuristic_fastest<CachePolicy>::run()
 		Time best_time = 0.;	// Time needed by best interceptor to catch best mobile
 		Time needed_time;		// Time needed by current interceptor to catch current mobile
 
-		// Angles
-		double alpha;			// Direction to follow for the interceptor
-
-
 		// Initialization
 		best_interceptor = nullptr;					// Best interceptor is currently unknown
 		best_mobile = nullptr;						// Best mobile is currently unknown
@@ -55,7 +51,7 @@ void Heuristic_fastest<CachePolicy>::run()
 			interceptor_location.push_back(i->position());
 			interceptor_time.emplace_back(0.);
 			for (VMobiles::const_iterator j = _problem.mobiles().begin(); j != _problem.mobiles().end(); ++j) {
-				CachePolicy::set(i->id(),j->id(),i->computeInterception(interceptor_location.back(),*j,0.,alpha)); // Compute interception time for current mobile by current interceptor
+				CachePolicy::set(i->id(),j->id(),i->computeInterception(interceptor_location.back(),*j,0.)); // Compute interception time for current mobile by current interceptor
 			}
 		}
 
@@ -70,7 +66,6 @@ void Heuristic_fastest<CachePolicy>::run()
 				while (j < _problem.nbInterceptors())
 				{	// Walk through the interceptors
 					current_interceptor = &(_problem.interceptors()[j]);	// Define the interceptor candidate
-					//needed_time = current_interceptor->computeInterception(interceptor_location[j],*current_mobile,interceptor_time[j],alpha); // Compute interception time for current mobile by current interceptor
 					needed_time = CachePolicy::get(current_interceptor->id(),current_mobile->id());
 					if (needed_time >= 0 && needed_time < best_time)
 					{  // Current mobile is catchable before best mobile
@@ -101,7 +96,7 @@ void Heuristic_fastest<CachePolicy>::run()
 				for (std::vector<unsigned>::iterator mob = uncaught_mobiles.begin(); mob != uncaught_mobiles.end(); ++mob)
 				{
 					// Compute interception time for current mobile by current interceptor
-					CachePolicy::set(j,*mob,best_interceptor->computeInterception(interceptor_location[j],_problem.mobiles()[*mob],interceptor_time[j],alpha));
+					CachePolicy::set(j,*mob,best_interceptor->computeInterception(interceptor_location[j],_problem.mobiles()[*mob],interceptor_time[j]));
 				}
 			}
 		}
@@ -123,9 +118,6 @@ void Heuristic_fastest<CachePolicy>::run()
 		Time total_time;		// Local variable to store the total_time for current interceptor
 		Time best_time = 0.;	// Time needed by best interceptor to catch best mobile
 		Time needed_time;		// Time needed by current interceptor to catch current mobile
-
-		// Angles
-		double alpha;			// Direction to follow for the interceptor
 
 		// Initialization
 		best_interceptor = nullptr;					// Best interceptor is currently unknown
@@ -152,7 +144,7 @@ void Heuristic_fastest<CachePolicy>::run()
 					while (j < _problem.nbInterceptors())
 					{	// Walk through the interceptors
 						current_interceptor = &(_problem.interceptors()[j]);	// Define the interceptor candidate
-						needed_time = current_interceptor->computeInterception(interceptor_location[j],*current_mobile,interceptor_time[j],alpha); // Compute interception time for current mobile by current interceptor
+						needed_time = current_interceptor->computeInterception(interceptor_location[j],*current_mobile,interceptor_time[j]); // Compute interception time for current mobile by current interceptor
 						if (needed_time >= 0 && needed_time < best_time)
 						{  // Current mobile is catchable before best mobile
 							best_time = needed_time;				// Backup best time

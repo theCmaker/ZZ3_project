@@ -25,7 +25,7 @@ class Interceptor
 		const Depot *_depot;	///< Attached repository
 		
 		/**
-		 * @brief Computes the angle to change the direction.
+		 * @brief Compute the angle to change the direction.
 		 * @return The angle alpha.
 		 */
 		static double computeAlpha(double a, double b, double c);
@@ -71,22 +71,22 @@ class Interceptor
 
 		// Getters
 		/**
-		 *@brief Returns the id.
+		 *@brief Return the id.
 		 */
 		const unsigned & id() 		const;
 		
 		/**
-		 *@brief Returns the position.
+		 *@brief Return the position.
 		 */
 		const Location & position()	const;
 		
 		/**
-		 *@brief Returns the velocity.
+		 *@brief Return the velocity.
 		 */
 			  Speed		 speed()	const;
 			  
 		/**
-		 *@brief Returns the repository.
+		 *@brief Return the repository.
 		 */
 		const Depot	   * depot()	const;
 
@@ -109,7 +109,7 @@ class Interceptor
 
 		// Methods
 		/**
-		 * @brief Computes the position of the interceptor at a given location.
+		 * @brief Compute the position of the interceptor at a given location.
 		 * @param alpha Angle for the direction.
 		 * @param pos Current position. Updated by the method.
 		 * @param t Travelling duration.
@@ -117,14 +117,13 @@ class Interceptor
 		void computePosition(double alpha, Location & pos, Time t)	const;
 		
 		/**
-		 * @brief Computes the date when the mobile is catched.
+		 * @brief Compute the date when the mobile is catched.
 		 * @param position Current position of the interceptor.
 		 * @param m The mobile to catch.
 		 * @param t Date before the interception.
-		 * @param alpha Angle for the direction. This is computed in the method.
-		 * @return The date of the interception.
+		 * @return The needed time for the interception.
 		 */
-		Time computeInterception(Location, const Mobile &, Time, double &)	const;
+		Time computeInterception(Location, const Mobile &, Time)	const;
 
 };
 
