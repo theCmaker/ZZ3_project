@@ -230,6 +230,25 @@ Time Solution::recomputeFrom(const Mobile & m)
 	return recomputeFrom(m.id());
 }
 
+Time Solution::evaluate(const Location & start_pos, const Time start_date, const Interceptor & interceptor, const Mobile & first_mobile, const Mobile & last_mobile) const
+{
+	Time interception_date = start_date;
+
+	Location interceptor_position = start_pos;
+
+	Solution::const_iterator itr(&(_sequence[first_mobile.id()]));
+	Solution::const_iterator itr_end(&(_sequence[last_mobile.id()]));
+	++itr_end; // Put the iterator just after the last mobile so it can be caught.
+
+	while (itr != itr_end) {
+		interception_date += interceptor.computeInterception(interceptor_position, itr->_mobile, interception_date);
+		interceptor_position = itr->_mobile.position(interception_date);
+		++itr;
+	}
+
+	return interception_date - start_date;
+}
+
 Time Solution::worstInterceptionTime() const
 {
 	Time worst_duration = 0.;

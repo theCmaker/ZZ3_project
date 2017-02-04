@@ -251,6 +251,25 @@ public:
 	Time recomputeFrom(const Mobile & m);
 
 	/**
+	 * @brief Evaluate the time needed by an interceptor to go from a mobile to
+	 * another one of the same route, starting from a given position at a given
+	 * date.
+	 *
+	 * @param start_pos Start position of the interceptor
+	 * @param start_date Start date of the interceptor
+	 * @param interceptor Interceptor
+	 * @param first_mobile First mobile to catch
+	 * @param last_mobile Last mobile to catch (same route as first_mobile)
+	 *
+	 * @warning first_mobile and last_mobile must belong to the same route, and
+	 * first_mobile must be before last_mobile.
+	 *
+	 * @return Time needed by the interceptor (/!\ != end date)
+	 */
+	Time evaluate(const Location & start_pos, const Time start_date, const Interceptor & interceptor,
+				  const Mobile & first_mobile, const Mobile & last_mobile) const;
+
+	/**
 	 * @brief Get the last interception date for all routes.
 	 * @return The last interception date for all routes
 	 */
