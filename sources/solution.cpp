@@ -183,11 +183,20 @@ void Solution::remove(unsigned mobile_index)
 		int prev_route = _interceptors[interceptor->id()]._prev;
 		if (next_route != -1) {
 			_interceptors[next_route]._prev = prev_route;
+		} else {
+			_last = next_route;
 		}
 		if (prev_route != -1) {
 			_interceptors[prev_route]._next = next_route;
+		} else {
+			_first = next_route;
 		}
 	}
+
+	m_node._next = -1;
+	m_node._prev = -1;
+	m_node._date = -1.;
+	m_node._interceptor = nullptr;
 }
 
 Time Solution::recomputeFrom(unsigned mobile_index)
@@ -195,13 +204,25 @@ Time Solution::recomputeFrom(unsigned mobile_index)
 	double alpha;
 	const Interceptor & interceptor = *(_sequence[mobile_index]._interceptor);
 	Solution::iterator itr(&(_sequence[mobile_index]));
-	Time interception_date = itr->_date;
-	Location interceptor_position = itr->_mobile.position(interception_date);
 
-	while (++itr != end(interceptor)) {
+	// Assume the mobile is the first of the route. Get the interceptor departure data.
+	Time interception_date = 0.;
+	Location interceptor_position = interceptor.position();
+
+	if (itr->_prev != -1) {
+		// The mobile is not the first of the route. Get the previous mobile interception data.
+		interception_date = _sequence[itr->_prev]._date;
+		interceptor_position = _sequence[itr->_prev]._mobile.position(interception_date);
+	}
+
+	// Recompute the end of the route.
+	while (itr != end(interceptor)) {
 		interception_date += interceptor.computeInterception(interceptor_position, itr->_mobile, interception_date,alpha);
 		itr->_date = interception_date;
+		interceptor_position = itr->_mobile.position(itr->_date);
+		++itr;
 	}
+
 	return interception_date;
 }
 
