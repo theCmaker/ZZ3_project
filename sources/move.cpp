@@ -91,6 +91,7 @@ void InsertMove::commit(Solution & solution)
 	{
 		solution.insertAfter(_mobile_prev, _interceptor, _mobile_in, _interception_date);
 	}
+	solution.recomputeFrom(_mobile_in);
 }
 
 // implementation of DeleteMove
@@ -153,6 +154,7 @@ bool DeleteMove::scan(const Solution & solution)
 void DeleteMove::commit(Solution & solution)
 {
 	solution.remove(_mobile_out);
+	solution.recomputeFrom(_mobile_prev);
 }
 
 // implementation of CrossMove
