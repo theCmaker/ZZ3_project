@@ -22,7 +22,7 @@ TEST (InsertMoveTest, Scan_InsertionAtEnd_true)
 	Mobile m = p.mobiles()[4];
 	Interceptor i = p.interceptors()[0];
 	
-	InsertMove move(p, m, 1, i);
+	MoveInsert move(p, m, 1, i);
 	resultScan = move.scan(s);
 	
 	std::cout << "Interceptor 0 last time: " << s.lastInterceptionTime(p.interceptors()[0]) << std::endl;
@@ -45,7 +45,7 @@ TEST (InsertMoveTest, Scan_InsertionAtEnd_false)
 	Mobile m = p.mobiles()[4];
 	Interceptor i = p.interceptors()[1];
 	
-	InsertMove move(p, m, 3, i);
+	MoveInsert move(p, m, 3, i);
 	resultScan = move.scan(s);
 	
 	std::cout << "Interceptor 0 last time: " << s.lastInterceptionTime(p.interceptors()[0]) << std::endl;
@@ -68,7 +68,7 @@ TEST (InsertMoveTest, Scan_InsertionInTheMiddle_true)
 	Mobile m = p.mobiles()[4];
 	Interceptor i = p.interceptors()[0];
 	
-	InsertMove move(p, m, 0, i);
+	MoveInsert move(p, m, 0, i);
 	resultScan = move.scan(s);
 	
 	std::cout << "Interceptor 0 last time: " << s.lastInterceptionTime(p.interceptors()[0]) << std::endl;
@@ -91,7 +91,7 @@ TEST (InsertMoveTest, Scan_InsertionInTheMiddle_false)
 	Mobile m = p.mobiles()[4];
 	Interceptor i = p.interceptors()[1];
 	
-	InsertMove move(p, m, 2, i);
+	MoveInsert move(p, m, 2, i);
 	resultScan = move.scan(s);
 	
 	std::cout << "Interceptor 0 last time: " << s.lastInterceptionTime(p.interceptors()[0]) << std::endl;
@@ -114,7 +114,7 @@ TEST (InsertMoveTest, Scan_InsertionAhead_true)
 	Mobile m = p.mobiles()[4];
 	Interceptor i = p.interceptors()[0];
 	
-	InsertMove move(p, m, -1, i);
+	MoveInsert move(p, m, -1, i);
 	resultScan = move.scan(s);
 	
 	std::cout << "Interceptor 0 last time: " << s.lastInterceptionTime(p.interceptors()[0]) << std::endl;
@@ -137,7 +137,7 @@ TEST (InsertMoveTest, Scan_InsertionAhead_false)
 	Mobile m = p.mobiles()[4];
 	Interceptor i = p.interceptors()[1];
 	
-	InsertMove move(p, m, -1, i);
+	MoveInsert move(p, m, -1, i);
 	resultScan = move.scan(s);
 	
 	std::cout << "Interceptor 0 last time: " << s.lastInterceptionTime(p.interceptors()[0]) << std::endl;
@@ -161,7 +161,7 @@ TEST (InsertMoveTest, Commit_InsertionAtEnd)
 	Mobile m = p.mobiles()[4];
 	Interceptor i = p.interceptors()[0];
 	
-	InsertMove move(p, m, 1, i);
+	MoveInsert move(p, m, 1, i);
 	resultScan = move.scan(s);
 	
 	std::cout << "Interceptor 0 last time: " << s.lastInterceptionTime(p.interceptors()[0]) << std::endl;
@@ -209,7 +209,7 @@ TEST (InsertMoveTest, Commit_InsertionInTheMiddle)
 	Mobile m = p.mobiles()[4];
 	Interceptor i = p.interceptors()[0];
 	
-	InsertMove move(p, m, 0, i);
+	MoveInsert move(p, m, 0, i);
 	resultScan = move.scan(s);
 	
 	std::cout << "Interceptor 0 last time: " << s.lastInterceptionTime(p.interceptors()[0]) << std::endl;
@@ -257,7 +257,7 @@ TEST (InsertMoveTest, Commit_InsertionAhead)
 	Mobile m = p.mobiles()[4];
 	Interceptor i = p.interceptors()[0];
 	
-	InsertMove move(p, m, -1, i);
+	MoveInsert move(p, m, -1, i);
 	resultScan = move.scan(s);
 	
 	std::cout << "Interceptor 0 last time: " << s.lastInterceptionTime(p.interceptors()[0]) << std::endl;

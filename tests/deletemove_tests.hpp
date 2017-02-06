@@ -24,7 +24,7 @@ TEST (DeleteMoveTest, Scan_DeletionAtEnd_true)
 	Mobile m = p.mobiles()[4];
 	Interceptor i = p.interceptors()[0];
 	
-	DeleteMove move(p, m, 1, i);
+	MoveExtract move(p, m, 1, i);
 	resultScan = move.scan(s);
 	
 	std::cout << "Interceptor 0 last time: " << s.lastInterceptionTime(p.interceptors()[0]) << std::endl;
@@ -70,7 +70,7 @@ TEST (DeleteMoveTest, Scan_DeletionInTheMiddle_true)
 	Mobile m = p.mobiles()[1];
 	Interceptor i = p.interceptors()[0];
 	
-	DeleteMove move(p, m, 0, i);
+	MoveExtract move(p, m, 0, i);
 	resultScan = move.scan(s);
 	
 	std::cout << "Interceptor 0 last time: " << s.lastInterceptionTime(p.interceptors()[0]) << std::endl;
@@ -116,7 +116,7 @@ TEST (DeleteMoveTest, Scan_DeletionAhead_true)
 	Mobile m = p.mobiles()[0];
 	Interceptor i = p.interceptors()[0];
 	
-	DeleteMove move(p, m, -1, i);
+	MoveExtract move(p, m, -1, i);
 	resultScan = move.scan(s);
 	
 	std::cout << "Interceptor 0 last time: " << s.lastInterceptionTime(p.interceptors()[0]) << std::endl;

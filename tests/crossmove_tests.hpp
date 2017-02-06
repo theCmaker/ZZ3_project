@@ -22,7 +22,7 @@ TEST (CrossMoveTest, Scan_CrossAtEnd_false)
 	
 	Solution s = h.solution();
 	
-	CrossMove move(p, p.mobiles()[4].id(), p.mobiles()[3].id());
+	Move2Opt move(p, p.mobiles()[4].id(), p.mobiles()[3].id());
 	resultScan = move.scan(s);
 	
 	EXPECT_FALSE(resultScan);
@@ -64,7 +64,7 @@ TEST (CrossMoveTest, Scan_CrossInTheMiddle_false)
 	
 	Interceptor i = p.interceptors()[1];
 	
-	CrossMove move(p, p.mobiles()[1].id(), p.mobiles()[2].id());
+	Move2Opt move(p, p.mobiles()[1].id(), p.mobiles()[2].id());
 	resultScan = move.scan(s);
 	
 	EXPECT_FALSE(resultScan);
@@ -104,7 +104,7 @@ TEST (CrossMoveTest, Scan_CrossAhead_false)
 	
 	Solution s = h.solution();
 	
-	CrossMove move(p, p.mobiles()[0].id(), p.mobiles()[2].id());
+	Move2Opt move(p, p.mobiles()[0].id(), p.mobiles()[2].id());
 	resultScan = move.scan(s);
 	
 	EXPECT_FALSE(resultScan);
