@@ -308,6 +308,20 @@ public:
 	int last() const;
 
 	/**
+	 * @brief Get the first interception info for the given route.
+	 * @param i Interceptor attached to the route
+	 * @return First interception info
+	 */
+	const MobileNode & firstOfRoute(const Interceptor & i) const;
+
+	/**
+	 * @brief Get the last interception info for the given route.
+	 * @param i Interceptor attached to the route
+	 * @return Last interception info
+	 */
+	const MobileNode & lastOfRoute(const Interceptor & i) const;
+
+	/**
 	 * @brief Subscript operator to get a route.
 	 * @param i route index (or interceptor index)
 	 * @return route
@@ -346,6 +360,12 @@ public:
 	 * @return interception parameters
 	 */
 	const MobileNode & mobile(unsigned) const;
+
+	/**
+	 * @brief Get all the mobiles that have not been caught.
+	 * @return A vector of const pointers to all the uncaught mobiles in this solution
+	 */
+	std::vector<const Mobile *> uncaughtMobiles() const;
 
 	/**
 	 * @brief Get an iterator to the first intercepted mobile of a route.

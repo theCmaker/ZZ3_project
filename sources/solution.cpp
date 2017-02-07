@@ -62,6 +62,16 @@ int Solution::last() const
 	return _last;
 }
 
+const Solution::MobileNode &Solution::firstOfRoute(const Interceptor & i) const
+{
+	return _sequence[_interceptors[i.id()]._first];
+}
+
+const Solution::MobileNode &Solution::lastOfRoute(const Interceptor & i) const
+{
+	return _sequence[_interceptors[i.id()]._last];
+}
+
 void Solution::append(unsigned interceptor_index, unsigned mobile_index, const Time & d)
 {
 	InterceptorNode * inter_sequence = &(_interceptors[interceptor_index]);
@@ -340,6 +350,17 @@ Solution::MobileNode & Solution::mobile(unsigned i)
 const Solution::MobileNode & Solution::mobile(unsigned i) const
 {
 	return _sequence[i];
+}
+
+std::vector<const Mobile *> Solution::uncaughtMobiles() const
+{
+	std::vector<const Mobile *> res;
+	for (VMobiles::const_iterator i = _problem.mobiles().begin(); i != _problem.mobiles().end(); ++i) {
+		if (!isCaught(*i)) {
+			res.push_back(&(*i));
+		}
+	}
+	return res;
 }
 
 Solution::iterator Solution::begin(const Interceptor & i)
