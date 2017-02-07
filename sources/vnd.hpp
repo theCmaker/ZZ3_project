@@ -12,6 +12,7 @@
 class VND
 {
 	std::vector<Move *> _list;
+	static unsigned max_itr;
 public:
 	VND();
 	~VND();
