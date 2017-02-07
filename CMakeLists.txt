@@ -43,6 +43,7 @@ set ( ZZ3_HEADERS
       sources/tikzgrapher.hpp
 	  sources/move_policies.hpp
 	  sources/move.hpp
+	  sources/vnd.hpp
     )
 
 set ( ZZ3_SOURCES
@@ -58,6 +59,7 @@ set ( ZZ3_SOURCES
       sources/tikzifyer.cpp
 	  sources/tikzgrapher.cpp
 	  sources/move_policies.cpp
+	  sources/vnd.cpp
     )
 
 set ( ZZ3_HEADERS_TEST
