@@ -14,7 +14,7 @@ Move<Policy>::~Move() {}
 // INSERT MOVE
 // ---------------------------------------------------------------------------------------------------------------------
 template <typename Policy>
-MoveInsert<Policy>::MoveInsert(Problem & p, const Mobile & m_in, int m_prev, const Interceptor & i) : Move<Policy>(p), _mobile_in(m_in), _mobile_prev(m_prev), _interceptor(i), _interception_date(-1) {}
+MoveInsert<Policy>::MoveInsert(Problem & p) : Move<Policy>(p), _best_interception_date(-1) {}
 
 template <typename Policy>
 MoveInsert<Policy>::~MoveInsert() {}
@@ -22,64 +22,71 @@ MoveInsert<Policy>::~MoveInsert() {}
 template <typename Policy>
 bool MoveInsert<Policy>::scan(const Solution & solution)
 {
-	bool improved = true;
-	Time interception_time = 0;
-	// iterator of the first MobileNode of the route (case: insertion ahead)
-	Solution::const_iterator mobile_it = solution.begin(_interceptor);
-	Location interceptor_position = _interceptor.position();
-	
-//	std::cout << "scan init" << std::endl;
-	
-	if(_mobile_prev >= 0)
-	{
-		// computes time of interception of mobile_prev (mobile before the insertion)
-		interception_time = solution.mobile(_mobile_prev)._date;
-		
-		// increments the iterator to the mobile after _mobile_prev
-		const Solution::MobileNode & mobile_tmp = solution.mobile(_mobile_prev);
-		mobile_it = Solution::const_iterator(&mobile_tmp);
-		++mobile_it;
-		
-		// new position of the interceptor
-		interceptor_position = _p.mobiles()[_mobile_prev].position(interception_time);
+	//TODO: comment it!
+	Policy::reset();
+	bool improved = false;
+	const Interceptor * interceptor;
+	Time interception_date;
+	_best_interception_date = solution.worstInterceptionTime();
+	Location interceptor_position;
+	unsigned interceptor_id = 0;
+
+	std::vector<const Mobile *> uncaught_mobiles = solution.uncaughtMobiles();
+
+	std::vector<const Mobile *>::iterator uncaught_mobile_itr = uncaught_mobiles.begin();
+
+	// Find a mobile
+	while (uncaught_mobile_itr != uncaught_mobiles.end() && Policy::keepOn()) {
+		// Find a route
+		while (interceptor_id < _p.nbInterceptors() && Policy::keepOn()) {
+			interception_date = 0.;
+			interceptor = &(_p.interceptors()[interceptor_id]);
+			interceptor_position = interceptor->position();
+			Solution::const_iterator position_it = solution.begin(*interceptor);
+
+			// Try to insert in first position
+			interception_date += interceptor->computeInterception(interceptor_position, **uncaught_mobile_itr, interception_date);
+			if (std::isfinite(interception_date)) {
+				interceptor_position = (*uncaught_mobile_itr)->position(interception_date);
+				if (position_it != solution.end(*interceptor)) {
+					interception_date += solution.evaluate(interceptor_position, interception_date, *interceptor, position_it->_mobile, solution.lastOfRoute(*interceptor)._mobile);
+				}
+				if (Policy::update(interception_date, _best_interception_date)) {
+					// Update results
+					_best_mobile_candidate = *uncaught_mobile_itr;
+					_best_mobile_prev_index = -1;
+					_best_interceptor = interceptor;
+					improved = true;
+				}
+			}
+
+			// Find an insertion position if insertion ahead was unsuccessful.
+			while (position_it != solution.end(*interceptor) && Policy::keepOn()) {
+				// Get the interception position of the current intercepted (and already in the route) mobile
+				interception_date = position_it->_date;
+				interceptor_position = position_it->_mobile.position(interception_date);
+
+				// Get the time to catch the uncaught mobile.
+				interception_date += interceptor->computeInterception(interceptor_position, **uncaught_mobile_itr, interception_date);
+				interceptor_position = (*uncaught_mobile_itr)->position(interception_date);
+
+				// Get the time to catch the rest of the route (same order).
+				if (position_it->_next >= 0) { // Insertion inside the route (not at the end)
+					interception_date += solution.evaluate(interceptor_position, interception_date, *interceptor, _p.mobiles()[position_it->_next], solution.lastOfRoute(*interceptor)._mobile);
+				}
+				if (std::isfinite(interception_date) && Policy::update(interception_date,_best_interception_date)) {
+					// Update results
+					_best_mobile_candidate = *uncaught_mobile_itr;
+					_best_mobile_prev_index = position_it->_mobile.id();
+					_best_interceptor = interceptor;
+					improved = true;
+				}
+				++position_it;
+			}
+			++interceptor_id;
+		}
+		++uncaught_mobile_itr;
 	}
-	
-	// sums with the interception time of the mobile inserted
-	interception_time += _interceptor.computeInterception(interceptor_position,
-														  _mobile_in,
-														  interception_time);
-
-
-	interceptor_position = _p.mobiles()[_mobile_in.id()].position(interception_time);
-	// saves the interception time for the commit
-	_interception_date = interception_time;
-	
-	
-
-	// checks if there is no problem in the route after the insertion
-	// and computes the interception time for each following mobile
-	while(mobile_it != solution.end(_interceptor) && std::isfinite(interception_time))
-	{
-		interception_time += _interceptor.computeInterception(interceptor_position,
-															  mobile_it->_mobile,
-															  interception_time);
-
-		
-		interceptor_position = _p.mobiles()[mobile_it->_mobile.id()].position(interception_time);
-		++mobile_it;
-	}
-	
-//	std::cout << "Worst interception time: " << solution.worstInterceptionTime() << std::endl;
-//	std::cout << "New interception time: " << interception_time << std::endl;
-
-	// compares time of interception between the update route and the worse route (in time)
-	if (!std::isfinite(interception_time) || solution.worstInterceptionTime() < interception_time)
-	{
-		improved = false;
-	}
-	
-//	std::cout << "scan finished" << std::endl;
-	
 	return improved;
 }
 
@@ -87,20 +94,20 @@ template <typename Policy>
 void MoveInsert<Policy>::commit(Solution & solution)
 {
 	// insertion ahead or creation of a route
-	if(_mobile_prev < 0)
+	if(_best_mobile_prev_index < 0)
 	{
-		solution.prepend(_interceptor, _mobile_in, _interception_date);
+		solution.prepend(*_best_interceptor, *_best_mobile_candidate, _best_interception_date);
 	}
 	// if insertion at end
-	else if(solution.mobile(_mobile_prev)._next < 0)
+	else if(solution.mobile(_best_mobile_prev_index)._next < 0)
 	{
-		solution.append(_interceptor, _mobile_in, _interception_date);
+		solution.append(*_best_interceptor, *_best_mobile_candidate, _best_interception_date);
 	}
 	else
 	{
-		solution.insertAfter(_mobile_prev, _interceptor, _mobile_in, _interception_date);
+		solution.insertAfter(_best_mobile_prev_index, *_best_interceptor, *_best_mobile_candidate, _best_interception_date);
 	}
-	solution.recomputeFrom(_mobile_in);
+	solution.recomputeFrom(*_best_mobile_candidate);
 }
 
 

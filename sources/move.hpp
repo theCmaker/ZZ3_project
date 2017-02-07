@@ -53,10 +53,10 @@ template <typename Policy = FirstAvailablePolicy>
 class MoveInsert : public Move<Policy>
 {
 private:
-	const Mobile & 			_mobile_in;		///< Mobile to insert
-	int						_mobile_prev;	///< Insertion of the mobile will be after this one
-	const Interceptor & 	_interceptor;	///< Interceptor for the wanted route
-	Time					_interception_date; ///< Interception time of _mobile_in
+	const Mobile *			_best_mobile_candidate;	///< Mobile to insert
+	int						_best_mobile_prev_index;///< Insertion of the mobile will be after this one
+	const Interceptor * 	_best_interceptor;		///< Interceptor for the wanted route
+	Time					_best_interception_date;///< Interception time of _mobile_in
 
 public:
 	/**
@@ -66,7 +66,7 @@ public:
 		 * @param m_prev The mobile which will be before the mobile to insert.
 		 * @param i The interceptor of the route.
 		 */
-	MoveInsert(Problem & p, const Mobile & m_in, int m_prev, const Interceptor & i);
+	MoveInsert(Problem & p);
 	/**
 		 * @brief Destructor.
 		 */
