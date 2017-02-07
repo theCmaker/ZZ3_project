@@ -1,20 +1,10 @@
 #include <cmath>
 
 // ---------------------------------------------------------------------------------------------------------------------
-// MOVE
-// ---------------------------------------------------------------------------------------------------------------------
-template <typename Policy>
-Move<Policy>::Move(Problem & p) : _p(p) {}
-
-template <typename Policy>
-Move<Policy>::~Move() {}
-
-
-// ---------------------------------------------------------------------------------------------------------------------
 // INSERT MOVE
 // ---------------------------------------------------------------------------------------------------------------------
 template <typename Policy>
-MoveInsert<Policy>::MoveInsert(Problem & p) : Move<Policy>(p), _best_interception_date(-1) {}
+MoveInsert<Policy>::MoveInsert() : _best_interception_date(-1) {}
 
 template <typename Policy>
 MoveInsert<Policy>::~MoveInsert() {}
@@ -22,6 +12,7 @@ MoveInsert<Policy>::~MoveInsert() {}
 template <typename Policy>
 bool MoveInsert<Policy>::scan(const Solution & solution)
 {
+	const Problem & _p = solution.problem();
 	//TODO: comment it!
 	Policy::reset();
 	bool improved = false;
@@ -115,7 +106,7 @@ void MoveInsert<Policy>::commit(Solution & solution)
 // EXTRACT MOVE
 // ---------------------------------------------------------------------------------------------------------------------
 template <typename Policy>
-MoveExtract<Policy>::MoveExtract(Problem & p) : Move<Policy>(p) {}
+MoveExtract<Policy>::MoveExtract() {}
 
 template <typename Policy>
 MoveExtract<Policy>::~MoveExtract() {}
@@ -123,6 +114,7 @@ MoveExtract<Policy>::~MoveExtract() {}
 template <typename Policy>
 bool MoveExtract<Policy>::scan(const Solution & solution)
 {
+	const Problem & _p = solution.problem();
 	//TODO: comment it!
 	Policy::reset();
 	bool improved = false;
@@ -166,57 +158,6 @@ bool MoveExtract<Policy>::scan(const Solution & solution)
 		++position_it;
 	}
 	return improved;
-	/*
-	bool improved = true;
-	Time interception_time = 0;
-	// iterator of the first MobileNode of the route (case: insertion ahead)
-	Solution::const_iterator mobile_it = solution.begin(_interceptor);
-	Location interceptor_position = _interceptor.position();
-	
-	std::cout << "scan init" << std::endl;
-	
-	if(_mobile_prev >= 0)
-	{
-		// computes time of interception of mobile_prev (mobile before the suppression)
-		interception_time = solution.mobile(_mobile_prev)._date;
-		
-		// new position of the interceptor
-		interceptor_position = _p.mobiles()[_mobile_prev].position(interception_time);
-	}
-
-	interceptor_position = _p.mobiles()[_mobile_prev].position(interception_time);
-	
-	// the iterator points to the mobile after _mobile_out (the mobile to delete of the route)
-	const Solution::MobileNode & mobile_tmp = solution.mobile(_mobile_out.id());
-	mobile_it = Solution::const_iterator(&mobile_tmp);
-	++mobile_it;
-
-	// checks if there is no problem in the route after the insertion
-	// and computes the interception time for each following mobile
-	while(mobile_it != solution.end(_interceptor) && std::isfinite(interception_time))
-	{
-		interception_time += _interceptor.computeInterception(interceptor_position,
-															  mobile_it->_mobile,
-															  interception_time);
-
-		
-		interceptor_position = _p.mobiles()[mobile_it->_mobile.id()].position(interception_time);
-		++mobile_it;
-	}
-	
-	std::cout << "Worst interception time: " << solution.worstInterceptionTime() << std::endl;
-	std::cout << "New interception time: " << interception_time << std::endl;
-
-	// compares time of interception between the update route and the worse route (in time)
-	if (!std::isfinite(interception_time) || solution.worstInterceptionTime() < interception_time)
-	{
-		improved = false;
-	}
-	
-	std::cout << "scan finished" << std::endl;
-	
-	return improved;
-	*/
 }
 
 template <typename Policy>
@@ -232,7 +173,7 @@ void MoveExtract<Policy>::commit(Solution & solution)
 // TWO-OPT MOVE
 // ---------------------------------------------------------------------------------------------------------------------
 template <typename Policy>
-Move2Opt<Policy>::Move2Opt(Problem & p, int m0, int m1) : Move<Policy>(p)
+Move2Opt<Policy>::Move2Opt(Problem & p, int m0, int m1)
 {
 	_mobile[0] = m0;
 	_mobile[1] = m1;
@@ -244,6 +185,7 @@ Move2Opt<Policy>::~Move2Opt() {}
 template <typename Policy>
 bool Move2Opt<Policy>::scan(const Solution & solution)
 {
+	const Problem & _p = solution.problem();
 	bool improved = true;
 	Time interception_time[2] = {0,0};
 	const Interceptor * interceptor[2];

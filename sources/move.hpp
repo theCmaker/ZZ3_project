@@ -12,33 +12,29 @@
 /**
  * @brief Abstract class to make a movement in a route.
  */
-template <typename Policy = FirstAvailablePolicy>
 class Move
 {
-protected:
-	Problem & _p; ///< Routing problem
-
 public:
 	/**
-		 * @brief Constructor.
-		 * @param p The routing problem the move refers to.
-		 */
-	Move(Problem & p);
-	/**
-		 * @brief Destructor.
-		 */
-	virtual ~Move();
+	 * @brief Constructor.
+	 */
+	Move() {}
 
 	/**
-		 * @brief Scans if the movement improves the solution.
-		 * @param solution The solution where the movement will be scanned.
-		 */
+	 * @brief Destructor.
+	 */
+	virtual ~Move() {};
+
+	/**
+	 * @brief Scans if the movement improves the solution.
+	 * @param solution The solution where the movement will be scanned.
+	 */
 	virtual bool scan(const Solution & solution) = 0;
 
 	/**
-		 * @brief Commits the movement after a scan.
-		 * @param solution The solution where the movement will be done.
-		 */
+	 * @brief Commits the movement after a scan.
+	 * @param solution The solution where the movement will be done.
+	 */
 	virtual void commit(Solution & solution) = 0;
 };
 
@@ -50,7 +46,7 @@ public:
  * @brief Movement to insert a mobile in a given route.
  */
 template <typename Policy = FirstAvailablePolicy>
-class MoveInsert : public Move<Policy>
+class MoveInsert : public Move
 {
 private:
 	const Mobile *			_best_mobile_candidate;	///< Mobile to insert
@@ -66,17 +62,16 @@ public:
 		 * @param m_prev The mobile which will be before the mobile to insert.
 		 * @param i The interceptor of the route.
 		 */
-	MoveInsert(Problem & p);
+	MoveInsert();
 	/**
 		 * @brief Destructor.
 		 */
 	virtual ~MoveInsert();
 
 	/**
-		 * @brief Scans if the insertion of the mobile improves the solution.
-		 * @param solution The solution where the insertion will be scanned.
-		 */
-	using Move<Policy>::_p;
+	 * @brief Scans if the insertion of the mobile improves the solution.
+	 * @param solution The solution where the insertion will be scanned.
+	 */
 	virtual bool scan(const Solution &);
 
 	/**
@@ -94,7 +89,7 @@ public:
  * @brief Movement to remove a mobile from a given route.
  */
 template <typename Policy = FirstAvailablePolicy>
-class MoveExtract : public Move<Policy>
+class MoveExtract : public Move
 {
 private:
 	const Mobile * 			_best_mobile_candidate;
@@ -102,10 +97,9 @@ private:
 	const Mobile * 			_best_recompute_from;
 
 public:
-	MoveExtract(Problem & p);
+	MoveExtract();
 	virtual ~MoveExtract();
 
-	using Move<Policy>::_p;
 	virtual bool scan(const Solution &);
 	virtual void commit(Solution &);
 };
@@ -118,7 +112,7 @@ public:
  * @brief Movement to cross two routes.
  */
 template <typename Policy = FirstAvailablePolicy>
-class Move2Opt : public Move<Policy>
+class Move2Opt : public Move
 {
 private:
 	int _mobile[2];
@@ -127,7 +121,6 @@ public:
 	Move2Opt(Problem & p, int m0, int m1);
 	virtual ~Move2Opt();
 
-	using Move<Policy>::_p;
 	virtual bool scan(const Solution &);
 	virtual void commit(Solution &);
 };
