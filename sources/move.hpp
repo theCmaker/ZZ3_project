@@ -126,5 +126,29 @@ public:
 };
 
 
+// ---------------------------------------------------------------------------------------------------------------------
+// REPLACE MOVE
+// ---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief Movement to replace a mobile into a single route.
+ */
+template <typename Policy = FirstAvailablePolicy>
+class MoveReplace : public Move
+{
+private:
+	const Mobile * 			_best_mobile_in;
+	const Mobile * 			_best_mobile_out;
+	const Interceptor *		_best_interceptor;
+	Time 					_best_interception_date;
+
+public:
+	MoveReplace();
+	virtual ~MoveReplace();
+
+	virtual bool scan(const Solution &);
+	virtual void commit(Solution &);
+};
+
+
 #include "move.cxx"
 #endif
