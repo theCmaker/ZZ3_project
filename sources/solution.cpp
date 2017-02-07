@@ -48,6 +48,11 @@ Solution::Solution(const Problem & p) : _problem(p), _first(-1), _last(-1)
 
 Solution::~Solution() {}
 
+const Problem & Solution::problem() const
+{
+	return _problem;
+}
+
 //******************************************************
 // Methods
 //******************************************************

@@ -172,6 +172,11 @@ public:
 	~Solution();
 
 	/**
+	 * @brief Get the relative problem.
+	 * @return Problem relative to the current solution
+	 */
+	const Problem & problem() const;
+	/**
 	 * @brief Add an interception at the end of a route.
 	 * @param interceptor_index id of the interceptor (route)
 	 * @param mobile_index id of the intercepted mobile
