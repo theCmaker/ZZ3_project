@@ -31,5 +31,4 @@ public:
 	}
 };
 
-bool FirstAvailablePolicy::_keepOn = true;
 #endif // __MOVE_POLICIES_HPP__
