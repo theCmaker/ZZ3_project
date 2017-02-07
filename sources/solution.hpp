@@ -275,6 +275,11 @@ public:
 	 */
 	Time worstInterceptionTime() const;
 	/**
+	 * @brief Get the longest route in time.
+	 * @return The interceptor for the longest route in time
+	 */
+	const Interceptor & worstRoute() const;
+	/**
 	 * @brief Get the last interception date for the given interceptor (route) id.
 	 * @param interceptor_index the route or interceptor id.
 	 * @return last interception date for interceptor id interceptor_index

@@ -272,6 +272,20 @@ Time Solution::worstInterceptionTime() const
 	return worst_duration;
 }
 
+const Interceptor & Solution::worstRoute() const
+{
+	Time duration, worst_duration = 0.;
+	const Interceptor * i;
+	for (VInterceptors::const_iterator interceptor = _problem.interceptors().cbegin(); interceptor != _problem.interceptors().cend(); ++interceptor) {
+		duration = lastInterceptionTime(*interceptor);
+		if (worst_duration < duration) {
+			worst_duration = duration;
+			i = &(*interceptor);
+		}
+	}
+	return *i;
+}
+
 Time Solution::lastInterceptionTime(int interceptor_index) const
 {
 	return _sequence[(unsigned) _interceptors[(unsigned) interceptor_index]._last]._date;
