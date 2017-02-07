@@ -7,11 +7,12 @@ class BestAvailablePolicy
 {
 	static const bool _keepOn = true;
 public:
-	static constexpr bool keepOn (Time value) { return _keepOn; }
+	static constexpr bool keepOn () { return _keepOn; }
 	static void reset() {}
 	static bool update (Time value, Time & record) {
-		bool res = (value < 0. && value < record);
+		bool res = (value >= 0. && value <= record);
 		if (res) { record = value; }
+		//TODO: double check
 		return res;
 	}
 };
@@ -20,14 +21,15 @@ class FirstAvailablePolicy
 {
 	static bool _keepOn;
 public:
-	static bool keepOn (Time value) { return _keepOn; }
+	static bool keepOn () { return _keepOn; }
 	static void reset() { _keepOn = true; }
 	static bool update (Time value, Time & record) {
-		_keepOn = (value >= 0.);
-		bool res = (value < 0. && value < record);
-		if (res) { record = value; }
-		return res;
+		//std::cerr << "New value: " << value << " Record: " << record << std::endl;
+		_keepOn = (value < 0. || value > record);
+		if (! _keepOn) { record = value; }
+		return ! _keepOn;
 	}
 };
 
+bool FirstAvailablePolicy::_keepOn = true;
 #endif // __MOVE_POLICIES_HPP__
