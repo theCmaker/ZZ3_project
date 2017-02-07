@@ -97,12 +97,12 @@ template <typename Policy = FirstAvailablePolicy>
 class MoveExtract : public Move<Policy>
 {
 private:
-	const Mobile & 			_mobile_out;
-	int						_mobile_prev;
-	const Interceptor & 	_interceptor;
+	const Mobile * 			_best_mobile_candidate;
+	Time 					_best_interception_date;
+	const Mobile * 			_best_recompute_from;
 
 public:
-	MoveExtract(Problem & p, const Mobile & m_out, int m_prev, const Interceptor & i);
+	MoveExtract(Problem & p);
 	virtual ~MoveExtract();
 
 	using Move<Policy>::_p;
