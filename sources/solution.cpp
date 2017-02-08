@@ -149,14 +149,17 @@ void Solution::prepend(const Interceptor & i, const Mobile & m, const Time & d)
 
 void Solution::insertAfter(unsigned prev_mobile_index, unsigned interceptor_index, unsigned mobile_index, const Time & d)
 {
+	int next_mobile_index = _sequence[prev_mobile_index]._next;
 	InterceptorNode * inter_sequence = &(_interceptors[interceptor_index]);
 
 	_sequence[mobile_index]._prev = (int) prev_mobile_index;
-	_sequence[mobile_index]._next = _sequence[prev_mobile_index]._next;
+	_sequence[mobile_index]._next = next_mobile_index;
 	_sequence[prev_mobile_index]._next = (int) mobile_index;
-	if (_sequence[mobile_index]._next == -1) {
+	if (next_mobile_index == -1) {
 		// Current insertion is done at the end of the route
 		inter_sequence->_last = mobile_index;
+	} else {
+		_sequence[next_mobile_index]._prev = mobile_index;
 	}
 	//Interception info
 	_sequence[mobile_index]._date = d;
