@@ -1,6 +1,7 @@
 #include "interceptor.hpp"
 #include "depot.hpp"
 #include <cmath>
+#include <limits>
 
 Interceptor::Interceptor(unsigned id) :
 	_id(id),
@@ -123,7 +124,7 @@ Time Interceptor::computeInterception(Location position, const Mobile & m, Time 
 	/* Variables liees a l'obtention du temps d'interception */
 	Time t1, t2;
 	Distance epsilon = 0.0001;
-	double tres = -1;
+	double tres = std::numeric_limits<Time>::max();
 	int ind1 = 0; /* Indicateurs pour savoir si l'interception fonctionne */
 
 	/* Tester si les positions ne sont pas egales avant de calculer un angle.
