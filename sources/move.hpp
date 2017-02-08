@@ -115,7 +115,11 @@ template <typename Policy = FirstAvailablePolicy>
 class Move2Opt : public Move
 {
 private:
-	int _mobile[2];
+	const Mobile *			_best_mobile_candidate_first;
+	const Mobile *			_best_mobile_candidate_second;
+	const Interceptor * 	_best_interceptor_first;
+	const Interceptor * 	_best_interceptor_second;
+	Time					_best_interception_date;
 
 public:
 	Move2Opt(Problem & p, int m0, int m1);

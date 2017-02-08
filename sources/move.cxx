@@ -177,11 +177,12 @@ void MoveExtract<Policy>::commit(Solution & solution)
 // TWO-OPT MOVE
 // ---------------------------------------------------------------------------------------------------------------------
 template <typename Policy>
-Move2Opt<Policy>::Move2Opt(Problem & p, int m0, int m1)
-{
-	_mobile[0] = m0;
-	_mobile[1] = m1;
-}
+Move2Opt<Policy>::Move2Opt() : _best_mobile_candidate_first(nullptr),
+							   _best_mobile_candidate_second(nullptr),
+							   _best_interceptor_first(nullptr),
+							   _best_interceptor_second(nullptr),
+							   _best_interception_date(-1)
+{}
 
 template <typename Policy>
 Move2Opt<Policy>::~Move2Opt() {}
@@ -189,56 +190,91 @@ Move2Opt<Policy>::~Move2Opt() {}
 template <typename Policy>
 bool Move2Opt<Policy>::scan(const Solution & solution)
 {
-	const Problem & _p = solution.problem();
-	bool improved = true;
-	Time interception_time[2] = {0,0};
-	const Interceptor * interceptor[2];
-	Location interceptor_position;
-	int j = 0;
-	
-	interceptor[0] = solution.mobile(_mobile[0])._interceptor;
-	interceptor[1] = solution.mobile(_mobile[1])._interceptor;
-	
-	for(int i = 0; i < 2; ++i)
+	const Problem & _p = solution.problem(); // uncomment after refactoring
+	bool improved = false;
+	_best_interception_date = solution.worstInterceptionTime();
+	unsigned interceptor_id_first = 0;
+	unsigned interceptor_id_second = 1;
+	Solution::const_iterator mobile_it_first;
+	Solution::const_iterator mobile_it_second;
+	Time interception_time_first = 0;
+	Time interception_time_second = 0;
+	Location interceptor_position_first;
+	Location interceptor_position_second;
+
+	// chooses an interceptor
+	while(interceptor_id_first < _p.nbInterceptors()-1 && Policy::keepOn())
 	{
-		j = (i+1)%2;
-		
-		interception_time[i] = solution.mobile(_mobile[i])._date;
-		interceptor_position = _p.mobiles()[_mobile[i]].position(interception_time[i]);
-		
-		Solution::const_iterator mobile_it = Solution::const_iterator(&solution.mobile(_mobile[j]));
-		++mobile_it;
-
-		while(mobile_it != solution.end(*interceptor[j]) && std::isfinite(interception_time[i]))
+		interceptor_id_second = interceptor_id_first+1;
+		// chooses an interceptor after interceptor_id_first
+		while(interceptor_id_second < _p.nbInterceptors() && Policy::keepOn())
 		{
+			// for each mobile in the route of interceptor_id_first
+			mobile_it_first = solution.begin(_p.interceptors()[interceptor_id_first]);
+			while(mobile_it_first != solution.end(_p.interceptors()[interceptor_id_first]) && Policy::keepOn())
+			{
+				// for each mobile in the route of interceptor_id_second
+				mobile_it_second = solution.begin(_p.interceptors()[interceptor_id_second]);
+				while(mobile_it_second != solution.end(_p.interceptors()[interceptor_id_second]) && Policy::keepOn())
+				{
+					// computes interception time of the mobiles previous mobile_it_first and second
+					if(mobile_it_first->_prev == -1)
+					{
+						interception_time_first = 0;
+						interceptor_position_first = _p.interceptors(interceptor_id_first)._id;
+					}
+					else
+					{
+						interception_time_first = solution.mobile(mobile_it_first->_prev)._date;
+						interceptor_position_first = _p.mobiles()[mobile_it_first->_prev].position(interception_time_first);
+					}
+					if(mobile_it_second->_prev == -1)
+					{
+						interception_time_second = 0;
+						interceptor_position_second = _p.interceptors(interceptor_id_second)._id;
+					}
+					else
+					{
+						interception_time_second = solution.mobile(mobile_it_second->_prev)._date;
+						interceptor_position_second = _p.mobiles()[mobile_it_second->_prev].position(interception_time_second);
+					}
 
-			interception_time[i] += interceptor[i]->computeInterception(interceptor_position,
-																		mobile_it->_mobile,
-																		interception_time[i]);
+					// evaluates the final interception time of each route after crossing the mobiles
 
+					if (mobile_it_first->_id >= 0) {
+						interception_time_first += solution.evaluate(interceptor_position_first, interception_time_first, _p.interceptors(interceptor_id_first), mobile_it_second, solution.lastOfRoute(_p.interceptors(interceptor_id_second))._mobile);
+					}
+					if (mobile_it_second->_id >= 0) {
+						interception_time_second += solution.evaluate(interceptor_position_second, interception_time_second, _p.interceptors(interceptor_id_second), mobile_it_first, solution.lastOfRoute(_p.interceptors(interceptor_id_first))._mobile);
+					}
 
-			interceptor_position = _p.mobiles()[mobile_it->_mobile.id()].position(interception_time[i]);
-			++mobile_it;
+					// tests if the move improves the results
+					if(std::isfinite(interception_time_first) && isfinite(interception_time_second) && Policy::update(std::max(interception_time_first, interception_time_second, _best_interception_date)))
+					{
+						_best_mobile_candidate_first = *(_p.mobiles()[mobile_it_first->id]);
+						_best_mobile_candidate_second = *(_p.mobiles()[mobile_it_second->id]);
+						_best_interceptor_first = *(_p.interceptors()[interceptor_id_first]);
+						_best_interceptor_second = *(_p.interceptors()[interceptor_id_second]);
+						improved = true;
+					}
+
+					++mobile_it_second;
+				}
+				++mobile_it_first;
+			}
+
+			++interceptor_id_second;
 		}
+		++interceptor_id_first;
 	}
 
-	// test max
-	
-	std::cout << "Result Cross0: " << interception_time[0] << std::endl;
-	std::cout << "Result Cross1: " << interception_time[1] << std::endl;
-	
-	std::cout << "Route0: " << solution.lastInterceptionTime(interceptor[0]->id()) << std::endl;
-	std::cout << "Route1: " << solution.lastInterceptionTime(interceptor[1]->id()) << std::endl;
-	
-	improved = std::max(interception_time[0], interception_time[1]) < std::max(solution.lastInterceptionTime(interceptor[0]->id()), solution.lastInterceptionTime(interceptor[1]->id()));
-	
 	return improved;
 }
 
 template <typename Policy>
 void Move2Opt<Policy>::commit(Solution & solution)
 {
-	
+
 }
 
 
