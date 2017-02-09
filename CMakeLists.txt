@@ -72,6 +72,7 @@ set ( ZZ3_HEADERS_TEST
 	  tests/insertmove_tests.hpp
 	  tests/deletemove_tests.hpp
 	  tests/crossmove_tests.hpp
+	  tests/move2opt_tests.hpp
     )
 
 set ( ZZ3_SOURCES_TEST
