@@ -122,7 +122,7 @@ private:
 	Time					_best_interception_date;
 
 public:
-	Move2Opt(Problem & p, int m0, int m1);
+	Move2Opt();
 	virtual ~Move2Opt();
 
 	virtual bool scan(const Solution &);
@@ -153,6 +153,29 @@ public:
 	virtual void commit(Solution &);
 };
 
+
+// ---------------------------------------------------------------------------------------------------------------------
+// MOVE 2 ROUTES MOVE
+// ---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief Movement to extract a mobile from a route and insert it into another one.
+ */
+template <typename Policy = FirstAvailablePolicy>
+class MoveMove2Routes : public Move
+{
+private:
+	const Mobile * 			_best_mobile_candidate;
+	const Mobile * 			_best_mobile_insertion_prev;
+	const Interceptor *		_best_interceptor_insertion;
+	Time 					_best_interception_date;
+
+public:
+	MoveMove2Routes();
+	virtual ~MoveMove2Routes();
+
+	virtual bool scan(const Solution &);
+	virtual void commit(Solution &);
+};
 
 #include "move.cxx"
 #endif

@@ -4,7 +4,11 @@
 // INSERT MOVE
 // ---------------------------------------------------------------------------------------------------------------------
 template <typename Policy>
-MoveInsert<Policy>::MoveInsert() : _best_interception_date(-1) {}
+MoveInsert<Policy>::MoveInsert() :
+	_best_mobile_candidate(nullptr),
+	_best_mobile_prev_index(-1),
+	_best_interceptor(nullptr),
+	_best_interception_date(-1) {}
 
 template <typename Policy>
 MoveInsert<Policy>::~MoveInsert() {}
@@ -106,7 +110,11 @@ void MoveInsert<Policy>::commit(Solution & solution)
 // EXTRACT MOVE
 // ---------------------------------------------------------------------------------------------------------------------
 template <typename Policy>
-MoveExtract<Policy>::MoveExtract() {}
+MoveExtract<Policy>::MoveExtract() :
+	_best_mobile_candidate(nullptr),
+	_best_interception_date(-1.),
+	_best_recompute_from(nullptr)
+{}
 
 template <typename Policy>
 MoveExtract<Policy>::~MoveExtract() {}
@@ -282,7 +290,11 @@ void Move2Opt<Policy>::commit(Solution & solution)
 // REPLACE MOVE
 // ---------------------------------------------------------------------------------------------------------------------
 template <typename Policy>
-MoveReplace<Policy>::MoveReplace() : _best_mobile_in(nullptr), _best_mobile_out(nullptr), _best_interceptor(nullptr), _best_interception_date(-1.)
+MoveReplace<Policy>::MoveReplace() :
+	_best_mobile_in(nullptr),
+	_best_mobile_out(nullptr),
+	_best_interceptor(nullptr),
+	_best_interception_date(-1.)
 {}
 
 template <typename Policy>
@@ -360,4 +372,137 @@ void MoveReplace<Policy>::commit(Solution & solution)
 	solution.insertAfter(*_best_mobile_out, *_best_interceptor, *_best_mobile_in, _best_interception_date);
 	solution.remove(*_best_mobile_out);
 	solution.recomputeFrom(*_best_mobile_in);
+}
+
+
+// ---------------------------------------------------------------------------------------------------------------------
+// MOVE 2 ROUTES MOVE
+// ---------------------------------------------------------------------------------------------------------------------
+template <typename Policy>
+MoveMove2Routes<Policy>::MoveMove2Routes() :
+	_best_mobile_candidate(nullptr),
+	_best_mobile_insertion_prev(nullptr),
+	_best_interceptor_insertion(nullptr),
+	_best_interception_date(-1.)
+{}
+
+template<typename Policy>
+MoveMove2Routes<Policy>::~MoveMove2Routes()
+{}
+
+template<typename Policy>
+bool MoveMove2Routes<Policy>::scan(const Solution & solution)
+{
+	const Problem & problem = solution.problem();
+	bool improved = false;
+	Policy::reset();
+	const Interceptor * interceptor_extraction;
+	const Interceptor * interceptor_insertion;
+	Time extraction_interception_date;
+	Time insertion_interception_date;
+	_best_interception_date = solution.worstInterceptionTime();
+	Location extraction_interceptor_position;
+	Location insertion_interceptor_position;
+	unsigned interceptor_extraction_id = 0;
+	unsigned interceptor_insertion_id;
+	const Solution::MobileNode * previousNode;
+
+	// Find a route
+	while (interceptor_extraction_id < problem.nbInterceptors() && Policy::keepOn()) {
+		interceptor_extraction = &(problem.interceptors()[interceptor_extraction_id]);
+		Solution::const_iterator position_extraction_it = solution.begin(*interceptor_extraction);
+		// Find a mobile for extraction
+		while (position_extraction_it != solution.end(*interceptor_extraction) && Policy::keepOn()) {
+			interceptor_insertion_id = 0;
+			// Find an insertion route
+			while (interceptor_insertion_id < problem.nbInterceptors() && Policy::keepOn()) {
+				if (interceptor_extraction_id != interceptor_insertion_id) {
+					interceptor_insertion = &(problem.interceptors()[interceptor_insertion_id]);
+					Solution::const_iterator position_insertion_it = solution.begin(*interceptor_insertion);
+					// Find an insertion position
+					//TODO: other solution with n+1 positions
+					//TODO: Test
+					while (position_insertion_it != solution.end(*interceptor_insertion) && Policy::keepOn()) {
+						//Check feasibility
+
+						//Extraction
+						if (position_extraction_it->_prev < 0) {
+							// First of route
+							extraction_interception_date = 0.;
+							extraction_interceptor_position = interceptor_extraction->position();
+						} else {
+							// Into the route
+							previousNode = &(solution.mobile((unsigned) position_extraction_it->_prev));
+
+							extraction_interception_date = previousNode->_date;
+							extraction_interceptor_position = previousNode->_mobile.position(extraction_interception_date);
+						}
+						// Get the time to catch the rest of the route (same order), if any.
+						if (position_extraction_it->_next >= 0) {
+							// Not end of route
+							extraction_interception_date += solution.evaluate(extraction_interceptor_position, extraction_interception_date, *interceptor_extraction, problem.mobiles()[position_extraction_it->_next], solution.lastOfRoute(*interceptor_extraction)._mobile);
+						}
+
+						//Insertion
+						if (position_insertion_it->_prev < 0) {
+							// First of route
+							insertion_interception_date = 0.;
+							insertion_interceptor_position = interceptor_insertion->position();
+						} else {
+							// Into the route
+							previousNode = &(solution.mobile((unsigned) position_insertion_it->_prev));
+
+							insertion_interception_date = previousNode->_date;
+							insertion_interceptor_position = previousNode->_mobile.position(insertion_interception_date);
+						}
+						// Catch the mobile
+						insertion_interception_date += interceptor_insertion->computeInterception(insertion_interceptor_position, position_extraction_it->_mobile, insertion_interception_date);
+						insertion_interceptor_position = position_extraction_it->_mobile.position(insertion_interception_date);
+
+						// Get the time to catch the rest of the route (same order), if any.
+						if (position_insertion_it->_next >= 0) {
+							// Not end of route
+							insertion_interception_date += solution.evaluate(insertion_interceptor_position, insertion_interception_date, *interceptor_insertion, position_insertion_it->_mobile, solution.lastOfRoute(*interceptor_insertion)._mobile);
+						}
+						//Compare
+						if (std::isfinite(insertion_interception_date)
+								&& std::isfinite(extraction_interception_date)
+								&& Policy::update(std::max(extraction_interception_date,insertion_interception_date),_best_interception_date)) {
+							// Update results
+							_best_mobile_candidate = &(position_extraction_it->_mobile);
+							_best_interceptor_insertion = interceptor_insertion;
+							if (position_insertion_it->_prev >= 0) {
+								_best_mobile_insertion_prev = &(solution.mobile(position_insertion_it->_prev)._mobile);
+							} else {
+								_best_mobile_insertion_prev = nullptr;
+							}
+							improved = true;
+						}
+						++position_insertion_it;
+					}
+				}
+				++interceptor_insertion_id;
+			}
+			++position_extraction_it;
+		}
+		++interceptor_extraction_id;
+	}
+
+	return improved;
+}
+
+template<typename Policy>
+void MoveMove2Routes<Policy>::commit(Solution & solution)
+{
+	int extraction_next_index = solution.mobile(_best_mobile_candidate->id())._next;
+	solution.remove(*_best_mobile_candidate);
+	if (_best_mobile_insertion_prev != nullptr) {
+		solution.insertAfter(*_best_mobile_candidate, *_best_interceptor_insertion, *_best_mobile_insertion_prev, _best_interception_date);
+	} else {
+		solution.prepend(*_best_interceptor_insertion, *_best_mobile_candidate, _best_interception_date);
+	}
+	if (extraction_next_index != -1) {
+		solution.recomputeFrom((unsigned) extraction_next_index);
+	}
+	solution.recomputeFrom(*_best_mobile_candidate);
 }
