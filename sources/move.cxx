@@ -198,13 +198,14 @@ Move2Opt<Policy>::~Move2Opt() {}
 template <typename Policy>
 bool Move2Opt<Policy>::scan(const Solution & solution)
 {
-	const Problem & _p = solution.problem(); // uncomment after refactoring
+	const Problem & _p = solution.problem();
+	Policy::reset();
 	bool improved = false;
 	_best_interception_date = solution.worstInterceptionTime();
 	unsigned interceptor_id_first = 0;
 	unsigned interceptor_id_second = 1;
-	Solution::const_iterator mobile_it_first;
-	Solution::const_iterator mobile_it_second;
+	Solution::const_iterator mobile_it_first = NULL;
+	Solution::const_iterator mobile_it_second = NULL;
 	Time interception_time_first = 0;
 	Time interception_time_second = 0;
 	Location interceptor_position_first;
@@ -213,23 +214,30 @@ bool Move2Opt<Policy>::scan(const Solution & solution)
 	// chooses an interceptor
 	while(interceptor_id_first < _p.nbInterceptors()-1 && Policy::keepOn())
 	{
+		std::cout << "int_first: " << interceptor_id_first << std::endl;
 		interceptor_id_second = interceptor_id_first+1;
 		// chooses an interceptor after interceptor_id_first
 		while(interceptor_id_second < _p.nbInterceptors() && Policy::keepOn())
 		{
-			// for each mobile in the route of interceptor_id_first
+			std::cout << "int_second: " << interceptor_id_first << std::endl;
+
+			// for each mobile+1 in the route of interceptor_id_first
 			mobile_it_first = solution.begin(_p.interceptors()[interceptor_id_first]);
 			while(mobile_it_first != solution.end(_p.interceptors()[interceptor_id_first]) && Policy::keepOn())
 			{
-				// for each mobile in the route of interceptor_id_second
+				std::cout << "mob_first: " << mobile_it_first->_prev << std::endl;
+
+				// for each mobile+1 in the route of interceptor_id_second
 				mobile_it_second = solution.begin(_p.interceptors()[interceptor_id_second]);
 				while(mobile_it_second != solution.end(_p.interceptors()[interceptor_id_second]) && Policy::keepOn())
 				{
+					std::cout << "mob_second: " << mobile_it_second->_prev << std::endl;
+
 					// computes interception time of the mobiles previous mobile_it_first and second
 					if(mobile_it_first->_prev == -1)
 					{
 						interception_time_first = 0;
-						interceptor_position_first = _p.interceptors(interceptor_id_first)._id;
+						interceptor_position_first = _p.interceptors()[interceptor_id_first].position();
 					}
 					else
 					{
@@ -239,7 +247,7 @@ bool Move2Opt<Policy>::scan(const Solution & solution)
 					if(mobile_it_second->_prev == -1)
 					{
 						interception_time_second = 0;
-						interceptor_position_second = _p.interceptors(interceptor_id_second)._id;
+						interceptor_position_second = _p.interceptors()[interceptor_id_second].position();
 					}
 					else
 					{
@@ -249,20 +257,22 @@ bool Move2Opt<Policy>::scan(const Solution & solution)
 
 					// evaluates the final interception time of each route after crossing the mobiles
 
-					if (mobile_it_first->_id >= 0) {
-						interception_time_first += solution.evaluate(interceptor_position_first, interception_time_first, _p.interceptors(interceptor_id_first), mobile_it_second, solution.lastOfRoute(_p.interceptors(interceptor_id_second))._mobile);
+					if (mobile_it_first->_mobile.id() >= 0) {
+						interception_time_first += solution.evaluate(interceptor_position_first, interception_time_first, _p.interceptors()[interceptor_id_first], mobile_it_second->_mobile, solution.lastOfRoute(_p.interceptors()[interceptor_id_second])._mobile);
 					}
-					if (mobile_it_second->_id >= 0) {
-						interception_time_second += solution.evaluate(interceptor_position_second, interception_time_second, _p.interceptors(interceptor_id_second), mobile_it_first, solution.lastOfRoute(_p.interceptors(interceptor_id_first))._mobile);
+					if (mobile_it_second->_mobile.id() >= 0) {
+						interception_time_second += solution.evaluate(interceptor_position_second, interception_time_second, _p.interceptors()[interceptor_id_second], mobile_it_first->_mobile, solution.lastOfRoute(_p.interceptors()[interceptor_id_first])._mobile);
 					}
 
+					//std::cout << "res: " << std::max(interception_time_first, interception_time_second) << std::endl;
+
 					// tests if the move improves the results
-					if(std::isfinite(interception_time_first) && isfinite(interception_time_second) && Policy::update(std::max(interception_time_first, interception_time_second, _best_interception_date)))
+					if(std::isfinite(interception_time_first) && std::isfinite(interception_time_second) && Policy::update(std::max(interception_time_first, interception_time_second), _best_interception_date))
 					{
-						_best_mobile_candidate_first = *(_p.mobiles()[mobile_it_first->id]);
-						_best_mobile_candidate_second = *(_p.mobiles()[mobile_it_second->id]);
-						_best_interceptor_first = *(_p.interceptors()[interceptor_id_first]);
-						_best_interceptor_second = *(_p.interceptors()[interceptor_id_second]);
+						_best_mobile_candidate_first = &(mobile_it_first->_mobile);
+						_best_mobile_candidate_second = &(mobile_it_second->_mobile);
+						_best_interceptor_first = &(_p.interceptors()[interceptor_id_first]);
+						_best_interceptor_second = &(_p.interceptors()[interceptor_id_second]);
 						improved = true;
 					}
 
@@ -275,6 +285,8 @@ bool Move2Opt<Policy>::scan(const Solution & solution)
 		}
 		++interceptor_id_first;
 	}
+
+	std::cout << "scan finished" << std::endl;
 
 	return improved;
 }
@@ -372,6 +384,37 @@ void MoveReplace<Policy>::commit(Solution & solution)
 	solution.insertAfter(*_best_mobile_out, *_best_interceptor, *_best_mobile_in, _best_interception_date);
 	solution.remove(*_best_mobile_out);
 	solution.recomputeFrom(*_best_mobile_in);
+}
+
+
+// ---------------------------------------------------------------------------------------------------------------------
+// MOVE 1 ROUTE MOVE
+// ---------------------------------------------------------------------------------------------------------------------
+template <typename Policy>
+MoveMove1Route<Policy>::MoveMove1Route()
+{}
+
+template <typename Policy>
+MoveMove1Route<Policy>::~MoveMove1Route()
+{}
+
+template <typename Policy>
+bool MoveMove1Route<Policy>::scan(const Solution & solution)
+{
+	//TODO: comment it!
+	const Problem & problem = solution.problem();
+	Policy::reset();
+	bool improved = false;
+
+	_best_interception_date = solution.worstInterceptionTime();
+
+	return improved;
+}
+
+template <typename Policy>
+void MoveMove1Route<Policy>::commit(Solution & solution)
+{
+
 }
 
 
@@ -487,7 +530,7 @@ bool MoveMove2Routes<Policy>::scan(const Solution & solution)
 		}
 		++interceptor_extraction_id;
 	}
-
+	
 	return improved;
 }
 
@@ -505,4 +548,67 @@ void MoveMove2Routes<Policy>::commit(Solution & solution)
 		solution.recomputeFrom((unsigned) extraction_next_index);
 	}
 	solution.recomputeFrom(*_best_mobile_candidate);
+}
+
+
+// ---------------------------------------------------------------------------------------------------------------------
+// SWAP1ROUTE MOVE
+// ---------------------------------------------------------------------------------------------------------------------
+template <typename Policy>
+MoveSwap1Route<Policy>::MoveSwap1Route()
+{}
+
+template <typename Policy>
+MoveSwap1Route<Policy>::~MoveSwap1Route()
+{}
+
+template <typename Policy>
+bool MoveSwap1Route<Policy>::scan(const Solution & solution)
+{
+	//TODO: comment it!
+	const Problem & problem = solution.problem();
+	Policy::reset();
+	bool improved = false;
+
+	_best_interception_date = solution.worstInterceptionTime();
+
+	return improved;
+}
+
+template <typename Policy>
+void MoveSwap1Route<Policy>::commit(Solution & solution)
+{
+
+}
+
+
+// ---------------------------------------------------------------------------------------------------------------------
+// SWAP2ROUTES MOVE
+// ---------------------------------------------------------------------------------------------------------------------
+template <typename Policy>
+MoveSwap2Routes<Policy>::MoveSwap2Routes()
+{}
+
+template <typename Policy>
+MoveSwap2Routes<Policy>::~MoveSwap2Routes()
+{}
+
+template <typename Policy>
+bool MoveSwap2Routes<Policy>::scan(const Solution & solution)
+{
+	//TODO: comment it!
+	const Problem & problem = solution.problem();
+	Policy::reset();
+	bool improved = false;
+
+	_best_interception_date = solution.worstInterceptionTime();
+
+	return improved;
+}
+
+template <typename Policy>
+void MoveSwap2Routes<Policy>::commit(Solution & solution)
+{
+
+
 }

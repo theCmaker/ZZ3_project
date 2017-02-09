@@ -155,6 +155,29 @@ public:
 
 
 // ---------------------------------------------------------------------------------------------------------------------
+// MOVE 1 ROUTE MOVE
+// ---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief Movement to move a mobile in another place in its route.
+ */
+template <typename Policy = FirstAvailablePolicy>
+class MoveMove1Route : public Move
+{
+private:
+	const Mobile * 			_best_mobile_move;
+	const Mobile * 			_best_mobile_prev;
+	Time 					_best_interception_date;
+
+public:
+	MoveMove1Route();
+	virtual ~MoveMove1Route();
+
+	virtual bool scan(const Solution &);
+	virtual void commit(Solution &);
+};
+
+
+// ---------------------------------------------------------------------------------------------------------------------
 // MOVE 2 ROUTES MOVE
 // ---------------------------------------------------------------------------------------------------------------------
 /**
@@ -172,6 +195,52 @@ private:
 public:
 	MoveMove2Routes();
 	virtual ~MoveMove2Routes();
+
+	virtual bool scan(const Solution &);
+	virtual void commit(Solution &);
+};
+
+
+// ---------------------------------------------------------------------------------------------------------------------
+// SWAP1ROUTE MOVE
+// ---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief Movement to swap a mobile with another mobile in its route.
+ */
+template <typename Policy = FirstAvailablePolicy>
+class MoveSwap1Route : public Move
+{
+private:
+	const Mobile * 			_best_mobile_swap1;
+	const Mobile * 			_best_mobile_swap2;
+	Time 					_best_interception_date;
+
+public:
+	MoveSwap1Route();
+	virtual ~MoveSwap1Route();
+
+	virtual bool scan(const Solution &);
+	virtual void commit(Solution &);
+};
+
+
+// ---------------------------------------------------------------------------------------------------------------------
+// SWAP2ROUTES MOVE
+// ---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief Movement to swap 2 mobiles in 2 routes.
+ */
+template <typename Policy = FirstAvailablePolicy>
+class MoveSwap2Routes : public Move
+{
+private:
+	const Mobile * 			_best_mobile_swap1;
+	const Mobile * 			_best_mobile_swap2;
+	Time 					_best_interception_date;
+
+public:
+	MoveSwap2Routes();
+	virtual ~MoveSwap2Routes();
 
 	virtual bool scan(const Solution &);
 	virtual void commit(Solution &);
