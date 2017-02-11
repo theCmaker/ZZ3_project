@@ -9,6 +9,7 @@
 #include "units.hpp"
 #include "mobile.hpp"
 #include <iostream>
+#include <limits>
 
 class Depot;
 
@@ -22,6 +23,7 @@ class Interceptor
 		unsigned	_id;		///< The id of the interceptor
 		Location	_position;	///< Start position
 		Speed		_speed;		///< Velocity (fixed)
+		Time		_range;		///< Interceptor range (in time units)
 		const Depot *_depot;	///< Attached repository
 		
 		/**
@@ -32,6 +34,8 @@ class Interceptor
 
 
 	public:
+		static constexpr double INTERCEPTION_TIME_NO_FUEL = std::numeric_limits<Time>::infinity(); ///< Interception date when tank becomes empty
+
 		//Constructors
 		/**
 		 * @brief Default constructor
@@ -90,6 +94,10 @@ class Interceptor
 		 */
 		const Depot	   * depot()	const;
 
+		/**
+		 * @brief Return the range
+		 */
+			  Time		 range() const;
 
 		// Setters
 		/**
@@ -106,6 +114,12 @@ class Interceptor
 		 */
 		Interceptor &	speed(const Speed);
 
+		/**
+		 * @brief Modify the range.
+		 * @param range New range.
+		 * @return A reference to the interceptor to chain calls.
+		 */
+		Interceptor &	range(Time range);
 
 		// Methods
 		/**

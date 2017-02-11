@@ -1,7 +1,6 @@
 #include "interceptor.hpp"
 #include "depot.hpp"
 #include <cmath>
-#include <limits>
 
 Interceptor::Interceptor(unsigned id) :
 	_id(id),
@@ -53,6 +52,11 @@ const Depot * Interceptor::depot() const
 	return _depot;
 }
 
+Time Interceptor::range() const
+{
+	return _range;
+}
+
 // Setters
 Interceptor & Interceptor::position(const Location & l)
 {
@@ -63,6 +67,12 @@ Interceptor & Interceptor::position(const Location & l)
 Interceptor & Interceptor::speed(const Speed s)
 {
 	_speed = s;
+	return *this;
+}
+
+Interceptor & Interceptor::range(Time range)
+{
+	_range = range;
 	return *this;
 }
 
@@ -170,6 +180,9 @@ Time Interceptor::computeInterception(Location position, const Mobile & m, Time 
 				}
 			}
 		}
+	}
+	if (std::isfinite(tres) && tres > _range) {
+		tres = INTERCEPTION_TIME_NO_FUEL;
 	}
 	return tres;
 }
