@@ -45,6 +45,7 @@ Problem::Problem(const char * filename)
 	Speed		dx = 0,
 				dy = 0.,
 				s = 0.;
+	Time		r = 0.;
 	std::string buf;
 	std::ifstream ifs (filename,std::ifstream::in);
 	if (!ifs.is_open()) {
@@ -71,8 +72,8 @@ Problem::Problem(const char * filename)
 					}
 				} else if (buf.compare(0,12,"INTERCEPTORS") == 0) {
 					unsigned i = 0;
-					while (i < nb_interceptors && ifs >> d >> s) {
-						_interceptors.emplace_back(_depots[d],s,i);
+					while (i < nb_interceptors && ifs >> d >> s >> r) {
+						_interceptors.emplace_back(_depots[d],s,i,r);
 						_depots[d].addInterceptor(_interceptors.back());
 						++i;
 					}
