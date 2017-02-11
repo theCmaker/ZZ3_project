@@ -48,8 +48,9 @@ class Interceptor
 		 * @param l Start position.
 		 * @param s Velocity.
 		 * @param id The id of the interceptor.
+		 * @param range The fuel range.
 		 */
-		Interceptor(Location &, Speed, unsigned = 0);
+		Interceptor(Location &, Speed, unsigned = 0, Time range = std::numeric_limits<Time>::infinity());
 		
 		/**
 		 * @brief Constructor
@@ -57,16 +58,18 @@ class Interceptor
 		 * @param y y value of the start position (@see Location).
 		 * @param s Velocity.
 		 * @param id The id of the interceptor.
+		 * @param range The fuel range.
 		 */
-		Interceptor(Distance, Distance, Speed, unsigned = 0);
+		Interceptor(Distance, Distance, Speed, unsigned = 0, Time range = std::numeric_limits<Time>::infinity());
 		
 		/**
 		 * @brief Constructor
 		 * @param d Attached repository.
 		 * @param s Velocity.
 		 * @param id The id of the interceptor.
+		 * @param range The fuel range.
 		 */
-		Interceptor(const Depot &, Speed, unsigned = 0);
+		Interceptor(const Depot &, Speed, unsigned = 0, Time range = std::numeric_limits<Time>::infinity());
 		
 		/**
 		 * @brief Destructor

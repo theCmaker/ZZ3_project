@@ -6,27 +6,31 @@ Interceptor::Interceptor(unsigned id) :
 	_id(id),
 	_position(0.,0.),
 	_speed(0.),
+	_range(std::numeric_limits<Time>::infinity()),
 	_depot(nullptr)
 {}
 
-Interceptor::Interceptor(Location & l, Speed s, unsigned id) :
+Interceptor::Interceptor(Location & l, Speed s, unsigned id, Time range) :
 	_id(id),
 	_position(l),
 	_speed(s),
+	_range(range),
 	_depot(nullptr)
 {}
 
-Interceptor::Interceptor(Distance x, Distance y, Speed s, unsigned id) :
+Interceptor::Interceptor(Distance x, Distance y, Speed s, unsigned id, Time range) :
 	_id(id),
 	_position(x,y),
 	_speed(s),
+	_range(range),
 	_depot(nullptr)
 {}
 
-Interceptor::Interceptor(const Depot & d, Speed s, unsigned id) :
+Interceptor::Interceptor(const Depot & d, Speed s, unsigned id, Time range) :
 	_id(id),
 	_position(d.position()),
 	_speed(s),
+	_range(range),
 	_depot(&d)
 {}
 
