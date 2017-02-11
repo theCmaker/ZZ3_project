@@ -484,11 +484,17 @@ std::ostream & operator<< (std::ostream & o, const Solution & s)
 	{
 		o << "[" << s[interceptor_id]._interceptor.id() << ":" << std::endl;
 		mobile_id = s[interceptor_id]._first;
+		o << "\t[D" << s[interceptor_id]._interceptor.depot()->id() << ";pos" << s[interceptor_id]._interceptor.position()
+		  << "t(0)]" << std::endl;
 		while (mobile_id != -1)
 		{
 			o << "\t[" << s.mobile(mobile_id)._mobile.id() << ";pos" << s.mobile(mobile_id)._mobile.position(s.mobile(mobile_id)._date) << ";t(" << s.mobile(mobile_id)._date << ")]" << std::endl;
 			mobile_id = s.mobile(mobile_id)._next;
 		}
+		Solution::MobileNode last = s.lastOfRoute(s.problem().interceptors()[interceptor_id]);
+		o << "\t[D" << s[interceptor_id]._interceptor.depot()->id() << ";pos" << s[interceptor_id]._interceptor.position()
+		  << "t(" << last._date + s[interceptor_id]._interceptor.timeFromTo(last._mobile.position(last._date), s[interceptor_id]._interceptor.position())
+		  << ")]" << std::endl;
 		o << "]" << std::endl;
 		interceptor_id = s[interceptor_id]._next;
 	}
