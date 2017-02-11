@@ -185,14 +185,20 @@ Time Interceptor::computeInterception(Location position, const Mobile & m, Time 
 			}
 		}
 	}
-	if (std::isfinite(tres) && tres > _range) {
+	if (std::isfinite(tres) && tres+t+timeFromTo(l0,_depot->position()) > _range) {
 		tres = INTERCEPTION_TIME_NO_FUEL;
 	}
 	return tres;
 }
 
+Time Interceptor::timeFromTo(const Location & departure, const Location & arrival) const
+{
+	Distance d = std::sqrt((arrival._x - departure._x)*(arrival._x - departure._x) + (arrival._y - departure._y)*(arrival._y - departure._y));
+	return d / _speed;
+}
+
 
 std::ostream & operator << (std::ostream & o, const Interceptor & i) {
-	o << "[" << i.id() << " pos(" << i.position()._x << "," << i.position()._y << ");spd(" << i.speed() << ")]";
+	o << "[" << i.id() << " pos(" << i.position()._x << "," << i.position()._y << ");spd(" << i.speed() << ");range(" << i.range() << ")]";
 	return o;
 }

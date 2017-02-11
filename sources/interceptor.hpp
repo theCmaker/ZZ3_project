@@ -142,6 +142,13 @@ class Interceptor
 		 */
 		Time computeInterception(Location, const Mobile &, Time)	const;
 
+		/**
+		 * @brief Compute the time needed to go from a position to another.
+		 * @param departure Departure position
+		 * @param arrival Arrival position
+		 */
+		Time timeFromTo(const Location & departure, const Location & arrival) const;
+
 };
 
 /**
