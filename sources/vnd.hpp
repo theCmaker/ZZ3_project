@@ -22,6 +22,12 @@ public:
 	 * @param sol Solution to be improved
 	 */
 	void run(Solution & sol);
+
+	/**
+	 * @brief Get the movements list.
+	 * @warning Returned list is editable.
+	 */
+	std::vector<Move *> & movements();
 };
 
 #endif // __VND_HPP__
