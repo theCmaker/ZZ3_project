@@ -1,10 +1,13 @@
 #include "vnd.hpp"
 unsigned VND::max_itr = 1000;
 VND::VND() : _list({
-				   new MoveMove2Routes<FirstAvailablePolicy>,
-				   new MoveExtract<BestAvailablePolicy>,
 				   new MoveReplace<FirstAvailablePolicy>,
-				   new MoveInsert<FirstAvailablePolicy>
+				   new MoveExtract<BestAvailablePolicy>,
+				   new MoveInsert<FirstAvailablePolicy>,
+				   new MoveMove2Routes<FirstAvailablePolicy>,
+				   new MoveMove1Route<FirstAvailablePolicy>,
+				   new MoveSwap1Route<FirstAvailablePolicy>,
+				   new MoveSwap2Routes<FirstAvailablePolicy>
 				   })
 {}
 
