@@ -532,7 +532,7 @@ bool MoveMove1Route<Policy>::scan(const Solution & solution)
 template <typename Policy>
 void MoveMove1Route<Policy>::commit(Solution & solution)
 {
-
+	
 }
 
 
