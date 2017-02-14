@@ -165,7 +165,7 @@ class MoveMove1Route : public Move
 {
 private:
 	const Mobile * 			_best_mobile_move;
-	const Mobile * 			_best_mobile_prev;
+	int						_best_mobile_position; // move before this mobile, if -1 at end
 	Time 					_best_interception_date;
 
 public:
