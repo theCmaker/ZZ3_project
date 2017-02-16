@@ -11,7 +11,7 @@
 //---InsertMove---InsertionAtEnd---True---------------------------------------1
 TEST (InsertMoveTest, Scan_InsertionAtEnd_true)
 {
-	bool resultScan;
+	bool resultScan = false;
 	Problem p("../examples/test_5m_2i");
 	std::vector<unsigned> expected_sequence({0,1,2,3});
 	Heuristic_sequence h(p);
@@ -36,7 +36,7 @@ TEST (InsertMoveTest, Scan_InsertionAtEnd_true)
 //---InsertMove---InsertionAtEnd---False--------------------------------------2
 TEST (InsertMoveTest, Scan_InsertionAtEnd_false)
 {
-	bool resultScan;
+	bool resultScan = true;
 	Problem p("../examples/test_5m_2i");
 	std::vector<unsigned> expected_sequence({0,1,2,3});
 	Heuristic_sequence h(p);
@@ -59,7 +59,7 @@ TEST (InsertMoveTest, Scan_InsertionAtEnd_false)
 //---InsertMove---InsertionInTheMiddle---True---------------------------------3
 TEST (InsertMoveTest, Scan_InsertionInTheMiddle_true)
 {
-	bool resultScan;
+	bool resultScan = false;
 	Problem p("../examples/test_5m_2i");
 	std::vector<unsigned> expected_sequence({0,1,2,3});
 	Heuristic_sequence h(p);
@@ -82,7 +82,7 @@ TEST (InsertMoveTest, Scan_InsertionInTheMiddle_true)
 //---InsertMove---InsertionInTheMiddle---False--------------------------------4
 TEST (InsertMoveTest, Scan_InsertionInTheMiddle_false)
 {
-	bool resultScan;
+	bool resultScan = true;
 	Problem p("../examples/test_5m_2i");
 	std::vector<unsigned> expected_sequence({0,1,2,3});
 	Heuristic_sequence h(p);
@@ -105,7 +105,7 @@ TEST (InsertMoveTest, Scan_InsertionInTheMiddle_false)
 //---InsertMove---InsertionAhead---True---------------------------------------5
 TEST (InsertMoveTest, Scan_InsertionAhead_true)
 {
-	bool resultScan;
+	bool resultScan = false;
 	Problem p("../examples/test_5m_2i");
 	std::vector<unsigned> expected_sequence({0,1,2,3});
 	Heuristic_sequence h(p);
@@ -128,7 +128,7 @@ TEST (InsertMoveTest, Scan_InsertionAhead_true)
 //---InsertMove---InsertionAhead---False--------------------------------------6
 TEST (InsertMoveTest, Scan_InsertionAhead_false)
 {
-	bool resultScan;
+	bool resultScan = true;
 	Problem p("../examples/test_5m_2i");
 	std::vector<unsigned> expected_sequence({0,1,2,3});
 	Heuristic_sequence h(p);
@@ -152,7 +152,7 @@ TEST (InsertMoveTest, Scan_InsertionAhead_false)
 //---InsertMove---InsertionAtEnd---Commit-------------------------------------7
 TEST (InsertMoveTest, Commit_InsertionAtEnd)
 {
-	bool resultScan;
+	bool resultScan = false;
 	Problem p("../examples/test_5m_2i");
 	std::vector<unsigned> expected_sequence({0,1,2,3});
 	Heuristic_sequence h(p);
@@ -200,7 +200,7 @@ TEST (InsertMoveTest, Commit_InsertionAtEnd)
 //---InsertMove---InsertionInTheMiddle---Commit-------------------------------8
 TEST (InsertMoveTest, Commit_InsertionInTheMiddle)
 {
-	bool resultScan;
+	bool resultScan = false;
 	Problem p("../examples/test_5m_2i");
 	std::vector<unsigned> expected_sequence({0,1,2,3});
 	Heuristic_sequence h(p);
@@ -248,7 +248,7 @@ TEST (InsertMoveTest, Commit_InsertionInTheMiddle)
 //---InsertMove---InsertionAhead---Commit-------------------------------------9
 TEST (InsertMoveTest, Commit_InsertionAhead)
 {
-	bool resultScan;
+	bool resultScan = false;
 	Problem p("../examples/test_5m_2i");
 	std::vector<unsigned> expected_sequence({0,1,2,3});
 	Heuristic_sequence h(p);

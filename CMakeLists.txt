@@ -27,6 +27,9 @@ endif ()
 
 message ( STATUS "Compiler flags: ${CMAKE_CXX_FLAGS}" )
 
+# Debug
+#set(CMAKE_BUILD_TYPE DEBUG)
+
 # Sources #-----------------------------------------------------------------------------------------
 set ( ZZ3_HEADERS
       sources/depot.hpp
@@ -73,6 +76,9 @@ set ( ZZ3_HEADERS_TEST
 	  tests/deletemove_tests.hpp
 	  tests/crossmove_tests.hpp
 	  tests/move2opt_tests.hpp
+	  tests/moveswap1route_tests.hpp
+	  tests/moveswap2routes_tests.hpp
+	  tests/movemove1route_tests.hpp
     )
 
 set ( ZZ3_SOURCES_TEST
