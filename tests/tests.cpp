@@ -17,6 +17,6 @@
 int main(int argc,char * argv[]) {
  ::testing::InitGoogleTest(&argc,argv);
  //::testing::GTEST_FLAG(filter) = "SequentialTest*:FastestTest*:ProblemTest.ConstructorFile*";
- ::testing::GTEST_FLAG(filter) = "MoveMove1Route*"; //"InsertMoveTest*:DeleteMoveTest*";
+ ::testing::GTEST_FLAG(filter) = "InsertMove*"; //"InsertMoveTest*:DeleteMoveTest*";
  return RUN_ALL_TESTS();
 }
