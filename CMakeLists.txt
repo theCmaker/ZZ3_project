@@ -74,7 +74,6 @@ set ( ZZ3_HEADERS_TEST
 	  tests/sequential_tests.hpp
 	  tests/insertmove_tests.hpp
 	  tests/deletemove_tests.hpp
-	  tests/crossmove_tests.hpp
 	  tests/move2opt_tests.hpp
 	  tests/moveswap1route_tests.hpp
 	  tests/moveswap2routes_tests.hpp
