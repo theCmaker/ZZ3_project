@@ -329,7 +329,24 @@ bool Move2Opt<Policy>::scan(const Solution & solution)
 template <typename Policy>
 void Move2Opt<Policy>::commit(Solution & solution)
 {
+	// removes the sequences in the routes
+	// checks if each route is not empty
+	if(_best_mobile_candidate_first)
+	{
+		solution.removeSeqFrom(*_best_mobile_candidate_first);
+	}
+	if(_best_mobile_candidate_second)
+	{
+		solution.removeSeqFrom(*_best_mobile_candidate_second);
+	}
 
+	// append the sequences in the other route
+	solution.appendSeq(*_best_interceptor_first,*_best_mobile_candidate_second);
+	solution.appendSeq(*_best_interceptor_second,*_best_mobile_candidate_first);
+
+	// updates dates in the nodes
+	solution.recomputeFrom(*_best_mobile_candidate_first);
+	solution.recomputeFrom(*_best_mobile_candidate_second);
 }
 
 
@@ -426,7 +443,10 @@ void MoveReplace<Policy>::commit(Solution & solution)
 // MOVE 1 ROUTE MOVE
 // ---------------------------------------------------------------------------------------------------------------------
 template <typename Policy>
-MoveMove1Route<Policy>::MoveMove1Route()
+MoveMove1Route<Policy>::MoveMove1Route() :	_best_mobile_move(nullptr),
+											_best_mobile_position(-1),
+											_best_interceptor(nullptr),
+											_best_interception_date(-1)
 {}
 
 template <typename Policy>
@@ -436,7 +456,6 @@ MoveMove1Route<Policy>::~MoveMove1Route()
 template <typename Policy>
 bool MoveMove1Route<Policy>::scan(const Solution & solution)
 {
-	//TODO: comment it!
 	const Problem & problem = solution.problem();
 	bool improved = false;
 	Policy::reset();
@@ -486,7 +505,8 @@ bool MoveMove1Route<Policy>::scan(const Solution & solution)
 					if (std::isfinite(interception_date) && Policy::update(interception_date,_best_interception_date)) {
 						// Update results
 						_best_mobile_move = &(mobile_it->_mobile);
-						_best_mobile_position = position_it->_mobile.id();
+						_best_mobile_position = position_it->_prev;
+						_best_interceptor = interceptor;
 						improved = true;
 					}
 
@@ -516,7 +536,8 @@ bool MoveMove1Route<Policy>::scan(const Solution & solution)
 					if (std::isfinite(interception_date) && Policy::update(interception_date,_best_interception_date)) {
 						// Update results
 						_best_mobile_move = &(mobile_it->_mobile);
-						_best_mobile_position = -1;
+						_best_mobile_position = position_it->_prev;
+						_best_interceptor = interceptor;
 						improved = true;
 					}
 				}
@@ -532,7 +553,16 @@ bool MoveMove1Route<Policy>::scan(const Solution & solution)
 template <typename Policy>
 void MoveMove1Route<Policy>::commit(Solution & solution)
 {
-
+	solution.remove(*_best_mobile_move);
+	if(_best_mobile_position == -1)
+	{
+		solution.prepend(*_best_interceptor,*_best_mobile_move,_best_interception_date);
+	}
+	else
+	{
+		solution.insertAfter(_best_mobile_position, _best_interceptor->id(), _best_mobile_move->id(), _best_interception_date);
+	}
+	solution.recomputeFrom(*_best_mobile_move);
 }
 
 
@@ -690,6 +720,7 @@ void MoveMove2Routes<Policy>::commit(Solution & solution)
 template <typename Policy>
 MoveSwap1Route<Policy>::MoveSwap1Route() :	_best_mobile_swap1(nullptr),
 											_best_mobile_swap2(nullptr),
+											_best_interceptor(nullptr),
 											_best_interception_date(-1)
 {}
 
@@ -710,13 +741,14 @@ bool MoveSwap1Route<Policy>::scan(const Solution & solution)
 	Location interceptor_position;
 	const Interceptor * interceptor;
 
-	_best_interception_date = solution.worstInterceptionTime();
+	//_best_interception_date = solution.worstInterceptionTime();
 
 	// for each interceptor if the policy says keep on
 	while (interceptor_id < problem.nbInterceptors() && Policy::keepOn())
 	{
 		std::cout << "interceptor: " << interceptor_id << std::endl;
 		interceptor = &(problem.interceptors()[interceptor_id]);
+		_best_interception_date = solution.lastInterceptionTime(*interceptor);
 		mobile_it_first = solution.begin(*interceptor);
 		// for each mobile in the route
 		while(mobile_it_first != solution.end(*interceptor) && Policy::keepOn())
@@ -781,6 +813,7 @@ bool MoveSwap1Route<Policy>::scan(const Solution & solution)
 					// Update results
 					_best_mobile_swap1 = &(mobile_it_first->_mobile);
 					_best_mobile_swap2 = &(mobile_it_second->_mobile);
+					_best_interceptor = interceptor;
 					improved = true;
 				}
 				++mobile_it_second;
@@ -795,7 +828,22 @@ bool MoveSwap1Route<Policy>::scan(const Solution & solution)
 template <typename Policy>
 void MoveSwap1Route<Policy>::commit(Solution & solution)
 {
-	//TODO: implementation
+	// move of the first mobile to swap
+	int mobile_prev1 = solution.mobile(_best_mobile_swap1->id())._prev;
+	solution.remove(*_best_mobile_swap1);
+	solution.insertAfter(*_best_mobile_swap2,*_best_interceptor,*_best_mobile_swap1,_best_interception_date);
+
+	// move of the second mobile to swap
+	solution.remove(*_best_mobile_swap2);
+	if(mobile_prev1 == -1)
+	{
+		solution.prepend(*_best_interceptor,*_best_mobile_swap2,_best_interception_date);
+	}
+	else
+	{
+		solution.insertAfter(mobile_prev1, _best_interceptor->id(), _best_mobile_swap2->id(), _best_interception_date);
+	}
+	solution.recomputeFrom(solution[_best_interceptor->id()]._first);
 }
 
 
@@ -805,6 +853,8 @@ void MoveSwap1Route<Policy>::commit(Solution & solution)
 template <typename Policy>
 MoveSwap2Routes<Policy>::MoveSwap2Routes() :	_best_mobile_swap1(nullptr),
 												_best_mobile_swap2(nullptr),
+												_best_interceptor1(nullptr),
+												_best_interceptor2(nullptr),
 												_best_interception_date(-1)
 {}
 
@@ -924,6 +974,8 @@ bool MoveSwap2Routes<Policy>::scan(const Solution & solution)
 						// Update results
 						_best_mobile_swap1 = &(mobile_it_first->_mobile);
 						_best_mobile_swap2 = &(mobile_it_second->_mobile);
+						_best_interceptor1 = interceptor_first;
+						_best_interceptor2 = interceptor_second;
 						improved = true;
 					}
 
@@ -942,6 +994,21 @@ bool MoveSwap2Routes<Policy>::scan(const Solution & solution)
 template <typename Policy>
 void MoveSwap2Routes<Policy>::commit(Solution & solution)
 {
-	//TODO: implementation
+	// move of the first mobile to swap
+	int mobile_prev1 = solution.mobile(_best_mobile_swap1->id())._prev;
+	solution.remove(*_best_mobile_swap1);
+	solution.insertAfter(*_best_mobile_swap2,*_best_interceptor2,*_best_mobile_swap1,_best_interception_date);
 
+	// move of the second mobile to swap
+	solution.remove(*_best_mobile_swap2);
+	if(mobile_prev1 == -1)
+	{
+		solution.prepend(*_best_interceptor1,*_best_mobile_swap2,_best_interception_date);
+	}
+	else
+	{
+		solution.insertAfter(mobile_prev1, _best_interceptor1->id(), _best_mobile_swap2->id(), _best_interception_date);
+	}
+	solution.recomputeFrom(*_best_mobile_swap1);
+	solution.recomputeFrom(*_best_mobile_swap2);
 }
