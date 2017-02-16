@@ -58,6 +58,8 @@ TEST (InsertMoveTest, Commit_InsertionEmptyRoute)
 	Solution s0 = h0.solution();
 
 	EXPECT_NEAR(s.lastInterceptionTime(0),s0.lastInterceptionTime(0),1e-6);
+
+	delete move;
 }
 
 //---InsertMove---InsertionAhead---Commit-------------------------------------3
@@ -89,6 +91,8 @@ TEST (InsertMoveTest, Commit_InsertionAhead)
 	Solution s0 = h0.solution();
 
 	EXPECT_NEAR(s.lastInterceptionTime(0),s0.lastInterceptionTime(0),1e-6);
+
+	delete move;
 }
 
 //---InsertMove---InsertionInTheMiddle---Commit-------------------------------------4
@@ -121,6 +125,8 @@ TEST (InsertMoveTest, Commit_InsertionInTheMiddle)
 	Solution s1 = h1.solution();
 
 	EXPECT_NEAR(s.lastInterceptionTime(1),s1.lastInterceptionTime(0),1e-6);
+
+	delete move;
 }
 
 //---InsertMove---InsertionAtEnd---Commit-------------------------------------5
@@ -154,6 +160,8 @@ TEST (InsertMoveTest, Commit_InsertionAtEnd)
 	Solution s0 = h0.solution();
 
 	EXPECT_NEAR(s.lastInterceptionTime(0),s0.lastInterceptionTime(0),1e-6);
+
+	delete move;
 }
 
 
