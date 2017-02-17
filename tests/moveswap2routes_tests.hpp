@@ -1,11 +1,11 @@
-#ifndef __MOVE2OPT_TESTS_HPP__
-#define __MOVE2OPT_TESTS_HPP__
+#ifndef __MOVESWAP2ROUTES_TESTS_HPP__
+#define __MOVESWAP2ROUTES_TESTS_HPP__
 
-//-------------- Tests de la class Move2Opt dans move.hpp -------------------
+//---------- Tests de la classe MoveSwap2Routes dans move.hpp -----------------
 
 //---ScanTests-----------------------------------------------------------------
-//---Move2Opt---Scan---------------True---------------------------------------1
-TEST (Move2OptTest, Scan_true)
+//---MoveSwap2Routes---Scan---------------True--------------------------------1
+TEST (MoveSwap2Routes, Scan_true)
 {
 	bool resultScan;
 	Problem p("../examples/test_40m_5i_4d");
@@ -15,7 +15,9 @@ TEST (Move2OptTest, Scan_true)
 
 	Solution s = h.solution();
 
-	Move2Opt<FirstAvailablePolicy> * move = new Move2Opt<FirstAvailablePolicy>;
+	std::cout << h << std::endl;
+
+	Move * move = new MoveSwap2Routes<FirstAvailablePolicy>;
 	resultScan = move->scan(s);
 
 	EXPECT_TRUE(resultScan);
@@ -23,8 +25,8 @@ TEST (Move2OptTest, Scan_true)
 	delete move;
 }
 
-//---Move2Opt---Commit--------------------------------------------------------2
-TEST (Move2OptTest, Commit)
+//---MoveSwap2Routes---Commit-------------------------------------------------2
+TEST (MoveSwap2Routes, Commit)
 {
 	bool resultScan;
 	Problem p("../examples/test_40m_5i_4d");
@@ -34,7 +36,7 @@ TEST (Move2OptTest, Commit)
 
 	Solution s = h.solution();
 
-	Move * move = new Move2Opt<FirstAvailablePolicy>;
+	Move * move = new MoveSwap2Routes<FirstAvailablePolicy>;
 	resultScan = move->scan(s);
 
 	ASSERT_TRUE(resultScan);
@@ -43,18 +45,18 @@ TEST (Move2OptTest, Commit)
 
 	// interceptor 0
 	EXPECT_EQ(s[0]._first,3);
-	EXPECT_EQ(s.mobile(3)._next,7);
-	EXPECT_EQ(s.mobile(7)._next,-1);
+	EXPECT_EQ(s.mobile(3)._next,-1);
 
 	// interceptor 1
 	EXPECT_EQ(s[1]._first,9);
-	EXPECT_EQ(s.mobile(9)._next,-1);
+	EXPECT_EQ(s.mobile(9)._next,7);
+	EXPECT_EQ(s.mobile(7)._next,-1);
 
 	delete move;
 }
 
-//---Move2Opt---Commit-Date---------------------------------------------------3
-TEST (Move2OptTest, CommitDate)
+//---MoveSwap2Routes---Commit-Date--------------------------------------------3
+TEST (MoveSwap2Routes, CommitDate)
 {
 	bool resultScan;
 	Problem p("../examples/test_40m_5i_4d");
@@ -64,7 +66,7 @@ TEST (Move2OptTest, CommitDate)
 
 	Solution s = h.solution();
 
-	Move * move = new Move2Opt<FirstAvailablePolicy>;
+	Move * move = new MoveSwap2Routes<FirstAvailablePolicy>;
 	resultScan = move->scan(s);
 
 	ASSERT_TRUE(resultScan);
@@ -73,14 +75,14 @@ TEST (Move2OptTest, CommitDate)
 
 	Problem p0("../tests/data/test_40m_1i_0");
 	Heuristic_sequence h0(p0);
-	h0.run({3,7});
+	h0.run({3});
 	Solution s0 = h0.solution();
 
 	EXPECT_NEAR(s.lastInterceptionTime(0),s0.lastInterceptionTime(0),1e-6);
 
 	Problem p1("../tests/data/test_40m_1i_1");
 	Heuristic_sequence h1(p1);
-	h1.run({9});
+	h1.run({9,7});
 	Solution s1 = h1.solution();
 
 	EXPECT_NEAR(s.lastInterceptionTime(1),s1.lastInterceptionTime(0),1e-6);
@@ -88,4 +90,4 @@ TEST (Move2OptTest, CommitDate)
 	delete move;
 }
 
-#endif // MOVE2OPT_TESTS_H
+#endif

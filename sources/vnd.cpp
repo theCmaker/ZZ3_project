@@ -11,6 +11,11 @@ VND::VND() : _list({
 				   })
 {}
 
+VND::VND(std::vector<Move *> & list) :
+	_list(list)
+{}
+
+
 VND::~VND()
 {
 	for (std::vector<Move *>::iterator itr = _list.begin(); itr != _list.end(); ++itr) {

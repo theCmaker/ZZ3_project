@@ -171,6 +171,33 @@ void Solution::insertAfter(const Mobile & m_prev, const Interceptor & i, const M
 	insertAfter(m_prev.id(), i.id(), m.id(), d);
 }
 
+void Solution::appendSeq(const Interceptor & i, const Mobile & m)
+{
+	int interceptor_index = i.id();
+	InterceptorNode * inter_sequence = &(_interceptors[interceptor_index]);
+	int mobile_index = m.id();
+	if (inter_sequence->_first == -1) {
+		// Empty route, add it to the list
+		_interceptors[(unsigned) _last]._next = interceptor_index;
+		inter_sequence->_prev = (int) _last;
+		_last = interceptor_index;
+		inter_sequence->_first = mobile_index;
+	} else {
+		// Simple case
+		_sequence[(unsigned) inter_sequence->_last]._next = mobile_index;
+	}
+	_sequence[mobile_index]._prev = inter_sequence->_last;
+
+	MobileNode * mobile_it = &(_sequence[mobile_index]);
+	while(mobile_it->_next != -1)
+	{
+		mobile_it->_interceptor = &i;
+		mobile_it = &(_sequence[mobile_it->_next]);
+	}
+	mobile_it->_interceptor = &i;
+	inter_sequence->_last = mobile_it->_mobile.id();
+}
+
 void Solution::remove(const Mobile &m)
 {
 	remove(m.id());
@@ -202,7 +229,8 @@ void Solution::remove(unsigned mobile_index)
 		if (next_route != -1) {
 			_interceptors[next_route]._prev = prev_route;
 		} else {
-			_last = next_route;
+			//_last = next_route;
+			_last = prev_route;
 		}
 		if (prev_route != -1) {
 			_interceptors[prev_route]._next = next_route;
@@ -215,6 +243,38 @@ void Solution::remove(unsigned mobile_index)
 	m_node._prev = -1;
 	m_node._date = -1.;
 	m_node._interceptor = nullptr;
+}
+
+void Solution::removeSeqFrom(const Mobile & m)
+{
+	MobileNode & m_node = _sequence[m.id()];
+	const Interceptor * interceptor = m_node._interceptor;
+
+	if (m_node._prev == -1) {
+		// Node is the first of the route, all the nodes will be removed
+		_interceptors[interceptor->id()]._first = -1;
+		//_interceptors[interceptor->id()]._last = -1;
+	}
+
+	_interceptors[interceptor->id()]._last = m_node._prev;
+
+	if (_interceptors[interceptor->id()]._first == -1 && _interceptors[interceptor->id()]._last == -1) {
+		// Route is now empty, we need to remove if from the list of the routes.
+		int next_route = _interceptors[interceptor->id()]._next;
+		int prev_route = _interceptors[interceptor->id()]._prev;
+		if (next_route != -1) {
+			_interceptors[next_route]._prev = prev_route;
+		} else {
+			_last = prev_route;
+		}
+		if (prev_route != -1) {
+			_interceptors[prev_route]._next = next_route;
+		} else {
+			_first = next_route;
+		}
+		_interceptors[interceptor->id()]._next = -1;
+		_interceptors[interceptor->id()]._prev = -1;
+	}
 }
 
 Time Solution::recomputeFrom(unsigned mobile_index)

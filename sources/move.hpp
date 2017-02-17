@@ -165,7 +165,8 @@ class MoveMove1Route : public Move
 {
 private:
 	const Mobile * 			_best_mobile_move;
-	int						_best_mobile_position; // move before this mobile, if -1 at end
+	int						_best_mobile_position; // move after this mobile
+	const Interceptor *		_best_interceptor;
 	Time 					_best_interception_date;
 
 public:
@@ -213,6 +214,7 @@ class MoveSwap1Route : public Move
 private:
 	const Mobile * 			_best_mobile_swap1;
 	const Mobile * 			_best_mobile_swap2;
+	const Interceptor *		_best_interceptor;
 	Time 					_best_interception_date;
 
 public:
@@ -236,6 +238,8 @@ class MoveSwap2Routes : public Move
 private:
 	const Mobile * 			_best_mobile_swap1;
 	const Mobile * 			_best_mobile_swap2;
+	const Interceptor *		_best_interceptor1;
+	const Interceptor *		_best_interceptor2;
 	Time 					_best_interception_date;
 
 public:
