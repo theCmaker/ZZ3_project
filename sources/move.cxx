@@ -23,6 +23,7 @@ bool MoveInsert<Policy>::scan(const Solution & solution)
 	const Interceptor * interceptor;
 	Time interception_date;
 	_best_interception_date = solution.worstInterceptionTime();
+	//_best_interception_date = Policy::maxAcceptableTime();
 	Location interceptor_position;
 	unsigned interceptor_id = 0;
 
@@ -131,6 +132,10 @@ bool MoveExtract<Policy>::scan(const Solution & solution)
 		const Solution::MobileNode * previousNode;
 		const Interceptor & interceptor = solution.worstRoute();
 		Time interception_date;
+		//unsigned best_mobile_number = solution.totalInterceptionCount();
+		unsigned best_mobile_number = Policy::minAcceptableCount();
+		unsigned possible_mobile_number = solution.totalInterceptionCount() - 1;
+		//TODO: check all possible positions in other routes
 		Location interceptor_position;
 		_best_interception_date = solution.lastInterceptionTime(interceptor); // Worst time is the time for the worst route
 
@@ -156,7 +161,7 @@ bool MoveExtract<Policy>::scan(const Solution & solution)
 				// Not end of route
 				interception_date += solution.evaluate(interceptor_position, interception_date, interceptor, _p.mobiles()[position_it->_next], solution.lastOfRoute(interceptor)._mobile);
 			}
-			if (std::isfinite(interception_date) && Policy::update(interception_date,_best_interception_date)) {
+			if (std::isfinite(interception_date) && Policy::update(interception_date, _best_interception_date, possible_mobile_number, best_mobile_number)) {
 				// Update results
 				_best_mobile_candidate = &(position_it->_mobile);
 				if (position_it->_next >= 0) {
@@ -201,7 +206,8 @@ bool Move2Opt<Policy>::scan(const Solution & solution)
 	const Problem & _p = solution.problem();
 	Policy::reset();
 	bool improved = false;
-	_best_interception_date = solution.worstInterceptionTime();
+	//_best_interception_date = solution.worstInterceptionTime();
+	_best_interception_date = Policy::maxAcceptableTime();
 	unsigned interceptor_id_first = 0;
 	unsigned interceptor_id_second = 1;
 	Solution::const_iterator mobile_it_first = NULL;
@@ -280,7 +286,10 @@ bool Move2Opt<Policy>::scan(const Solution & solution)
 					std::cout << "res: " << std::max(interception_time_first, interception_time_second) << std::endl;
 
 					// tests if the move improves the results
-					if(std::isfinite(interception_time_first) && std::isfinite(interception_time_second) && Policy::update(std::max(interception_time_first, interception_time_second), _best_interception_date))
+					if(std::isfinite(interception_time_first)
+							&& std::isfinite(interception_time_second)
+							&& (interception_time_first + interception_time_second) < (solution.lastInterceptionTime(interceptor_id_first) + solution.lastInterceptionTime(interceptor_id_second))
+							&& Policy::update(std::max(interception_time_first, interception_time_second), _best_interception_date))
 					{
 						_best_mobile_candidate_first = &(mobile_it_first->_mobile);
 						_best_mobile_candidate_second = &(mobile_it_second->_mobile);
@@ -358,7 +367,7 @@ bool MoveReplace<Policy>::scan(const Solution & solution)
 	const Interceptor * interceptor;
 	const Solution::MobileNode * previousNode;
 	Time interception_date;
-	_best_interception_date = solution.worstInterceptionTime();
+	_best_interception_date = Policy::maxAcceptableTime();
 	Location interceptor_position;
 	unsigned interceptor_id = 0;
 
@@ -397,7 +406,9 @@ bool MoveReplace<Policy>::scan(const Solution & solution)
 					// Not end of route
 					interception_date += solution.evaluate(interceptor_position, interception_date, *interceptor, problem.mobiles()[position_it->_next], solution.lastOfRoute(*interceptor)._mobile);
 				}
-				if (std::isfinite(interception_date) && Policy::update(interception_date,_best_interception_date)) {
+				if (std::isfinite(interception_date)
+						&& interception_date <= solution.lastInterceptionTime(*interceptor)
+						&& Policy::update(interception_date,_best_interception_date)) {
 					// Update results
 					_best_mobile_out = &(position_it->_mobile);
 					_best_mobile_in = *uncaught_mobile_itr;
@@ -442,7 +453,8 @@ bool MoveMove1Route<Policy>::scan(const Solution & solution)
 	Policy::reset();
 	const Interceptor * interceptor;
 	Time interception_date;
-	_best_interception_date = solution.worstInterceptionTime();
+	//_best_interception_date = solution.worstInterceptionTime();
+	_best_interception_date = Policy::maxAcceptableTime();
 	Location interceptor_position;
 	unsigned interceptor_id = 0;
 
@@ -483,7 +495,9 @@ bool MoveMove1Route<Policy>::scan(const Solution & solution)
 					interception_date += solution.evaluate(interceptor_position, interception_date, *interceptor, problem.mobiles()[mobile_it->_next], solution.lastOfRoute(*interceptor)._mobile);
 
 					// compare
-					if (std::isfinite(interception_date) && Policy::update(interception_date,_best_interception_date)) {
+					if (std::isfinite(interception_date)
+							&& interception_date < solution.lastInterceptionTime(*interceptor)
+							&& Policy::update(interception_date,_best_interception_date)) {
 						// Update results
 						_best_mobile_move = &(mobile_it->_mobile);
 						_best_mobile_position = position_it->_mobile.id();
@@ -513,7 +527,9 @@ bool MoveMove1Route<Policy>::scan(const Solution & solution)
 					interception_date+= interceptor->computeInterception(interceptor_position, mobile_it->_mobile, interception_date);
 
 					// compare
-					if (std::isfinite(interception_date) && Policy::update(interception_date,_best_interception_date)) {
+					if (std::isfinite(interception_date)
+							&& interception_date < solution.lastInterceptionTime(*interceptor)
+							&& Policy::update(interception_date,_best_interception_date)) {
 						// Update results
 						_best_mobile_move = &(mobile_it->_mobile);
 						_best_mobile_position = -1;
@@ -561,7 +577,8 @@ bool MoveMove2Routes<Policy>::scan(const Solution & solution)
 	const Interceptor * interceptor_insertion;
 	Time extraction_interception_date;
 	Time insertion_interception_date;
-	_best_interception_date = solution.worstInterceptionTime();
+	//_best_interception_date = solution.worstInterceptionTime();
+	_best_interception_date = Policy::maxAcceptableTime();
 	Location extraction_interceptor_position;
 	Location insertion_interceptor_position;
 	unsigned interceptor_extraction_id = 0;
@@ -598,7 +615,6 @@ bool MoveMove2Routes<Policy>::scan(const Solution & solution)
 					interceptor_insertion = &(problem.interceptors()[interceptor_insertion_id]);
 					Solution::const_iterator position_insertion_it = solution.begin(*interceptor_insertion);
 					// Find an insertion position
-					//TODO: other solution with n+1 positions
 
 					//Try first the insertion after the end of the route.
 					if (position_insertion_it != solution.end(*interceptor_insertion)) {
@@ -612,7 +628,8 @@ bool MoveMove2Routes<Policy>::scan(const Solution & solution)
 
 						//Compare
 						if (std::isfinite(insertion_interception_date)
-								&& Policy::update(std::max(extraction_interception_date,insertion_interception_date),_best_interception_date)) {
+								&& ((extraction_interception_date + insertion_interception_date) < solution.lastInterceptionTime(*interceptor_extraction) + solution.lastInterceptionTime(*interceptor_insertion))
+								&& Policy::update(std::max(extraction_interception_date, insertion_interception_date), _best_interception_date)) {
 							// Update results
 							_best_mobile_candidate = &(position_extraction_it->_mobile);
 							_best_interceptor_insertion = interceptor_insertion;
@@ -643,6 +660,7 @@ bool MoveMove2Routes<Policy>::scan(const Solution & solution)
 						insertion_interception_date += solution.evaluate(insertion_interceptor_position, insertion_interception_date, *interceptor_insertion, position_insertion_it->_mobile, solution.lastOfRoute(*interceptor_insertion)._mobile);
 						//Compare
 						if (std::isfinite(insertion_interception_date)
+								&& ((extraction_interception_date + insertion_interception_date) < (solution.lastInterceptionTime(*interceptor_extraction) + solution.lastInterceptionTime(*interceptor_insertion)))
 								&& Policy::update(std::max(extraction_interception_date,insertion_interception_date),_best_interception_date)) {
 							// Update results
 							_best_mobile_candidate = &(position_extraction_it->_mobile);
@@ -710,7 +728,8 @@ bool MoveSwap1Route<Policy>::scan(const Solution & solution)
 	Location interceptor_position;
 	const Interceptor * interceptor;
 
-	_best_interception_date = solution.worstInterceptionTime();
+	//_best_interception_date = solution.worstInterceptionTime();
+	_best_interception_date = Policy::maxAcceptableTime();
 
 	// for each interceptor if the policy says keep on
 	while (interceptor_id < problem.nbInterceptors() && Policy::keepOn())
@@ -777,7 +796,9 @@ bool MoveSwap1Route<Policy>::scan(const Solution & solution)
 				}
 
 				// compare
-				if (std::isfinite(interception_date) && Policy::update(interception_date,_best_interception_date)) {
+				if (std::isfinite(interception_date)
+						&& interception_date < solution.lastInterceptionTime(*interceptor)
+						&& Policy::update(interception_date,_best_interception_date)) {
 					// Update results
 					_best_mobile_swap1 = &(mobile_it_first->_mobile);
 					_best_mobile_swap2 = &(mobile_it_second->_mobile);
@@ -830,7 +851,8 @@ bool MoveSwap2Routes<Policy>::scan(const Solution & solution)
 	const Interceptor * interceptor_first;
 	const Interceptor * interceptor_second;
 
-	_best_interception_date = solution.worstInterceptionTime();
+	//_best_interception_date = solution.worstInterceptionTime();
+	_best_interception_date = Policy::maxAcceptableTime();
 
 	// for each interceptor
 	while(interceptor_id_first < problem.nbInterceptors()-1 && Policy::keepOn())
@@ -920,7 +942,8 @@ bool MoveSwap2Routes<Policy>::scan(const Solution & solution)
 					// compare
 					if (std::isfinite(interception_date_route1)
 							&& std::isfinite(interception_date_route2)
-							&& Policy::update(std::max(interception_date_route1,interception_date_route2),_best_interception_date)) {
+							&& (interception_date_route1 + interception_date_route2) < (solution.lastInterceptionTime(*interceptor_first) + solution.lastInterceptionTime(*interceptor_second))
+							&& Policy::update(std::max(interception_date_route1, interception_date_route2), _best_interception_date)) {
 						// Update results
 						_best_mobile_swap1 = &(mobile_it_first->_mobile);
 						_best_mobile_swap2 = &(mobile_it_second->_mobile);
