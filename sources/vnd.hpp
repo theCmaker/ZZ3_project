@@ -15,6 +15,7 @@ class VND
 	static unsigned max_itr;
 public:
 	VND();
+	VND(std::vector<Move *> & list);
 	~VND();
 
 	/**
