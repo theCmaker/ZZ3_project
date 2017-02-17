@@ -3,32 +3,34 @@
 
 #include "units.hpp"
 
-class BestAvailablePolicy
+class AvailablePolicy
+{
+protected:
+	static Time _max_acceptable_time;
+	static unsigned _min_acceptable_count;
+public:
+	static Time & maxAcceptableTime();
+	static unsigned & minAcceptableCount();
+};
+
+class BestAvailablePolicy : public AvailablePolicy
 {
 	static const bool _keepOn = true;
 public:
 	static constexpr bool keepOn () { return _keepOn; }
-	static void reset() {}
-	static bool update (Time value, Time & record) {
-		bool res = (value >= 0. && value <= record);
-		if (res) { record = value; }
-		//TODO: double check
-		return res;
-	}
+	static void reset();
+	static bool update (Time value, Time & record);
+	static bool update (Time value, Time & record, unsigned count, unsigned & count_record);
 };
 
-class FirstAvailablePolicy
+class FirstAvailablePolicy : public AvailablePolicy
 {
 	static bool _keepOn;
 public:
-	static bool keepOn () { return _keepOn; }
-	static void reset() { _keepOn = true; }
-	static bool update (Time value, Time & record) {
-		//std::cerr << "New value: " << value << " Record: " << record << std::endl;
-		_keepOn = (value < 0. || value > record);
-		if (! _keepOn) { record = value; }
-		return ! _keepOn;
-	}
+	static bool keepOn ();
+	static void reset();
+	static bool update (Time value, Time & record);
+	static bool update (Time value, Time & record, unsigned count, unsigned & count_record);
 };
 
 #endif // __MOVE_POLICIES_HPP__
