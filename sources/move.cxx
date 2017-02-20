@@ -223,26 +223,26 @@ bool Move2Opt<Policy>::scan(const Solution & solution)
 	// chooses an interceptor
 	while(interceptor_id_first < _p.nbInterceptors()-1 && Policy::keepOn())
 	{
-		std::cout << "int_first: " << interceptor_id_first << std::endl;
+		//std::cout << "int_first: " << interceptor_id_first << std::endl;
 		interceptor_id_second = interceptor_id_first+1;
 		// chooses an interceptor after interceptor_id_first
 		while(interceptor_id_second < _p.nbInterceptors() && Policy::keepOn())
 		{
-			std::cout << "int_second: " << interceptor_id_second << std::endl;
+			//std::cout << "int_second: " << interceptor_id_second << std::endl;
 
 			// for each mobile+1 in the route of interceptor_id_first
 			mobile_it_first = solution.begin(_p.interceptors()[interceptor_id_first]);
 			while(((i == -1 && mobile_it_first != solution.end(_p.interceptors()[interceptor_id_first])) || i != -1) && Policy::keepOn())
 			//while(mobile_it_first != solution.end(_p.interceptors()[interceptor_id_first]) && Policy::keepOn())
 			{
-				std::cout << "mob_first: " << i << std::endl;
+				//std::cout << "mob_first: " << i << std::endl;
 
 				// for each mobile+1 in the route of interceptor_id_second
 				mobile_it_second = solution.begin(_p.interceptors()[interceptor_id_second]);
 				while(((j == -1 && mobile_it_second != solution.end(_p.interceptors()[interceptor_id_second])) || j != -1) && Policy::keepOn())
 				//while(mobile_it_second != solution.end(_p.interceptors()[interceptor_id_second]) && Policy::keepOn())
 				{
-					std::cout << "mob_second: " << j << std::endl;
+					//std::cout << "mob_second: " << j << std::endl;
 
 					// computes interception time of the mobiles previous mobile_it_first and second
 					//if(mobile_it_first->_prev == -1)
@@ -283,7 +283,7 @@ bool Move2Opt<Policy>::scan(const Solution & solution)
 						interception_time_second += solution.evaluate(interceptor_position_second, interception_time_second, _p.interceptors()[interceptor_id_second], mobile_it_first->_mobile, solution.lastOfRoute(_p.interceptors()[interceptor_id_first])._mobile);
 					//}
 
-					std::cout << "res: " << std::max(interception_time_first, interception_time_second) << std::endl;
+					//std::cout << "res: " << std::max(interception_time_first, interception_time_second) << std::endl;
 
 					// tests if the move improves the results
 					if(std::isfinite(interception_time_first)
@@ -330,7 +330,7 @@ bool Move2Opt<Policy>::scan(const Solution & solution)
 		++interceptor_id_first;
 	}
 
-	std::cout << "scan finished" << std::endl;
+	//std::cout << "scan finished" << std::endl;
 
 	return improved;
 }
@@ -484,78 +484,114 @@ bool MoveMove1Route<Policy>::scan(const Solution & solution)
 		interceptor = &(problem.interceptors()[interceptor_id]);
 		Solution::const_iterator position_it = solution.begin(*interceptor);
 
-		// Find a position
+		// Find a position for extraction
 		while (position_it != solution.end(*interceptor) && Policy::keepOn())
 		{
-			Solution::const_iterator mobile_it = position_it; //solution.begin(*interceptor);
-			++mobile_it;
-			// For each mobile
-			while(mobile_it != solution.end(*interceptor) && Policy::keepOn())
-			{
+			// Try to insert ahead of the route (if not first)
+			if (position_it->_prev != -1) {
+				// Departure from the depot
 				interception_date = 0;
 				interceptor_position = interceptor->position();
 
-				// if the mobile can be moved
-				if(mobile_it != position_it && mobile_it->_prev != -1)
-				{
-					// mobiles before position_it
-					interception_date += interceptor->computeInterception(interceptor_position, problem.mobiles()[position_it->_prev], interception_date);
-					interceptor_position = problem.mobiles()[position_it->_prev].position(interception_date);
+				// Catch the mobile candidate
+				interception_date += interceptor->computeInterception(interceptor_position, position_it->_mobile, interception_date);
+				interceptor_position = position_it->_mobile.position(interception_date);
 
-					// interception of mobile_it
-					interception_date += interceptor->computeInterception(interceptor_position, mobile_it->_mobile, interception_date);
-					interceptor_position = mobile_it->_mobile.position(interception_date);
+				// Catch all to the candidate predecessor
+				interception_date += solution.evaluate(interceptor_position, interception_date, *interceptor, solution.firstOfRoute(*interceptor)._mobile, solution.mobile(position_it->_prev)._mobile);
+				interceptor_position = position_it->_mobile.position(interception_date);
 
-					// mobiles between position_it and mobile_it->_prev
-					interception_date += solution.evaluate(interceptor_position, interception_date, *interceptor, position_it->_mobile, problem.mobiles()[mobile_it->_prev]);
-					interceptor_position = problem.mobiles()[mobile_it->_prev].position(interception_date);
-
-					// mobiles after mobile_it
-					interception_date += solution.evaluate(interceptor_position, interception_date, *interceptor, problem.mobiles()[mobile_it->_next], solution.lastOfRoute(*interceptor)._mobile);
-
-					// compare
-					if (std::isfinite(interception_date)
-							&& interception_date < solution.lastInterceptionTime(*interceptor)
-							&& Policy::update(interception_date,_best_interception_date)) {
-						// Update results
-						_best_mobile_move = &(mobile_it->_mobile);
-						_best_mobile_position = position_it->_prev;
-						_best_interceptor = interceptor;
-						improved = true;
-					}
-
+				// Catch all after the candidate
+				if (position_it->_next != -1) {
+					interception_date += solution.evaluate(interceptor_position, interception_date, *interceptor, solution.mobile(position_it->_next)._mobile, solution.lastOfRoute(*interceptor)._mobile);
+					interceptor_position = position_it->_mobile.position(interception_date);
 				}
 
-				// case: move at end
-				if(mobile_it != position_it && position_it->_next == -1)
-				{
-					interception_date = 0;
+				// Test
+				if (std::isfinite(interception_date)
+						&& interception_date < solution.lastInterceptionTime(*interceptor)
+						&& Policy::update(interception_date,_best_interception_date)) {
+					// Update results
+					_best_mobile_move = &(position_it->_mobile);
+					_best_mobile_position = -1;
+					_best_interceptor = interceptor;
+					improved = true;
+				}
+			}
+			// For each insertion position before candidate
+			Solution::const_iterator mobile_it = solution.begin(*interceptor);
+			if (mobile_it->_next == position_it->_next) {
+				++mobile_it;
+			}
+			while (mobile_it != solution.end(*interceptor) && mobile_it->_next != (int) position_it->_mobile.id() && Policy::keepOn())
+			{
+				// Catch all the mobiles before insertion position
+				interception_date = mobile_it->_date;
+				interceptor_position = mobile_it->_mobile.position(interception_date);
+
+				// Catch the mobile candidate
+				interception_date += interceptor->computeInterception(interceptor_position, position_it->_mobile, interception_date);
+				interceptor_position = position_it->_mobile.position(interception_date);
+
+				// Catch the other mobiles after insertion position to the candidate predecessor
+				if (position_it->_prev != -1) {
+					interception_date += solution.evaluate(interceptor_position, interception_date, *interceptor, solution.mobile(mobile_it->_next)._mobile, solution.mobile(position_it->_prev)._mobile);
+					interceptor_position = solution.mobile(position_it->_prev)._mobile.position(interception_date);
+				}
+
+				// Catch all the mobiles after candidate to the end, if any
+				if (position_it->_next != -1) {
+					interception_date += solution.evaluate(interceptor_position, interception_date, *interceptor, solution.mobile(position_it->_next)._mobile, solution.lastOfRoute(*interceptor)._mobile);
+				}
+
+				// Test
+				if (std::isfinite(interception_date)
+						&& interception_date < solution.lastInterceptionTime(*interceptor)
+						&& Policy::update(interception_date,_best_interception_date)) {
+					// Update results
+					_best_mobile_move = &(position_it->_mobile);
+					_best_mobile_position = (int) mobile_it->_mobile.id();
+					_best_interceptor = interceptor;
+					improved = true;
+				}
+				++mobile_it;
+			}
+
+			// For each insertion position after candidate
+			mobile_it = position_it;
+			++mobile_it;
+			while (mobile_it != solution.end(*interceptor) && Policy::keepOn()) {
+				// Catch all the mobiles before candidate, if any
+				if (position_it->_prev != -1) {
+					interception_date = solution.mobile(position_it->_prev)._date;
+					interceptor_position = mobile_it->_mobile.position(interception_date);
+				} else {
+					interception_date = 0.;
 					interceptor_position = interceptor->position();
+				}
 
-					// mobiles before mobile_it
-					if(mobile_it->_prev != -1)
-					{
-						interception_date += solution.evaluate(interceptor_position, interception_date, *interceptor, solution.begin(*interceptor)->_mobile, problem.mobiles()[mobile_it->_prev]);
-						interceptor_position = problem.mobiles()[mobile_it->_prev].position(interception_date);
-					}
+				// Catch the mobiles between extraction and insertion positions
+				interception_date += solution.evaluate(interceptor_position, interception_date, *interceptor, solution.mobile(position_it->_next)._mobile, mobile_it->_mobile);
+				interceptor_position = mobile_it->_mobile.position(interception_date);
 
-					// mobiles after mobile_it
-					interception_date += solution.evaluate(interceptor_position, interception_date, *interceptor, problem.mobiles()[mobile_it->_next], solution.lastOfRoute(*interceptor)._mobile);
-					interceptor_position = problem.mobiles()[mobile_it->_next].position(interception_date);
+				// Catch the mobile candidate
+				interception_date += interceptor->computeInterception(interceptor_position, position_it->_mobile, interception_date);
+				interceptor_position = position_it->_mobile.position(interception_date);
 
-					// mobile_it
-					interception_date+= interceptor->computeInterception(interceptor_position, mobile_it->_mobile, interception_date);
+				// Catch all the mobiles after insertion position to the end, if any
+				if (mobile_it->_next != -1) {
+					interception_date += solution.evaluate(interceptor_position, interception_date, *interceptor, solution.mobile(mobile_it->_next)._mobile, solution.lastOfRoute(*interceptor)._mobile);
+				}
 
-					// compare
-					if (std::isfinite(interception_date)
-							&& interception_date < solution.lastInterceptionTime(*interceptor)
-							&& Policy::update(interception_date,_best_interception_date)) {
-						// Update results
-						_best_mobile_move = &(mobile_it->_mobile);
-						_best_mobile_position = position_it->_prev;
-						_best_interceptor = interceptor;
-						improved = true;
-					}
+				// Test
+				if (std::isfinite(interception_date)
+						&& interception_date < solution.lastInterceptionTime(*interceptor)
+						&& Policy::update(interception_date,_best_interception_date)) {
+					// Update results
+					_best_mobile_move = &(position_it->_mobile);
+					_best_mobile_position = (int) mobile_it->_mobile.id();
+					_best_interceptor = interceptor;
+					improved = true;
 				}
 				++mobile_it;
 			}
@@ -578,7 +614,7 @@ void MoveMove1Route<Policy>::commit(Solution & solution)
 	{
 		solution.insertAfter(_best_mobile_position, _best_interceptor->id(), _best_mobile_move->id(), _best_interception_date);
 	}
-	solution.recomputeFrom(*_best_mobile_move);
+	solution.recomputeFrom(solution.firstOfRoute(*_best_interceptor)._mobile);
 }
 
 
@@ -765,7 +801,7 @@ bool MoveSwap1Route<Policy>::scan(const Solution & solution)
 	// for each interceptor if the policy says keep on
 	while (interceptor_id < problem.nbInterceptors() && Policy::keepOn())
 	{
-		std::cout << "interceptor: " << interceptor_id << std::endl;
+		//std::cout << "interceptor: " << interceptor_id << std::endl;
 		interceptor = &(problem.interceptors()[interceptor_id]);
 		_best_interception_date = solution.lastInterceptionTime(*interceptor);
 		mobile_it_first = solution.begin(*interceptor);
@@ -774,57 +810,57 @@ bool MoveSwap1Route<Policy>::scan(const Solution & solution)
 		{
 			mobile_it_second = mobile_it_first;
 			++mobile_it_second;
-			std::cout << "mobile 1: " << mobile_it_first->_mobile.id() << std::endl;
+			//std::cout << "mobile 1: " << mobile_it_first->_mobile.id() << std::endl;
 
 
 			// for each mobile in the route (after mobile_it_first)
 			while(mobile_it_second != solution.end(*interceptor) && Policy::keepOn())
 			{
-				std::cout << "mobile 2: " << mobile_it_second->_mobile.id() << std::endl;
-				std::cout << "date begin: " << interception_date << std::endl;
+				//std::cout << "mobile 2: " << mobile_it_second->_mobile.id() << std::endl;
+				//std::cout << "date begin: " << interception_date << std::endl;
 
 				interception_date = 0;
 				interceptor_position = interceptor->position();
 				// if there is mobiles between the begining and mobile_it_first
 				if(mobile_it_first->_prev != -1)
 				{
-					std::cout << "before mob1" << std::endl;
+					//std::cout << "before mob1" << std::endl;
 					interception_date += solution.evaluate(interceptor->position(),interception_date,*interceptor,solution.begin(*interceptor)->_mobile,problem.mobiles()[mobile_it_first->_prev]);
 					interceptor_position = problem.mobiles()[mobile_it_first->_prev].position(interception_date);
 
-					std::cout << "date prev mob1: " << interception_date << std::endl;
+					//std::cout << "date prev mob1: " << interception_date << std::endl;
 				}
 				// first swap: interception of mobile_it_second
 				interception_date += interceptor->computeInterception(interceptor_position, mobile_it_second->_mobile, interception_date);
 				interceptor_position = mobile_it_second->_mobile.position(interception_date);
 
-				std::cout << "mob2 catched: " << interception_date << std::endl;
+				//std::cout << "mob2 catched: " << interception_date << std::endl;
 
 				// if there is mobiles between mobile_it_first and mobile_it_second
 				if(mobile_it_first->_next != (int)mobile_it_second->_mobile.id())
 				{
-					std::cout << "between mob1 & 2" << std::endl;
+					//std::cout << "between mob1 & 2" << std::endl;
 
 					interception_date += solution.evaluate(interceptor_position, interception_date, *interceptor, problem.mobiles()[mobile_it_first->_next], problem.mobiles()[mobile_it_second->_prev]);
 					interceptor_position = problem.mobiles()[mobile_it_second->_prev].position(interception_date);
 
-					std::cout << "between mob1 & 2: "<< interception_date << std::endl;
+					//std::cout << "between mob1 & 2: "<< interception_date << std::endl;
 				}
 
 				// second swap: interception of mobile_it_first
 				interception_date += interceptor->computeInterception(interceptor_position, mobile_it_first->_mobile, interception_date);
 				interceptor_position = mobile_it_first->_mobile.position(interception_date);
 
-				std::cout << "mob1 catched: " << interception_date << std::endl;
+				//std::cout << "mob1 catched: " << interception_date << std::endl;
 
 				// if there is mobiles after mobile_it_second
 				if(mobile_it_second->_next != -1)
 				{
-					std::cout << "after mob2" << std::endl;
-					std::cout << mobile_it_second->_next << " " << solution.lastOfRoute(*interceptor)._mobile.id() << std::endl;
+					//std::cout << "after mob2" << std::endl;
+					//std::cout << mobile_it_second->_next << " " << solution.lastOfRoute(*interceptor)._mobile.id() << std::endl;
 					interception_date += solution.evaluate(interceptor_position, interception_date, *interceptor, problem.mobiles()[mobile_it_second->_next], solution.lastOfRoute(*interceptor)._mobile);
 
-					std::cout << "after mob2: " << interception_date << std::endl;
+					//std::cout << "after mob2: " << interception_date << std::endl;
 				}
 
 				// compare
@@ -907,13 +943,13 @@ bool MoveSwap2Routes<Policy>::scan(const Solution & solution)
 	// for each interceptor
 	while(interceptor_id_first < problem.nbInterceptors()-1 && Policy::keepOn())
 	{
-		std::cout << "interceptor 1: " << interceptor_id_first << std::endl;
+		//std::cout << "interceptor 1: " << interceptor_id_first << std::endl;
 		interceptor_first = &(problem.interceptors()[interceptor_id_first]);
 
 		// for each interceptor after interceptor_id_first
 		while(interceptor_id_second < problem.nbInterceptors()-1 && Policy::keepOn())
 		{
-			std::cout << "interceptor 2: " << interceptor_id_second << std::endl;
+			//std::cout << "interceptor 2: " << interceptor_id_second << std::endl;
 			interceptor_second = &(problem.interceptors()[interceptor_id_second]);
 
 			mobile_it_first = solution.begin(*interceptor_first);
@@ -922,12 +958,12 @@ bool MoveSwap2Routes<Policy>::scan(const Solution & solution)
 			{
 				mobile_it_second = solution.begin(*interceptor_second);
 
-				std::cout << "mob1: " << mobile_it_first->_mobile.id() << std::endl;
+				//std::cout << "mob1: " << mobile_it_first->_mobile.id() << std::endl;
 
 				// for each mobile in the second route
 				while(mobile_it_second != solution.end(*interceptor_second) && Policy::keepOn())
 				{
-					std::cout << "mob2: " << mobile_it_second->_mobile.id() << std::endl;
+					//std::cout << "mob2: " << mobile_it_second->_mobile.id() << std::endl;
 
 					//-------------------------------------------------
 					// computes interception date for the first route
@@ -937,26 +973,26 @@ bool MoveSwap2Routes<Policy>::scan(const Solution & solution)
 					// if there is mobiles before mobile_it_first
 					if(mobile_it_first->_prev != -1)
 					{
-						std::cout << "route1: before mob1" << std::endl;
+						//std::cout << "route1: before mob1" << std::endl;
 						interception_date_route1 += solution.evaluate(interceptor_first->position(),interception_date_route1,*interceptor_first,solution.begin(*interceptor_first)->_mobile,problem.mobiles()[mobile_it_first->_prev]);
 						interceptor_position_first = problem.mobiles()[mobile_it_first->_prev].position(interception_date_route1);
 
-						std::cout << "route1: date prev mob1: " << interception_date_route1 << std::endl;
+						//std::cout << "route1: date prev mob1: " << interception_date_route1 << std::endl;
 					}
 					// first swap: interception of mobile_it_second
 					interception_date_route1 += interceptor_first->computeInterception(interceptor_position_first, mobile_it_second->_mobile, interception_date_route1);
 					interceptor_position_first = mobile_it_second->_mobile.position(interception_date_route1);
 
-					std::cout << "route1: mob2 catched: " << interception_date_route1 << std::endl;
+					//std::cout << "route1: mob2 catched: " << interception_date_route1 << std::endl;
 
 					// if there is mobiles after mobile_it_first
 					if(mobile_it_first->_next != -1)
 					{
-						std::cout << "route1: after mob1" << std::endl;
-						std::cout << mobile_it_first->_next << " " << solution.lastOfRoute(*interceptor_first)._mobile.id() << std::endl;
+						//std::cout << "route1: after mob1" << std::endl;
+						//std::cout << mobile_it_first->_next << " " << solution.lastOfRoute(*interceptor_first)._mobile.id() << std::endl;
 						interception_date_route1 += solution.evaluate(interceptor_position_first, interception_date_route1, *interceptor_first, problem.mobiles()[mobile_it_first->_next], solution.lastOfRoute(*interceptor_first)._mobile);
 
-						std::cout << "route1: after mob2: " << interception_date_route1 << std::endl;
+						//std::cout << "route1: after mob2: " << interception_date_route1 << std::endl;
 					}
 
 					//------------------------------------------------
@@ -967,26 +1003,26 @@ bool MoveSwap2Routes<Policy>::scan(const Solution & solution)
 					// if there is mobiles before mobile_it_second
 					if(mobile_it_second->_prev != -1)
 					{
-						std::cout << "route2: before mob2" << std::endl;
+						//std::cout << "route2: before mob2" << std::endl;
 						interception_date_route2 += solution.evaluate(interceptor_second->position(),interception_date_route2,*interceptor_second,solution.begin(*interceptor_second)->_mobile,problem.mobiles()[mobile_it_second->_prev]);
 						interceptor_position_second = problem.mobiles()[mobile_it_second->_prev].position(interception_date_route2);
 
-						std::cout << "route2: date prev mob2: " << interception_date_route2 << std::endl;
+						//std::cout << "route2: date prev mob2: " << interception_date_route2 << std::endl;
 					}
 					// second swap: interception of mobile_it_first
 					interception_date_route2 += interceptor_second->computeInterception(interceptor_position_second, mobile_it_first->_mobile, interception_date_route2);
 					interceptor_position_second = mobile_it_first->_mobile.position(interception_date_route2);
 
-					std::cout << "route2: mob1 catched: " << interception_date_route2 << std::endl;
+					//std::cout << "route2: mob1 catched: " << interception_date_route2 << std::endl;
 
 					// if there is mobiles after mobile_it_second
 					if(mobile_it_second->_next != -1)
 					{
-						std::cout << "route2: after mob2" << std::endl;
-						std::cout << mobile_it_second->_next << " " << solution.lastOfRoute(*interceptor_second)._mobile.id() << std::endl;
+						//std::cout << "route2: after mob2" << std::endl;
+						//std::cout << mobile_it_second->_next << " " << solution.lastOfRoute(*interceptor_second)._mobile.id() << std::endl;
 						interception_date_route2 += solution.evaluate(interceptor_position_second, interception_date_route2, *interceptor_second, problem.mobiles()[mobile_it_second->_next], solution.lastOfRoute(*interceptor_second)._mobile);
 
-						std::cout << "route2: after mob2: " << interception_date_route2 << std::endl;
+						//std::cout << "route2: after mob2: " << interception_date_route2 << std::endl;
 					}
 
 					// compare
