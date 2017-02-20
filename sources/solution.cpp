@@ -46,6 +46,9 @@ Solution::Solution(const Problem & p) : _problem(p), _first(-1), _last(-1)
 	}
 }
 
+Solution::Solution(const Solution & s) : _problem(s._problem), _sequence(s._sequence), _interceptors(s._interceptors), _first(s._first), _last(s._last)
+{}
+
 Solution::~Solution() {}
 
 const Problem & Solution::problem() const
@@ -177,12 +180,22 @@ void Solution::appendSeq(const Interceptor & i, const Mobile & m)
 	InterceptorNode * inter_sequence = &(_interceptors[interceptor_index]);
 	int mobile_index = m.id();
 	if (inter_sequence->_first == -1) {
-		// Empty route, add it to the list
-		_interceptors[(unsigned) _last]._next = interceptor_index;
+		// New route needs to be created
+		if (_first == -1) {
+			// Empty list of routes
+			_first = interceptor_index;
+		} else {
+			// Append it to the list of routes
+			_interceptors[(unsigned) _last]._next = interceptor_index;
+		}
+		// Chain the new element
 		inter_sequence->_prev = (int) _last;
+		inter_sequence->_next = -1;
+		// Update the end of the list of routes
 		_last = interceptor_index;
 		inter_sequence->_first = mobile_index;
 	} else {
+		// Already existing route
 		// Simple case
 		_sequence[(unsigned) inter_sequence->_last]._next = mobile_index;
 	}
@@ -343,7 +356,7 @@ Time Solution::worstInterceptionTime() const
 const Interceptor & Solution::worstRoute() const
 {
 	Time duration, worst_duration = 0.;
-	const Interceptor * i;
+	const Interceptor * i = nullptr;
 	for (VInterceptors::const_iterator interceptor = _problem.interceptors().cbegin(); interceptor != _problem.interceptors().cend(); ++interceptor) {
 		duration = lastInterceptionTime(*interceptor);
 		if (worst_duration < duration) {

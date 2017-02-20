@@ -23,7 +23,7 @@ public:
 	/**
 	 * @brief Destructor.
 	 */
-	virtual ~Move() {};
+	virtual ~Move() {}
 
 	/**
 	 * @brief Scans if the movement improves the solution.

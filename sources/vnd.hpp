@@ -13,6 +13,7 @@ class VND
 {
 	std::vector<Move *> _list;
 	static unsigned max_itr;
+	bool _donotclean;
 public:
 	VND();
 	VND(std::vector<Move *> & list);

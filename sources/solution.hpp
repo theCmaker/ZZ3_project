@@ -166,6 +166,12 @@ public:
 	 * @param p the routing problem the solution refers to
 	 */
 	Solution(const Problem &);
+
+	/**
+	 * @brief Copy Constructor.
+	 * @param s the other solution
+	 */
+	Solution(const Solution & s);
 	/**
 	 * @brief Destructor.
 	 */
