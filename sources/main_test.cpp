@@ -73,8 +73,21 @@ int main(int argc, const char *argv[]){
 		}
 		*/
 
+		std::vector<Move *> sequence = {
+			new MoveMove2Routes<BestAvailablePolicy>,
+			new MoveMove1Route<FirstAvailablePolicy>,
+			new MoveExtract<FirstAvailablePolicy>,
+			new MoveInsert<FirstAvailablePolicy>,
+			new Move2Opt<BestAvailablePolicy>,
+			new MoveSwap1Route<BestAvailablePolicy>,
+			new MoveMove2Routes<FirstAvailablePolicy>,
+			new MoveReplace<BestAvailablePolicy>
+		};
+
+		AvailablePolicy::maxAcceptableTime() = 1.1 * s.worstInterceptionTime();
+		AvailablePolicy::minAcceptableCount() = s.problem().nbMobiles() - 1.1 * (s.problem().nbMobiles() - s.totalInterceptionCount());
 		std::cout << s << std::endl;
-		VND vnd;
+		VND vnd(sequence);
 		vnd.run(s);
 		std::cout << s << std::endl;
 
