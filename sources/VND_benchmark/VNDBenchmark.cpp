@@ -118,6 +118,11 @@ int main(int argc, const char * argv[]) {
 
 			++file_id;
 		}
+
+		for (std::vector<Move *>::iterator itr = sequence.begin(); itr != sequence.end(); ++itr) {
+			delete *itr;
+		}
+
 		++test_id;
 		std::cerr << test_id << std::endl;
 	}
@@ -125,5 +130,11 @@ int main(int argc, const char * argv[]) {
 	for (std::multimap<const char*, BenchmarkResult>::iterator itr = results.begin(); itr != results.end(); ++itr) {
 		std::cout << itr->first << ":\t" << itr->second << std::endl;
 	}
+
+	for (unsigned i = 0; i < problems.size(); ++i) {
+		delete problems[i];
+		delete solutions[i];
+	}
+
 	return 0;
 }
