@@ -58,7 +58,10 @@ class Mobile
 		 * @brief Get the mobile position at a defined date.
 		 * @param t Date
 		 */
-		Location position(Time t) const;
+		inline Location position(Time t) const
+		{
+			return Location(_position._x + _direction._sx * t, _position._y + _direction._sy * t);
+		}
 		/**
 		 * @brief Get the mobile direction.
 		 */

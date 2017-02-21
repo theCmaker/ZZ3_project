@@ -483,67 +483,6 @@ Solution::const_iterator Solution::end(const Interceptor & i) const
 	return Solution::const_iterator(&(_sequence[0]) - 1);
 }
 
-//******************************************************
-// ITERATORS
-//******************************************************
-
-Solution::iterator::iterator(MobileNode *s) :
-	_solution(s)
-{}
-
-Solution::iterator::~iterator() {}
-
-Solution::MobileNode & Solution::iterator::operator* ()
-{
-	return *_solution;
-}
-
-Solution::MobileNode * Solution::iterator::operator-> ()
-{
-	return _solution;
-}
-
-Solution::iterator & Solution::iterator::operator++ ()
-{
-	_solution = _solution - int(_solution->_mobile.id()) + _solution->_next;
-	return *this;
-}
-
-bool Solution::iterator::operator!= (Solution::iterator itr)
-{
-	return _solution != itr._solution;
-}
-
-//******************************************************
-// CONST ITERATORS
-//******************************************************
-
-Solution::const_iterator::const_iterator(const MobileNode *s) :
-	_solution(s)
-{}
-
-Solution::const_iterator::~const_iterator() {}
-
-const Solution::MobileNode & Solution::const_iterator::operator* () const
-{
-	return *_solution;
-}
-
-const Solution::MobileNode * Solution::const_iterator::operator-> () const
-{
-	return _solution;
-}
-
-Solution::const_iterator & Solution::const_iterator::operator++ ()
-{
-	_solution = _solution - int(_solution->_mobile.id()) + _solution->_next;
-	return *this;
-}
-
-bool Solution::const_iterator::operator!= (Solution::const_iterator itr)
-{
-	return _solution != itr._solution;
-}
 
 //******************************************************
 // STANDARD OPERATORS

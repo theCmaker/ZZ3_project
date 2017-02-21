@@ -85,32 +85,47 @@ public:
 		 * @brief Constructor.
 		 * @param s the interception node
 		 */
-		iterator(MobileNode *);
+		inline iterator(MobileNode * s) :
+			_solution(s)
+		{}
 		/**
 		 * @brief Destructor.
 		 */
-		~iterator();
+		inline ~iterator() {}
 		/**
 		 * @brief Indirection operator.
 		 * @return Current interception
 		 */
-		MobileNode & operator* ();
+		inline MobileNode & operator* ()
+		{
+			return *_solution;
+		}
 		/**
 		 * @brief Arrow operator.
 		 * @return Pointer to current interception
 		 */
-		MobileNode * operator-> ();
+		inline MobileNode * operator-> ()
+		{
+			return _solution;
+		}
 		/**
 		 * @brief Increment operator.
 		 * @return Next interception node
 		 */
-		iterator & operator++ ();
+		inline iterator & operator++ ()
+		{
+			_solution = _solution - int(_solution->_mobile.id()) + _solution->_next;
+			return *this;
+		}
 		/**
 		 * @brief Inequality operator.
 		 * @param itr another iterator.
 		 * @return true if this equals the given iterator.
 		 */
-		bool operator!= (iterator);
+		inline bool operator!= (iterator itr)
+		{
+			return _solution != itr._solution;
+		}
 	};
 	/**
 	 * @brief Provide const_iterator over mobile nodes.
@@ -124,32 +139,47 @@ public:
 		 * @brief Constructor.
 		 * @param s the interception node
 		 */
-		const_iterator(const MobileNode *);
+		inline const_iterator(const MobileNode * s) :
+			_solution(s)
+		{}
 		/**
 		 * @brief Destructor.
 		 */
-		~const_iterator();
+		inline ~const_iterator() {}
 		/**
 		 * @brief Indirection operator.
 		 * @return Current interception
 		 */
-		const MobileNode & operator* () const;
+		inline const MobileNode & operator* () const
+		{
+			return *_solution;
+		}
 		/**
 		 * @brief Arrow operator.
 		 * @return Pointer to current interception
 		 */
-		const MobileNode * operator-> () const;
+		inline const MobileNode * operator-> () const
+		{
+			return _solution;
+		}
 		/**
 		 * @brief Increment operator.
 		 * @return Next interception node
 		 */
-		const_iterator & operator++ ();
+		inline const_iterator & operator++ ()
+		{
+			_solution = _solution - int(_solution->_mobile.id()) + _solution->_next;
+			return *this;
+		}
 		/**
 		 * @brief Inequality operator.
 		 * @param itr another iterator.
 		 * @return true if this equals the given iterator.
 		 */
-		bool operator!= (const_iterator);
+		inline bool operator!= (const_iterator itr)
+		{
+			return _solution != itr._solution;
+		}
 	};
 private:
 	const Problem				  & _problem;		///< Routing problem

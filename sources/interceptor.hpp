@@ -10,6 +10,7 @@
 #include "mobile.hpp"
 #include <iostream>
 #include <limits>
+#include <cmath>
 
 class Depot;
 
@@ -147,7 +148,10 @@ class Interceptor
 		 * @param departure Departure position
 		 * @param arrival Arrival position
 		 */
-		Time timeFromTo(const Location & departure, const Location & arrival) const;
+		inline Time timeFromTo(const Location & departure, const Location & arrival) const
+		{
+			return std::sqrt((arrival._x - departure._x)*(arrival._x - departure._x) + (arrival._y - departure._y)*(arrival._y - departure._y)) / _speed;
+		}
 
 };
 

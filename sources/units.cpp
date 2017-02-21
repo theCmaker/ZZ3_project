@@ -4,18 +4,7 @@
 // Location
 //******************************************************
 
-Location::Location(Distance x, Distance y) :
-	_x(x),
-	_y(y)
-{}
 
-bool Location::equals(const Location & other, Distance epsilon) const
-{
-	return (other._x - epsilon) <= _x
-		&& (other._x + epsilon) >= _x
-		&& (other._y - epsilon) <= _y
-		&& (other._y + epsilon) >= _y;
-}
 
 std::ostream & operator<< (std::ostream & o, const Location & l)
 {
