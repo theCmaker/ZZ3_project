@@ -1,5 +1,43 @@
 #include "vnd.hpp"
-unsigned VND::max_itr = 1000;
+unsigned VND::max_itr = 30;
+
+/*
+ * VND Best Results (extracted from benchmark)
+ *
+ {
+  new MoveMove2Routes<BestAvailablePolicy>,
+  new MoveSwap1Route<FirstAvailablePolicy>,
+  new Move2Opt<BestAvailablePolicy>,
+  new MoveExtract<BestAvailablePolicy>,
+  new MoveMove1Route<BestAvailablePolicy>,
+  new MoveInsert<BestAvailablePolicy>,
+  new MoveSwap2Routes<BestAvailablePolicy>,
+  new MoveReplace<FirstAvailablePolicy>
+  }
+
+  {
+  new MoveSwap1Route<FirstAvailablePolicy>,
+  new MoveExtract<BestAvailablePolicy>,
+  new MoveMove2Routes<BestAvailablePolicy>,
+  new Move2Opt<FirstAvailablePolicy>,
+  new MoveReplace<BestAvailablePolicy>,
+  new MoveMove1Route<FirstAvailablePolicy>,
+  new MoveInsert<BestAvailablePolicy>,
+  new MoveSwap2Routes<FirstAvailablePolicy>
+  }
+
+ {
+  new MoveSwap1Route<FirstAvailablePolicy>,
+  new MoveExtract<BestAvailablePolicy>,
+  new MoveSwap2Routes<FirstAvailablePolicy>,
+  new MoveMove2Routes<BestAvailablePolicy>,
+  new MoveReplace<FirstAvailablePolicy>,
+  new Move2Opt<FirstAvailablePolicy>,
+  new MoveMove1Route<FirstAvailablePolicy>,
+  new MoveInsert<FirstAvailablePolicy>
+  }
+ *
+ */
 VND::VND() :
 	_list({
 		  new MoveReplace<FirstAvailablePolicy>,
