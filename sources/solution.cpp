@@ -1,16 +1,19 @@
 #include "solution.hpp"
+#include "heuristic_sequence.hpp"
+#include <random>
+#include <algorithm>
 
 //******************************************************
 // INTERNAL STRUCTS
 //******************************************************
 
 //Mobile
-Solution::MobileNode::MobileNode(const Mobile &m, const Time d, const Interceptor *i) :
+Solution::MobileNode::MobileNode(const Mobile &m, const Time d, const Interceptor *i, int prev, int next) :
 	_date(d),
 	_mobile(m),
 	_interceptor(i),
-	_next(-1),
-	_prev(-1)
+	_next(next),
+	_prev(prev)
 {}
 
 Solution::MobileNode::MobileNode(const Mobile &m) :
@@ -22,12 +25,12 @@ Solution::MobileNode::MobileNode(const Mobile &m) :
 {}
 
 //Interceptor
-Solution::InterceptorNode::InterceptorNode(const Interceptor &i) :
+Solution::InterceptorNode::InterceptorNode(const Interceptor &i, int first, int last, int prev, int next) :
 	_interceptor(i),
-	_first(-1),
-	_last(-1),
-	_next(-1),
-	_prev(-1)
+	_first(first),
+	_last(last),
+	_next(next),
+	_prev(prev)
 {}
 
 //******************************************************
@@ -51,9 +54,52 @@ Solution::Solution(const Solution & s) : _problem(s._problem), _sequence(s._sequ
 
 Solution::~Solution() {}
 
+Solution &Solution::operator=(const Solution & other) {
+	if ((&_problem) == (&(other._problem))) {
+		_sequence.clear();
+		for (std::vector<MobileNode>::const_iterator itr = other._sequence.begin(); itr != other._sequence.end(); ++itr) {
+			_sequence.emplace_back(itr->_mobile, itr->_date, itr->_interceptor, itr->_prev, itr->_next);
+		}
+		_interceptors.clear();
+		for (std::vector<InterceptorNode>::const_iterator itr = other._interceptors.begin(); itr != other._interceptors.end(); ++itr) {
+			_interceptors.emplace_back(itr->_interceptor, itr->_first, itr->_last, itr->_prev, itr->_next);
+		}
+		_first = other._first;
+		_last = other._last;
+	}
+	return *this;
+}
+
 const Problem & Solution::problem() const
 {
 	return _problem;
+}
+
+void Solution::shake()
+{
+	static std::mt19937 rand;
+
+	// Get the sequence
+	std::vector<unsigned> sequence;
+	for (VInterceptors::const_iterator interceptor = _problem.interceptors().begin(); interceptor != _problem.interceptors().end(); ++interceptor) {
+		for (iterator interception = begin(*interceptor); interception != end(*interceptor); ++interception) {
+			sequence.push_back(interception->_mobile.id());
+		}
+	}
+
+	// Shake the sequence
+	// Realise (min 2, max n/6) swap operations between mobiles in the sequence
+	for (unsigned i = 0; i < std::max(2u, (unsigned) sequence.size()/6u); ++i) {
+		std::swap(sequence[sequence.size() * (rand() / rand.max())],
+				  sequence[sequence.size() * (rand() / rand.max())]);
+	}
+
+
+
+	// Rebuild the solution
+	Heuristic_sequence h(_problem);
+	h.run(sequence);
+	*this = h.solution();
 }
 
 //******************************************************

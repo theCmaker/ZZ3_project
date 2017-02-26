@@ -36,8 +36,10 @@ public:
 		 * @param m the intercepted mobile
 		 * @param d the interception date
 		 * @param i the interceptor
+		 * @param prev previous mobile index
+		 * @param next next mobile index
 		 */
-		MobileNode(const Mobile &, const Time, const Interceptor *);
+		MobileNode(const Mobile &, const Time, const Interceptor *, int prev = -1, int next = -1);
 		/**
 		 * @brief Default constructor.
 		 * @param m the mobile
@@ -68,9 +70,13 @@ public:
 		/**
 		 * @brief Constructor.
 		 * @param i the interceptor that realizes the route
+		 * @param first first intercepted mobile id
+		 * @param last last intercepted mobile id
+		 * @param prev previous route id
+		 * @param next next route id
 		 * @warning an interceptor must be provided.
 		 */
-		InterceptorNode(const Interceptor &);
+		InterceptorNode(const Interceptor &, int first = -1, int last = -1, int prev = -1, int next = -1);
 	};
 
 	/**
@@ -172,16 +178,29 @@ public:
 	 * @param s the other solution
 	 */
 	Solution(const Solution & s);
+
 	/**
 	 * @brief Destructor.
 	 */
 	~Solution();
 
 	/**
+	 * @brief Affectation operator
+	 * @param other The solution values to be copied in this.
+	 */
+	Solution & operator= (const Solution & other);
+
+	/**
 	 * @brief Get the relative problem.
 	 * @return Problem relative to the current solution
 	 */
 	const Problem & problem() const;
+
+	/**
+	 * @brief Shake a solution and apply the insertion heuristic on the new sequence.
+	 */
+	void shake();
+
 	/**
 	 * @brief Add an interception at the end of a route.
 	 * @param interceptor_index id of the interceptor (route)
