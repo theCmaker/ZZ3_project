@@ -47,6 +47,7 @@ set ( ZZ3_HEADERS
 	  sources/move_policies.hpp
 	  sources/move.hpp
 	  sources/vnd.hpp
+	  sources/ms_els.hpp
     )
 
 set ( ZZ3_SOURCES
@@ -63,6 +64,7 @@ set ( ZZ3_SOURCES
 	  sources/tikzgrapher.cpp
 	  sources/move_policies.cpp
 	  sources/vnd.cpp
+	  sources/ms_els.cpp
     )
 
 set ( ZZ3_HEADERS_TEST
