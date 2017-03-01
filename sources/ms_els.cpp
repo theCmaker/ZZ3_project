@@ -8,12 +8,9 @@ MS_ELS::~MS_ELS() {}
 
 Solution MS_ELS::run(Problem & pb, int max_it_ms, int max_it_els, int max_cp, VND vnd)
 {
-	std::vector<unsigned> mobile_seq;
+	std::vector<unsigned> mobile_seq(pb.nbMobiles());
 
-	for(unsigned i = 0; i < pb.nbMobiles(); ++i)
-	{
-		mobile_seq.push_back(i);
-	}
+	std::iota(mobile_seq.begin(),mobile_seq.end(),0);
 
 	Solution record(pb);
 	// Multi-Start
