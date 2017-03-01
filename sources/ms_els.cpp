@@ -1,16 +1,33 @@
 #include "ms_els.hpp"
+#include <algorithm>
+#include "heuristic_sequence.hpp"
 
 MS_ELS::MS_ELS() {}
 
 MS_ELS::~MS_ELS() {}
 
-Solution * MS_ELS::run(Solution & sol, int max_it_ms, int max_it_els, int max_cp, VND vnd)
+Solution MS_ELS::run(Problem & pb, int max_it_ms, int max_it_els, int max_cp, VND vnd)
 {
-	Solution * record = nullptr;
+	std::vector<unsigned> mobile_seq;
+
+	for(unsigned i = 0; i < pb.nbMobiles(); ++i)
+	{
+		mobile_seq.push_back(i);
+	}
+
+	Solution record(pb);
+	// Multi-Start
 	for(int nb_it_ms = 0; nb_it_ms < max_it_ms; ++nb_it_ms)
 	{
-		// sol = sol.random(pb);
-		record = &sol;
+		// Shuffle the sequence of mobiles
+		std::random_shuffle(mobile_seq.begin(),mobile_seq.end());
+		// Run the heuristic sequence
+		Heuristic_sequence h(pb);
+		h.run(mobile_seq);
+		// Create the solution
+
+		Solution sol = h.solution();
+		record = sol;
 		// ELS
 		for(int nb_it_els = 0; nb_it_els < max_it_els; ++nb_it_els)
 		{
@@ -26,9 +43,9 @@ Solution * MS_ELS::run(Solution & sol, int max_it_ms, int max_it_els, int max_cp
 				{
 					best_local_sol = copy;
 				}
-				if(best_local_sol.worstInterceptionTime() < record->worstInterceptionTime())
+				if(best_local_sol.worstInterceptionTime() < record.worstInterceptionTime())
 				{
-					record = &best_local_sol;
+					record = best_local_sol;
 				}
 				sol = best_local_sol;
 			}
