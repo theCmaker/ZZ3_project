@@ -55,7 +55,7 @@ Solution::Solution(const Solution & s) : _problem(s._problem), _sequence(s._sequ
 Solution::~Solution() {}
 
 Solution &Solution::operator=(const Solution & other) {
-	if ((&_problem) == (&(other._problem))) {
+	if ((this != &other) && (&_problem) == (&(other._problem))) {
 		_sequence.clear();
 		for (std::vector<MobileNode>::const_iterator itr = other._sequence.begin(); itr != other._sequence.end(); ++itr) {
 			_sequence.emplace_back(itr->_mobile, itr->_date, itr->_interceptor, itr->_prev, itr->_next);
@@ -77,29 +77,32 @@ const Problem & Solution::problem() const
 
 void Solution::shake()
 {
-	static std::mt19937 rand;
+	// Check that solution is not empty, otherwise shake is useless.
+	if (_first != -1) {
+		static std::mt19937 rand;
 
-	// Get the sequence
-	std::vector<unsigned> sequence;
-	for (VInterceptors::const_iterator interceptor = _problem.interceptors().begin(); interceptor != _problem.interceptors().end(); ++interceptor) {
-		for (iterator interception = begin(*interceptor); interception != end(*interceptor); ++interception) {
-			sequence.push_back(interception->_mobile.id());
+		// Get the sequence
+		std::vector<unsigned> sequence;
+		for (VInterceptors::const_iterator interceptor = _problem.interceptors().begin(); interceptor != _problem.interceptors().end(); ++interceptor) {
+			for (iterator interception = begin(*interceptor); interception != end(*interceptor); ++interception) {
+				sequence.push_back(interception->_mobile.id());
+			}
 		}
+
+		// Shake the sequence
+		// Realise (min 2, max n/6) swap operations between mobiles in the sequence
+		for (unsigned i = 0; i < std::max(2u, (unsigned) sequence.size()/6u); ++i) {
+			std::swap(sequence[sequence.size() * (rand() / rand.max())],
+					  sequence[sequence.size() * (rand() / rand.max())]);
+		}
+
+
+
+		// Rebuild the solution
+		Heuristic_sequence h(_problem);
+		h.run(sequence);
+		*this = h.solution();
 	}
-
-	// Shake the sequence
-	// Realise (min 2, max n/6) swap operations between mobiles in the sequence
-	for (unsigned i = 0; i < std::max(2u, (unsigned) sequence.size()/6u); ++i) {
-		std::swap(sequence[sequence.size() * (rand() / rand.max())],
-				  sequence[sequence.size() * (rand() / rand.max())]);
-	}
-
-
-
-	// Rebuild the solution
-	Heuristic_sequence h(_problem);
-	h.run(sequence);
-	*this = h.solution();
 }
 
 //******************************************************
