@@ -63,8 +63,6 @@ set ( ZZ3_SOURCES
       sources/tikzifyer.cpp
 	  sources/tikzgrapher.cpp
 	  sources/move_policies.cpp
-	  sources/vnd.cpp
-	  sources/ms_els.cpp
     )
 
 set ( ZZ3_HEADERS_TEST

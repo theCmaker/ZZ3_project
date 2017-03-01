@@ -4,6 +4,7 @@
 #include <vector>
 #include "vnd.hpp"
 
+template <unsigned max_it_ms, unsigned max_it_els, unsigned max_cp, typename ELS>
 class MS_ELS
 {
 private:
@@ -12,8 +13,8 @@ public:
 	MS_ELS();
 	~MS_ELS();
 
-	Solution run(Problem & pb, int max_it_ms, int max_it_els, int max_cp, VND vnd);
+	Solution run(Problem & pb);
 };
 
-
+#include "ms_els.cxx"
 #endif

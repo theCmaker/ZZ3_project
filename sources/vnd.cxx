@@ -1,6 +1,3 @@
-#include "vnd.hpp"
-unsigned VND::max_itr = 30;
-
 /*
  * VND Best Results (extracted from benchmark)
  *
@@ -38,26 +35,30 @@ unsigned VND::max_itr = 30;
   }
  *
  */
-VND::VND() :
+
+template <unsigned max_itr>
+VND<max_itr>::VND() :
 	_list({
-		  new MoveReplace<FirstAvailablePolicy>,
-		  new MoveExtract<BestAvailablePolicy>,
-		  new MoveInsert<FirstAvailablePolicy>,
-		  new MoveMove2Routes<FirstAvailablePolicy>,
-		  new MoveMove1Route<FirstAvailablePolicy>,
+		  new MoveMove2Routes<BestAvailablePolicy>,
 		  new MoveSwap1Route<FirstAvailablePolicy>,
-		  new MoveSwap2Routes<FirstAvailablePolicy>
+		  new Move2Opt<BestAvailablePolicy>,
+		  new MoveExtract<BestAvailablePolicy>,
+		  new MoveMove1Route<BestAvailablePolicy>,
+		  new MoveInsert<BestAvailablePolicy>,
+		  new MoveSwap2Routes<BestAvailablePolicy>,
+		  new MoveReplace<FirstAvailablePolicy>
 		  }),
 	_donotclean(false)
 {}
 
-VND::VND(std::vector<Move *> & list) :
+template <unsigned max_itr>
+VND<max_itr>::VND(std::vector<Move *> & list) :
 	_list(list),
 	_donotclean(true)
 {}
 
-
-VND::~VND()
+template <unsigned max_itr>
+VND<max_itr>::~VND()
 {
 	if (!_donotclean) {
 		for (std::vector<Move *>::iterator itr = _list.begin(); itr != _list.end(); ++itr) {
@@ -67,7 +68,8 @@ VND::~VND()
 	}
 }
 
-void VND::run(Solution & sol) {
+template <unsigned max_itr>
+void VND<max_itr>::run(Solution & sol) {
 	unsigned k = 0;
 	unsigned itr = 1;
 	do {
@@ -80,7 +82,8 @@ void VND::run(Solution & sol) {
 	} while (k < _list.size() && itr < max_itr);
 }
 
-std::vector<Move *> & VND::movements()
+template <unsigned max_itr>
+std::vector<Move *> & VND<max_itr>::movements()
 {
 	return _list;
 }

@@ -9,10 +9,10 @@
 #include "move.hpp"
 #include <vector>
 
+template <unsigned max_itr = 30>
 class VND
 {
 	std::vector<Move *> _list;
-	static unsigned max_itr;
 	bool _donotclean;
 public:
 	VND();
@@ -32,4 +32,5 @@ public:
 	std::vector<Move *> & movements();
 };
 
+#include "vnd.cxx"
 #endif // __VND_HPP__

@@ -1,13 +1,16 @@
-#include "ms_els.hpp"
 #include <algorithm>
 #include "heuristic_sequence.hpp"
 
-MS_ELS::MS_ELS() {}
+template <unsigned max_it_ms, unsigned max_it_els, unsigned max_cp, typename ELS>
+MS_ELS<max_it_ms, max_it_els, max_cp, ELS>::MS_ELS() {}
 
-MS_ELS::~MS_ELS() {}
+template <unsigned max_it_ms, unsigned max_it_els, unsigned max_cp, typename ELS>
+MS_ELS<max_it_ms, max_it_els, max_cp, ELS>::~MS_ELS() {}
 
-Solution MS_ELS::run(Problem & pb, int max_it_ms, int max_it_els, int max_cp, VND vnd)
+template <unsigned max_it_ms, unsigned max_it_els, unsigned max_cp, typename ELS>
+Solution MS_ELS<max_it_ms, max_it_els, max_cp, ELS>::run(Problem & pb)
 {
+	ELS els;
 	std::vector<unsigned> mobile_seq(pb.nbMobiles());
 
 	std::iota(mobile_seq.begin(),mobile_seq.end(),0);
@@ -35,7 +38,7 @@ Solution MS_ELS::run(Problem & pb, int max_it_ms, int max_it_els, int max_cp, VN
 			{
 				Solution copy(sol);
 				copy.shake();
-				vnd.run(copy);
+				els.run(copy);
 				if(copy.worstInterceptionTime() < best_local_sol.worstInterceptionTime())
 				{
 					best_local_sol = copy;
