@@ -108,7 +108,7 @@ int main(int argc, const char * argv[]) {
 			AvailablePolicy::minAcceptableCount() = solution.problem().nbMobiles() - 1.1 * (solution.problem().nbMobiles() - solution.totalInterceptionCount());
 
 			//Run the VND
-			VND vnd(sequence);
+			VND<> vnd(sequence);
 			vnd.run(solution);
 
 			//Store the result
