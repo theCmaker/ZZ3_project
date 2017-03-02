@@ -1,6 +1,6 @@
 /**
  * @file vnd.hpp
- * @brief Metaheuristic VND to run the Local Search on solutions.
+ * @brief Vertical Neighbourhood Descent on Solutions.
  */
 
 #ifndef __VND_HPP__
@@ -9,14 +9,28 @@
 #include "move.hpp"
 #include <vector>
 
+/**
+ * @brief Vertical Neighbourhood Descent Algorithm.
+ * @tparam max_itr maximum number of iterations (Default 30)
+ */
 template <unsigned max_itr = 30>
 class VND
 {
 	std::vector<Move *> _list;
 	bool _donotclean;
 public:
+	/**
+	 * @brief Constructor
+	 */
 	VND();
+	/**
+	 * @brief Constructor
+	 * @param list Movement list
+	 */
 	VND(const std::vector<Move *> & list);
+	/**
+	 * @brief Destructor
+	 */
 	~VND();
 
 	/**
