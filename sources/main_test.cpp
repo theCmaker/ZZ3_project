@@ -1,34 +1,53 @@
 #include <iostream>
 #include <fstream>
 #include <chrono>
+#include <cstring>
 #include "heuristic_fastest.hpp"
 #include "heuristic_sequence.hpp"
 #include "tikzifyer.hpp"
 #include "tikzgrapher.hpp"
 #include "move.hpp"
 #include "vnd.hpp"
+#include "ms_els.hpp"
+
+class MY_VND : public VND<30> {
+	static const std::vector<Move *> movements;
+public:
+	MY_VND() : VND<30>(movements) {}
+	~MY_VND() {
+		for (auto movement : movements) {
+			delete movement;
+		}
+	}
+};
+const std::vector<Move *> MY_VND::movements = {
+		new MoveInsert<BestAvailablePolicy>,
+		new MoveSwap1Route<FirstAvailablePolicy>,
+		new MoveExtract<BestAvailablePolicy>,
+		new MoveMove2Routes<BestAvailablePolicy>,
+		new Move2Opt<FirstAvailablePolicy>,
+		new MoveReplace<BestAvailablePolicy>,
+		new MoveMove1Route<FirstAvailablePolicy>,
+		new MoveSwap2Routes<FirstAvailablePolicy>};
 
 int main(int argc, const char *argv[]){
-	if (argc > 1) {
-		Tikzifyer::addStyle("thick,color=OrangeRed,dotted,line width=1mm");
-		Tikzifyer::addStyle("thick,color=Green,dashed");
-		TikzGrapher::addStyle("thick,color=Green");
-		TikzGrapher::addStyle("thick,color=OrangeRed");
-		TikzGrapher::addStyle("thick,color=Cyan");
-		TikzGrapher::addStyle("thick,color=Plum");
-		Tikzifyer tikzify;
-		TikzGrapher tikzgraph;
-		std::ofstream tikz_output_test_file("../tests/tikz-content.tex");
-		std::ofstream tikz_output_graph_file("../tests/tikz-graph.tex");
+	if (argc == 1) {
 
 		Problem p(argv[1]);
-//		Problem p(40,1000,7);
-		std::cout << p << std::endl;
+		struct cmp {
+			bool operator() (const Solution & s1, const Solution & s2) {
+				Time record = s2.worstInterceptionTime();
+				unsigned count_record = s2.bestInterceptionCount();
 
-		tikzgraph(p);
-		tikzify(p);
-//		Heuristic_fastest<> h0a(p);
-		Heuristic_fastest<SimpleCachePolicy> h0b(p);
+				return BestAvailablePolicy::update(s1.worstInterceptionTime(), record, s1.bestInterceptionCount(), count_record);
+			}
+		};
+
+		MS_ELS<5,5,10, MY_VND, Problem, Solution, cmp> multi_start;
+		Solution s = multi_start(p);
+
+
+		std::cerr << s.worstInterceptionTime() << ' ' << s.totalInterceptionCount() << std::endl;
 
 //		auto start = std::chrono::steady_clock::now();
 //		h0a.run();
@@ -37,76 +56,46 @@ int main(int argc, const char *argv[]){
 //		std::cout << "H0 >>> Computing time (without cache): " << diff.count() << "µs" << std::endl;
 
 //		start = std::chrono::steady_clock::now();
-		h0b.run();
+//		h0b.run();
 //		end = std::chrono::steady_clock::now();
 //		diff = end-start;
 //		std::cout << "H0 >>> Computing time (with cache): " << diff.count() << "µs" << std::endl;
 
-
-		Heuristic_sequence h1a(p);
-		h1a.run();
-
-		Heuristic_sequence h1b(p);
-		std::vector<unsigned> expected_sequence({3,0,1});
-		h1b.run();
-		//std::cout << h1b.solution() << std::endl;
-
-		Solution s = h0b.solution();
-		/*MoveInsert<> movement;
-		if (movement.scan(s)) {
-			movement.commit(s);
-		} else {
-			std::cerr << "Impossible to find an amelioration" << std::endl;
+	} else if (argc > 3) {
+		Problem p(argv[1]);
+		Heuristic_fastest<SimpleCachePolicy> fastest(p);
+		Heuristic_sequence sequence(p);
+		if (strcmp(argv[2],"SPATIAL") == 0) {
+			Tikzifyer::addStyle("thick,color=OrangeRed,dotted,line width=1mm");
+			Tikzifyer::addStyle("thick,color=Green,dashed");
+			Tikzifyer tikzify;
+			std::ofstream tikz_output_test_file("../tests/tikz-content.tex");
+			tikzify(p);
+			if (strcmp(argv[3],"FASTEST") == 0) {
+				fastest.run();
+				tikzify(fastest.solution());
+			} else if (strcmp(argv[3],"SEQUENCE") == 0) {
+				sequence.run();
+				tikzify(sequence.solution());
+			}
+			tikz_output_test_file << tikzify;
+		} else if (strcmp(argv[2],"TEMPORAL") == 0) {
+			std::ofstream tikz_output_graph_file("../tests/tikz-graph.tex");
+			TikzGrapher::addStyle("thick,color=Green");
+			TikzGrapher::addStyle("thick,color=OrangeRed");
+			TikzGrapher::addStyle("thick,color=Cyan");
+			TikzGrapher::addStyle("thick,color=Plum");
+			TikzGrapher tikzgraph;
+			tikzgraph(p);
+			if (strcmp(argv[3],"FASTEST") == 0) {
+				fastest.run();
+				tikzgraph(fastest.solution());
+			} else if (strcmp(argv[3],"SEQUENCE") == 0) {
+				sequence.run();
+				tikzgraph(sequence.solution());
+			}
+			tikz_output_graph_file << tikzgraph;
 		}
-		std::cout << s << std::endl;
-		MoveInsert<> movement2;
-		if (movement2.scan(s)) {
-			movement2.commit(s);
-		} else {
-			std::cerr << "Impossible to find an amelioration" << std::endl;
-		}
-
-		std::cout << s << std::endl;
-		MoveExtract<> movement3;
-		if (movement3.scan(s)) {
-			movement3.commit(s);
-		}
-		*/
-
-		std::vector<Move *> sequence = {
-			new MoveMove2Routes<BestAvailablePolicy>,
-			new MoveMove1Route<FirstAvailablePolicy>,
-			new MoveExtract<FirstAvailablePolicy>,
-			new MoveInsert<FirstAvailablePolicy>,
-			new Move2Opt<BestAvailablePolicy>,
-			new MoveSwap1Route<BestAvailablePolicy>,
-			new MoveMove2Routes<FirstAvailablePolicy>,
-			new MoveReplace<BestAvailablePolicy>
-		};
-
-		AvailablePolicy::maxAcceptableTime() = 1.1 * s.worstInterceptionTime();
-		AvailablePolicy::minAcceptableCount() = s.problem().nbMobiles() - 1.1 * (s.problem().nbMobiles() - s.totalInterceptionCount());
-		std::cout << s << std::endl;
-		VND vnd(sequence);
-		vnd.run(s);
-		std::cout << s << std::endl;
-
-//		tikzify(h0b.solution());
-//		tikzify(h1a.solution());
-		tikzify(s);
-		//tikzify(h1b.solution());
-
-
-
-//		tikzgraph(h0b.solution());
-		tikzgraph(s);
-		//tikzgraph(h1b.solution());
-//		std::cout << h0a << std::endl;
-//		std::cout << h0b << std::endl;
-
-		tikz_output_test_file << tikzify;
-
-		tikz_output_graph_file << tikzgraph;
 	}
 	return 0;
 }
