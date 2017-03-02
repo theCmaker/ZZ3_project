@@ -3,31 +3,31 @@
 template <unsigned max_it_ms,
 		  unsigned max_it_els,
 		  unsigned max_cp,
-		  class ELS,
+		  class LS,
 		  class PROBLEM,
 		  class SOLUTION,
 		  class CMP>
-MS_ELS<max_it_ms, max_it_els, max_cp, ELS, PROBLEM, SOLUTION, CMP>::MS_ELS() {}
+MS_ELS<max_it_ms, max_it_els, max_cp, LS, PROBLEM, SOLUTION, CMP>::MS_ELS() {}
 
 template <unsigned max_it_ms,
 		  unsigned max_it_els,
 		  unsigned max_cp,
-		  class ELS,
+		  class LS,
 		  class PROBLEM,
 		  class SOLUTION,
 		  class CMP>
-MS_ELS<max_it_ms, max_it_els, max_cp, ELS, PROBLEM, SOLUTION, CMP>::~MS_ELS() {}
+MS_ELS<max_it_ms, max_it_els, max_cp, LS, PROBLEM, SOLUTION, CMP>::~MS_ELS() {}
 
 template <unsigned max_it_ms,
 		  unsigned max_it_els,
 		  unsigned max_cp,
-		  class ELS,
+		  class LS,
 		  class PROBLEM,
 		  class SOLUTION,
 		  class CMP>
-SOLUTION MS_ELS<max_it_ms, max_it_els, max_cp, ELS, PROBLEM, SOLUTION, CMP>::operator() (const PROBLEM & pb)
+SOLUTION MS_ELS<max_it_ms, max_it_els, max_cp, LS, PROBLEM, SOLUTION, CMP>::operator() (const PROBLEM & pb)
 {
-	ELS els;
+	LS local_search;
 	CMP is_better;
 
 	SOLUTION sol = SOLUTION::random(pb);
@@ -38,7 +38,7 @@ SOLUTION MS_ELS<max_it_ms, max_it_els, max_cp, ELS, PROBLEM, SOLUTION, CMP>::ope
 	{
 		sol = SOLUTION::random(pb);
 
-		ELS::before(sol);
+		LS::before(sol);
 		// ELS runs
 		for(unsigned nb_it_els = 0; nb_it_els < max_it_els; ++nb_it_els)
 		{
@@ -49,7 +49,7 @@ SOLUTION MS_ELS<max_it_ms, max_it_els, max_cp, ELS, PROBLEM, SOLUTION, CMP>::ope
 			{
 				SOLUTION copy(sol);
 				copy.shake();
-				els(copy);
+				local_search(copy);
 				if (is_better(copy,best_local_sol)) {
 					best_local_sol = copy;
 				}

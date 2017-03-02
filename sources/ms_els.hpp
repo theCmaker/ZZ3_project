@@ -6,7 +6,7 @@
 template <unsigned max_it_ms,
 		  unsigned max_it_els,
 		  unsigned max_cp,
-		  class ELS,
+		  class LS,
 		  class PROBLEM,
 		  class SOLUTION,
 		  class CMP = std::less<SOLUTION> >
