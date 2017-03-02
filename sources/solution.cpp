@@ -105,6 +105,21 @@ void Solution::shake()
 	}
 }
 
+Solution Solution::random(const Problem &p)
+{
+	// Initialize the sequence and shake it
+	std::vector<unsigned> mobile_seq(p.nbMobiles());
+	std::iota(mobile_seq.begin(),mobile_seq.end(),0);
+	std::random_shuffle(mobile_seq.begin(),mobile_seq.end());
+
+	// Run the heuristic sequence
+	Heuristic_sequence h(p);
+	h.run(mobile_seq);
+
+	// Return the solution
+	return h.solution();
+}
+
 //******************************************************
 // Methods
 //******************************************************
@@ -520,6 +535,10 @@ Solution::iterator Solution::end(const Interceptor &)
 bool Solution::isEmpty(const Interceptor & i) const
 {
 	return (_interceptors[i.id()]._first == -1);
+}
+
+bool Solution::operator<(const Solution &other) const {
+	return worstInterceptionTime() < other.worstInterceptionTime();
 }
 
 Solution::const_iterator Solution::begin(const Interceptor & i) const

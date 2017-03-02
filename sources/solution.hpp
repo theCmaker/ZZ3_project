@@ -202,6 +202,13 @@ public:
 	void shake();
 
 	/**
+	 * @brief Get a random Solution for a Problem
+	 * @param p the problem
+	 * @return a random Solution to Problem p
+	 */
+	static Solution random(const Problem & p);
+
+	/**
 	 * @brief Add an interception at the end of a route.
 	 * @param interceptor_index id of the interceptor (route)
 	 * @param mobile_index id of the intercepted mobile
@@ -444,6 +451,13 @@ public:
 	 * @return true if route is empty, false otherwise
 	 */
 	bool isEmpty(const Interceptor &) const;
+
+	/**
+	 * @brief Operator less than
+	 * @param other compared solution
+	 * @return true when solution is better in terms of Time
+	 */
+	bool operator< (const Solution & other) const;
 };
 
 /**

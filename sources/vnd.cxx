@@ -39,12 +39,12 @@
 template <unsigned max_itr>
 VND<max_itr>::VND() :
 	_list({
+		  new MoveInsert<BestAvailablePolicy>,
 		  new MoveMove2Routes<BestAvailablePolicy>,
 		  new MoveSwap1Route<FirstAvailablePolicy>,
 		  new Move2Opt<BestAvailablePolicy>,
 		  new MoveExtract<BestAvailablePolicy>,
 		  new MoveMove1Route<BestAvailablePolicy>,
-		  new MoveInsert<BestAvailablePolicy>,
 		  new MoveSwap2Routes<BestAvailablePolicy>,
 		  new MoveReplace<FirstAvailablePolicy>
 		  }),
@@ -70,6 +70,11 @@ VND<max_itr>::~VND()
 
 template <unsigned max_itr>
 void VND<max_itr>::run(Solution & sol) {
+	(*this)(sol);
+}
+
+template <unsigned max_itr>
+void VND<max_itr>::operator() (Solution & sol) {
 	unsigned k = 0;
 	unsigned itr = 1;
 	do {
@@ -86,4 +91,17 @@ template <unsigned max_itr>
 std::vector<Move *> & VND<max_itr>::movements()
 {
 	return _list;
+}
+
+template <unsigned max_itr>
+void VND<max_itr>::before(const Solution & s)
+{
+	AvailablePolicy::maxAcceptableTime() = 1.1 * s.worstInterceptionTime();
+	AvailablePolicy::minAcceptableCount() = s.problem().nbMobiles() - 1.1 * (s.problem().nbMobiles() - s.totalInterceptionCount());
+}
+
+template <unsigned max_itr>
+void VND<max_itr>::after(const Solution &)
+{
+
 }
