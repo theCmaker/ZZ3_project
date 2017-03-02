@@ -52,7 +52,7 @@ VND<max_itr>::VND() :
 {}
 
 template <unsigned max_itr>
-VND<max_itr>::VND(std::vector<Move *> & list) :
+VND<max_itr>::VND(const std::vector<Move *> & list) :
 	_list(list),
 	_donotclean(true)
 {}
@@ -75,16 +75,18 @@ void VND<max_itr>::run(Solution & sol) {
 
 template <unsigned max_itr>
 void VND<max_itr>::operator() (Solution & sol) {
-	unsigned k = 0;
-	unsigned itr = 1;
-	do {
-		if (_list[k]->scan(sol)) {
-			_list[k]->commit(sol);
-			k = 0;
-			++itr;
-		} else ++k;
+	if (_list.size() > 0) {
+		unsigned k = 0;
+		unsigned itr = 1;
+		do {
+			if (_list[k]->scan(sol)) {
+				_list[k]->commit(sol);
+				k = 0;
+				++itr;
+			} else ++k;
 
-	} while (k < _list.size() && itr < max_itr);
+		} while (k < _list.size() && itr < max_itr);
+	}
 }
 
 template <unsigned max_itr>

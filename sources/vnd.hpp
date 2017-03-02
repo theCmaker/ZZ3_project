@@ -16,7 +16,7 @@ class VND
 	bool _donotclean;
 public:
 	VND();
-	VND(std::vector<Move *> & list);
+	VND(const std::vector<Move *> & list);
 	~VND();
 
 	/**
