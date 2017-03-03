@@ -47,6 +47,7 @@ set ( ZZ3_HEADERS
 	  sources/move_policies.hpp
 	  sources/move.hpp
 	  sources/vnd.hpp
+	  sources/ms_els.hpp
     )
 
 set ( ZZ3_SOURCES
@@ -62,7 +63,6 @@ set ( ZZ3_SOURCES
       sources/tikzifyer.cpp
 	  sources/tikzgrapher.cpp
 	  sources/move_policies.cpp
-	  sources/vnd.cpp
     )
 
 set ( ZZ3_HEADERS_TEST
@@ -101,6 +101,11 @@ add_executable ( ${CMAKE_PROJECT_NAME}_test
                  ${ZZ3_SOURCES_TEST}
                )
 
+add_executable ( vnd_benchmark
+				sources/VND_benchmark/VNDBenchmark.cpp
+				${ZZ3_HEADERS}
+				${ZZ3_SOURCES}
+)
 # Build #-------------------------------------------------------------------------------------------
 set_target_properties ( ${CMAKE_PROJECT_NAME}_exec PROPERTIES LINKER_LANGUAGE C )
 target_link_libraries ( ${CMAKE_PROJECT_NAME}_exec ${CMAKE_THREAD_LIBS_INIT} )
