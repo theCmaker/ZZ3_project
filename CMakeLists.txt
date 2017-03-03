@@ -37,6 +37,7 @@ set ( ZZ3_HEADERS
       sources/heuristic.hpp
 	  sources/heuristic_fastest.hpp
       sources/heuristic_sequence.hpp
+	  sources/heuristic_sequence_multisol.hpp
       sources/interceptor.hpp
       sources/mobile.hpp
       sources/problem.hpp
@@ -55,6 +56,7 @@ set ( ZZ3_SOURCES
 	  sources/cache_policy.cpp
 	  sources/heuristic.cpp
       sources/heuristic_sequence.cpp
+	  sources/heuristic_sequence_multisol.cpp
       sources/interceptor.cpp
       sources/mobile.cpp
       sources/problem.cpp
