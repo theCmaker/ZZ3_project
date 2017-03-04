@@ -30,6 +30,9 @@ message ( STATUS "Compiler flags: ${CMAKE_CXX_FLAGS}" )
 # Debug
 #set(CMAKE_BUILD_TYPE DEBUG)
 
+# Release
+set(CMAKE_BUILD_TYPE RELEASE)
+
 # Sources #-----------------------------------------------------------------------------------------
 set ( ZZ3_HEADERS
       sources/depot.hpp
