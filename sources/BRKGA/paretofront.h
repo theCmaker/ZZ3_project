@@ -1,8 +1,8 @@
-#ifndef __FRONT_H__
-#define __FRONT_H__
+#ifndef __PARETOFRONT_H__
+#define __PARETOFRONT_H__
 
 /*!
- * \file pfront.h
+ * \file paretofront.h
  * \brief Pareto Front data
  * \author Pierre-Loup Pissavy
  */
@@ -13,11 +13,10 @@
 /*!
  * \brief Pareto Front
  */
-template <typename PT_DATATYPE>
+template <typename POINT>
 class ParetoFront
 {
 public:
-	typedef PT_DATATYPE POINT;
 	typedef std::vector<POINT *> PolyLine;
 
 	ParetoFront();
@@ -55,4 +54,4 @@ private:
 
 #include "paretofront.cxx"
 
-#endif // __FRONT_H__
+#endif // __PARETOFRONT_H__

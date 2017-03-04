@@ -3,8 +3,8 @@
  *
  * Inits the front
  */
-template <typename PT_DATATYPE>
-ParetoFront<PT_DATATYPE>::ParetoFront() :
+template <typename POINT>
+ParetoFront<POINT>::ParetoFront() :
 	hypervolumen_(0.),
 	mean_spacing_(0.),
 	max_spacing_(0.),
@@ -14,16 +14,16 @@ ParetoFront<PT_DATATYPE>::ParetoFront() :
 /*!
  * \brief Destructor
  */
-template <typename PT_DATATYPE>
-ParetoFront<PT_DATATYPE>::~ParetoFront() {}
+template <typename POINT>
+ParetoFront<POINT>::~ParetoFront() {}
 
 /*!
  * \brief points vector
  * \return the sorted points that compose the front
  * \note it is a vector of pointers to Points.
  */
-template <typename PT_DATATYPE>
-typename ParetoFront<PT_DATATYPE>::PolyLine & ParetoFront<PT_DATATYPE>::pts()
+template <typename POINT>
+typename ParetoFront<POINT>::PolyLine & ParetoFront<POINT>::pts()
 {
 	return pts_;
 }
@@ -33,8 +33,8 @@ typename ParetoFront<PT_DATATYPE>::PolyLine & ParetoFront<PT_DATATYPE>::pts()
  * \return the sorted points that compose the front
  * \note it is a vector of pointers to Points.
  */
-template <typename PT_DATATYPE>
-const typename ParetoFront<PT_DATATYPE>::PolyLine & ParetoFront<PT_DATATYPE>::pts() const
+template <typename POINT>
+const typename ParetoFront<POINT>::PolyLine & ParetoFront<POINT>::pts() const
 {
 	return pts_;
 }
@@ -44,8 +44,8 @@ const typename ParetoFront<PT_DATATYPE>::PolyLine & ParetoFront<PT_DATATYPE>::pt
  * \param pts new points of the front
  * \note \a pts must be a vector of pointers to Points.
  */
-template <typename PT_DATATYPE>
-void ParetoFront<PT_DATATYPE>::setPts(const ParetoFront::PolyLine &pts)
+template <typename POINT>
+void ParetoFront<POINT>::setPts(const ParetoFront::PolyLine &pts)
 {
 	pts_ = pts;
 }
@@ -54,8 +54,8 @@ void ParetoFront<PT_DATATYPE>::setPts(const ParetoFront::PolyLine &pts)
  * \brief Iterator on the points vector
  * \return iterator on the points vector
  */
-template <typename PT_DATATYPE>
-typename ParetoFront<PT_DATATYPE>::PolyLine::iterator ParetoFront<PT_DATATYPE>::begin()
+template <typename POINT>
+typename ParetoFront<POINT>::PolyLine::iterator ParetoFront<POINT>::begin()
 {
 	return pts_.begin();
 }
@@ -64,8 +64,8 @@ typename ParetoFront<PT_DATATYPE>::PolyLine::iterator ParetoFront<PT_DATATYPE>::
  * \brief End iterator on the points vector
  * \return end iterator of the points vector
  */
-template <typename PT_DATATYPE>
-typename ParetoFront<PT_DATATYPE>::PolyLine::iterator ParetoFront<PT_DATATYPE>::end()
+template <typename POINT>
+typename ParetoFront<POINT>::PolyLine::iterator ParetoFront<POINT>::end()
 {
 	return pts_.end();
 }
@@ -77,8 +77,8 @@ typename ParetoFront<PT_DATATYPE>::PolyLine::iterator ParetoFront<PT_DATATYPE>::
  * \see compute_stats
  * \note The value is normalized. Between 0 and 1.
  */
-template <typename PT_DATATYPE>
-double ParetoFront<PT_DATATYPE>::hypervolumen() const
+template <typename POINT>
+double ParetoFront<POINT>::hypervolumen() const
 {
 	return hypervolumen_;
 }
@@ -90,8 +90,8 @@ double ParetoFront<PT_DATATYPE>::hypervolumen() const
  * \see compute_stats
  * \note lengths are computed with taxicab geometry (Manhattan distance)
  */
-template <typename PT_DATATYPE>
-double ParetoFront<PT_DATATYPE>::max_spacing() const
+template <typename POINT>
+double ParetoFront<POINT>::max_spacing() const
 {
 	return max_spacing_;
 }
@@ -104,8 +104,8 @@ double ParetoFront<PT_DATATYPE>::max_spacing() const
  * \note lengths are computed with taxicab geometry (Manhattan distance)
  * \see compute_stats
  */
-template <typename PT_DATATYPE>
-double ParetoFront<PT_DATATYPE>::length() const
+template <typename POINT>
+double ParetoFront<POINT>::length() const
 {
 	return length_;
 }
@@ -117,8 +117,8 @@ double ParetoFront<PT_DATATYPE>::length() const
  * \note lengths are computed with taxicab geometry (Manhattan distance)
  * \see compute_stats
  */
-template <typename PT_DATATYPE>
-double ParetoFront<PT_DATATYPE>::mean_spacing() const
+template <typename POINT>
+double ParetoFront<POINT>::mean_spacing() const
 {
 	return mean_spacing_;
 }
@@ -132,8 +132,8 @@ double ParetoFront<PT_DATATYPE>::mean_spacing() const
  * \note Parameters are provided to normalize the stats.
  * \note Lengths are computed with taxicab geometry (Manhattan distance)
  */
-template <typename PT_DATATYPE>
-void ParetoFront<PT_DATATYPE>::compute_stats(double xmin, double xmax, double ymin, double ymax)
+template <typename POINT>
+void ParetoFront<POINT>::compute_stats(double xmin, double xmax, double ymin, double ymax)
 {
 	double delta_x = xmax - xmin;
 	double delta_y = ymax - ymin;

@@ -2,15 +2,15 @@
 /*!
  * \brief Default solution constructor
  */
-template <typename DATA>
-ParetoFrontSolver<DATA>::ParetoFrontSolver() : nb_pts_(0) {}
+template <typename POINT>
+ParetoFrontSolver<POINT>::ParetoFrontSolver() : nb_pts_(0) {}
 
 /*!
  * \brief Solution constructor from a given file
  * \param name Name of the solutions description file
  */
-//template <typename DATA>
-//ParetoFrontSolver<DATA>::ParetoFrontSolver(const char *name) :
+//template <typename POINT>
+//ParetoFrontSolver<POINT>::ParetoFrontSolver(const char *name) :
 //	nb_pts_(0),
 //	x_min_(std::numeric_limits<float>::max()),
 //	x_max_(std::numeric_limits<float>::min()),
@@ -63,15 +63,15 @@ ParetoFrontSolver<DATA>::ParetoFrontSolver() : nb_pts_(0) {}
 //	}
 //}
 
-template <typename DATA>
-ParetoFrontSolver<DATA>::~ParetoFrontSolver() {}
+template <typename POINT>
+ParetoFrontSolver<POINT>::~ParetoFrontSolver() {}
 
 /*!
  * \brief Highest (and worst) value on first objective
  * \return worst value for the first objective
  */
-template <typename DATA>
-const float & ParetoFrontSolver<DATA>::getMaxX() const
+template <typename POINT>
+const float & ParetoFrontSolver<POINT>::getMaxX() const
 {
 	return x_max_;
 }
@@ -80,8 +80,8 @@ const float & ParetoFrontSolver<DATA>::getMaxX() const
  * \brief Highest (and worst) value on second objective
  * \return worst value for the second objective
  */
-template <typename DATA>
-const float & ParetoFrontSolver<DATA>::getMaxY() const
+template <typename POINT>
+const float & ParetoFrontSolver<POINT>::getMaxY() const
 {
 	return y_max_;
 }
@@ -90,8 +90,8 @@ const float & ParetoFrontSolver<DATA>::getMaxY() const
  * \brief Lowest (and best) value on first objective
  * \return best value for the first objective
  */
-template <typename DATA>
-const float & ParetoFrontSolver<DATA>::getMinX() const
+template <typename POINT>
+const float & ParetoFrontSolver<POINT>::getMinX() const
 {
 	return x_min_;
 }
@@ -100,8 +100,8 @@ const float & ParetoFrontSolver<DATA>::getMinX() const
  * \brief Lowest (and best) value on second objective
  * \return best value for the second objective
  */
-template <typename DATA>
-const float & ParetoFrontSolver<DATA>::getMinY() const
+template <typename POINT>
+const float & ParetoFrontSolver<POINT>::getMinY() const
 {
 	return y_min_;
 }
@@ -110,8 +110,8 @@ const float & ParetoFrontSolver<DATA>::getMinY() const
  * \brief All the solutions read from the file
  * \return vector containing all the points
  */
-template <typename DATA>
-const typename ParetoFrontSolver<DATA>::FPointv & ParetoFrontSolver<DATA>::getPts() const
+template <typename POINT>
+const typename ParetoFrontSolver<POINT>::FPointv & ParetoFrontSolver<POINT>::getPts() const
 {
 	return pts_;
 }
@@ -121,8 +121,8 @@ const typename ParetoFrontSolver<DATA>::FPointv & ParetoFrontSolver<DATA>::getPt
  * \return a sorted map indexed on first objective values containing sorted maps of pointers to the solutions, indexed on second objective values.
  * \warning compute_frontiers() must have been called at least one time before calling this method
  */
-template <typename DATA>
-const typename ParetoFrontSolver<DATA>::FPointPtrMMap & ParetoFrontSolver<DATA>::getPtsMap() const
+template <typename POINT>
+const typename ParetoFrontSolver<POINT>::FPointPtrMMap & ParetoFrontSolver<POINT>::getPtsMap() const
 {
 	return pts_map_;
 }
@@ -131,8 +131,8 @@ const typename ParetoFrontSolver<DATA>::FPointPtrMMap & ParetoFrontSolver<DATA>:
  * \brief Name of the first objective
  * \return abscissa label
  */
-template <typename DATA>
-const std::string & ParetoFrontSolver<DATA>::getAbscissa() const
+template <typename POINT>
+const std::string & ParetoFrontSolver<POINT>::getAbscissa() const
 {
 	return abscissa_;
 }
@@ -141,8 +141,8 @@ const std::string & ParetoFrontSolver<DATA>::getAbscissa() const
  * \brief Name of the second objective
  * \return ordinate label
  */
-template <typename DATA>
-const std::string & ParetoFrontSolver<DATA>::getOrdinate() const
+template <typename POINT>
+const std::string & ParetoFrontSolver<POINT>::getOrdinate() const
 {
 	return ordinate_;
 }
@@ -151,8 +151,8 @@ const std::string & ParetoFrontSolver<DATA>::getOrdinate() const
  * \brief Name and path of the original file
  * \return name and path of the original file
  */
-template <typename DATA>
-const std::string & ParetoFrontSolver<DATA>::getFilename() const
+template <typename POINT>
+const std::string & ParetoFrontSolver<POINT>::getFilename() const
 {
 	return filename_;
 }
@@ -161,8 +161,8 @@ const std::string & ParetoFrontSolver<DATA>::getFilename() const
  * \brief Number of solutions stored in pts_
  * \return number of solutions
  */
-template <typename DATA>
-const unsigned & ParetoFrontSolver<DATA>::getNbPts() const
+template <typename POINT>
+const unsigned & ParetoFrontSolver<POINT>::getNbPts() const
 {
 	return nb_pts_;
 }
@@ -172,8 +172,8 @@ const unsigned & ParetoFrontSolver<DATA>::getNbPts() const
  * \return all the computed frontiers
  * \see compute_frontiers
  */
-template <typename DATA>
-typename ParetoFrontSolver<DATA>::ParetoFrontv & ParetoFrontSolver<DATA>::getPFrontiers()
+template <typename POINT>
+typename ParetoFrontSolver<POINT>::ParetoFrontv & ParetoFrontSolver<POINT>::getPFrontiers()
 {
 	return pFrontiers_;
 }
@@ -183,8 +183,8 @@ typename ParetoFrontSolver<DATA>::ParetoFrontv & ParetoFrontSolver<DATA>::getPFr
  * \warning if fronts had been computed before, then it needs to be run again
  * \note nbPts is updated
  */
-template <typename DATA>
-void ParetoFrontSolver<DATA>::setPts(FPointv &v)
+template <typename POINT>
+void ParetoFrontSolver<POINT>::setPts(FPointv &v)
 {
 	pts_ = v;
 	nb_pts_ = v.size();
@@ -212,11 +212,11 @@ void ParetoFrontSolver<DATA>::setPts(FPointv &v)
  * \param bottom_right Coordinates of the bottom right hand corner of the rectangle.
  * \return vector of pointers on the points that are effectively in the rectangle.
  */
-template <typename DATA>
-typename ParetoFrontSolver<DATA>::FPointPtrv
-ParetoFrontSolver<DATA>::findPointsInArea(
-		typename pareto_front::POINT &top_left,
-		typename pareto_front::POINT &bottom_right) const
+template <typename POINT>
+typename ParetoFrontSolver<POINT>::FPointPtrv
+ParetoFrontSolver<POINT>::findPointsInArea(
+		POINT &top_left,
+		POINT &bottom_right) const
 {
 	FPointPtrv in_area = FPointPtrv();
 
@@ -247,18 +247,18 @@ ParetoFrontSolver<DATA>::findPointsInArea(
  *
  * The pts_map_ is (re)built and the pFrontiers_ are generated.
  */
-template <typename DATA>
-void ParetoFrontSolver<DATA>::compute_frontiers() {
+template <typename POINT>
+void ParetoFrontSolver<POINT>::compute_frontiers() {
 	//Build Map
 	typename FPointPtrMMap::iterator x_itr;
 	for (typename FPointv::iterator i = pts_.begin(); i != pts_.end(); ++i) { //For each point
 		x_itr = pts_map_.find(i->getX()); //Look for the abscissa (if submap exists)
 		if (x_itr != pts_map_.end()) { //Submap exists
-			x_itr->second.insert(std::pair<float,DATA *>(i->getY(),&(*i)));
+			x_itr->second.insert(std::pair<float,POINT *>(i->getY(),&(*i)));
 		} else { //Submap does not exist
 			FPointPtrMap ymap;  //Create the submap
-			ymap.insert(std::pair<float,DATA *>(i->getY(),&(*i))); //Add the point
-			pts_map_.insert(std::pair<float,std::map<float,DATA *> >(i->getX(),ymap)); //Insert the submap
+			ymap.insert(std::pair<float,POINT *>(i->getY(),&(*i))); //Add the point
+			pts_map_.insert(std::pair<float,std::map<float,POINT *> >(i->getX(),ymap)); //Insert the submap
 		}
 	}
 	//Compute the frontiers using the previously built map
@@ -270,9 +270,9 @@ void ParetoFrontSolver<DATA>::compute_frontiers() {
 	int i = 0; //Number of fronts
 	while (!pts_map_copy.empty()) { //While there are remaining points
 		++i;
-		pFrontiers_.push_back(ParetoFront<DATA>()); //New empty front
+		pFrontiers_.push_back(ParetoFront<POINT>()); //New empty front
 		pFrontiers_.back().pts().push_back(pts_map_copy.begin()->second.begin()->second); //Add first point to the front
-		DATA *current = pFrontiers_.back().pts().front();  //Set current point
+		POINT *current = pFrontiers_.back().pts().front();  //Set current point
 		pts_map_copy.begin()->second.erase(current->getY()); //Remove the point in the map
 		if (pts_map_copy.begin()->second.empty()) {          //Remove the submap if empty
 			pts_map_copy.erase(current->getX());
@@ -302,8 +302,8 @@ void ParetoFrontSolver<DATA>::compute_frontiers() {
  * \brief Saves the set of solutions into \a name file.
  * \param name Name of the output file
  */
-template <typename DATA>
-void ParetoFrontSolver<DATA>::saveToFile(const char * name) const {
+template <typename POINT>
+void ParetoFrontSolver<POINT>::saveToFile(const char * name) const {
 	std::ofstream output;
 	output.open (name);
 

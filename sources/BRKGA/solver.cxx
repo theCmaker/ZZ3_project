@@ -11,7 +11,7 @@ C2 Solver<C1,C2,DT>::maxC2 = std::numeric_limits<C2>::min();
 
 template <typename C1, typename C2, typename DT>
 double Solver<C1,C2,DT>::computeHypervolume () {
-	ParetoFrontSolver<Point<C1,C2,DT>> s;
+	ParetoFrontSolver<DataPoint<C1,C2,DT>> s;
 	s.setPts(_data);
 	s.compute_frontiers();
 	s.getPFrontiers()[0].compute_stats(double(minC2), double(maxC2), double(minC1), double(maxC1));

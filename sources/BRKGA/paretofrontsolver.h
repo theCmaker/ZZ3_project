@@ -1,8 +1,8 @@
-#ifndef __DATA_SOLUTIONS_H__
-#define __DATA_SOLUTIONS_H__
+#ifndef __PARETOFRONTSOLVER_H__
+#define __PARETOFRONTSOLVER_H__
 
 /*!
- * \file datasolutions.h
+ * \file paretofrontsolver.h
  * \brief Set of solutions read from a file, has Pareto front processing abilities
  * \author Pierre-Loup Pissavy
  */
@@ -15,18 +15,18 @@
 #include <map>
 #include "paretofront.h"
 
-template <typename DATA>
+template <typename POINT>
 /*!
  * \brief Set of solutions and pareto frontiers on these solutions
  */
 class ParetoFrontSolver
 {
 public:
-	typedef ParetoFront<DATA> pareto_front;
+	typedef ParetoFront<POINT> pareto_front;
 	typedef std::vector<pareto_front> ParetoFrontv;
-	typedef std::vector<typename pareto_front::POINT> FPointv;
-	typedef std::vector<typename pareto_front::POINT *> FPointPtrv;
-	typedef std::map<float,typename pareto_front::POINT *> FPointPtrMap;
+	typedef std::vector<POINT> FPointv;
+	typedef std::vector<POINT *> FPointPtrv;
+	typedef std::map<float,POINT *> FPointPtrMap;
 	typedef std::map<float,FPointPtrMap > FPointPtrMMap;
 protected:
 	FPointv         pts_;           //!< Points read in data file
@@ -58,11 +58,11 @@ public:
 	const FPointPtrMMap &  getPtsMap           ()                      const;
 	ParetoFrontv  &  getPFrontiers       ();
 	void             setPts              (FPointv &);
-	FPointPtrv       findPointsInArea    (typename pareto_front::POINT &, typename pareto_front::POINT &)    const;
+	FPointPtrv       findPointsInArea    (POINT &, POINT &)    const;
 	void             compute_frontiers   ();
 	void             saveToFile          (const char *)          const;
 };
 
 #include "paretofrontsolver.cxx"
 
-#endif /* end of include guard: __DATA_SOLUTIONS_H__ */
+#endif /* end of include guard: __PARETOFRONTSOLVER_H__ */

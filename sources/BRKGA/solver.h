@@ -12,7 +12,7 @@ struct Solver
 	static C1 maxC1;
 	static C2 minC2;
 	static C2 maxC2;
-	std::vector< Point<C1,C2,DT> > _data;
+	std::vector< DataPoint<C1,C2,DT> > _data;
 
 	double hypervolume;
 
