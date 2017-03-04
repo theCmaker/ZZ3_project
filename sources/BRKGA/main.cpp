@@ -110,5 +110,6 @@ int main (int, char * argv[])
 	// rebuild the best solution
 	decoder.decode(bestChromosome);
 	std::cout << decoder.getResult() << std::endl;
+	std::cout << "VND Calls: " << Decoder::VNDcounter << std::endl;
 	return 0;
 }

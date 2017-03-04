@@ -1,6 +1,9 @@
 #include "decoder.h"
 #include <algorithm>
 #include <heuristic_sequence_multisol.hpp>
+#include <vnd.hpp>
+
+unsigned Decoder::VNDcounter = 0;
 
 double Decoder::decode (std::vector<double> & chromosome)
 {
@@ -16,7 +19,30 @@ double Decoder::decode (std::vector<double> & chromosome)
 		heuristic.run(sequence);
 
 		unsigned n = data.nbMobiles();
-		for (auto sol : heuristic.solutions()) {
+
+		auto solutions = heuristic.solutions();
+
+		decltype(solutions) enhancements;
+
+		std::vector< DataPoint<double,double,Solution> > dataPts;
+		for (auto sol : solutions) {
+			dataPts.emplace_back((double)(n - sol.totalInterceptionCount()), sol.worstInterceptionTime(),sol);
+		}
+
+		ParetoFrontSolver<DataPoint<double,double,Solution> > s;
+		s.setPts(dataPts);
+		s.compute_frontiers();
+
+		for (auto point : s.getPFrontiers()[0]) {
+			solver.add((double)(n - point->getInfo().totalInterceptionCount()), point->getInfo().worstInterceptionTime(),point->getInfo());
+			enhancements.emplace_back(point->getInfo());
+			VND<20>::before(enhancements.back());
+			VND<20> vnd;
+			vnd(enhancements.back());
+			++VNDcounter;
+		}
+
+		for (auto sol : enhancements) {
 			solver.add((double)(n - sol.totalInterceptionCount()), sol.worstInterceptionTime(),sol);
 		}
 

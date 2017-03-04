@@ -13,6 +13,7 @@ protected:
 	Solver<double,Time,Solution> solver;
 
 public:
+	static unsigned VNDcounter;
 	Decoder (Problem & d): data(d) {}
 	double decode (std::vector<double> & chromosome);
 	const Solver<double,Time,Solution> & getResult() const {return solver;}
