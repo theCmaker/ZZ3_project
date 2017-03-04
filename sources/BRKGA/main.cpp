@@ -22,7 +22,7 @@ int main (int, char * argv[])
 	const long unsigned seed = 0;//time(0);       // set the seed of the RNG
 	MTRand rng(seed);                         // set the RNG
 	const unsigned n    = data.nbMobiles(); // size of chromosomes
-	const unsigned p    = 256;		        // size of population
+	const unsigned p    = 128;		        // size of population
 	const double pe     = 0.1;		        // fraction of population to be the elite-set
 	const double pm     = 0.1;		        // fraction of population to be replaced by mutants
 	const double rhoe   = 0.7;	            // probability that offspring inherit an allele from elite parent
@@ -110,6 +110,5 @@ int main (int, char * argv[])
 	// rebuild the best solution
 	decoder.decode(bestChromosome);
 	std::cout << decoder.getResult() << std::endl;
-
 	return 0;
 }
