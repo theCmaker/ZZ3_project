@@ -1,0 +1,37 @@
+\documentclass{standalone}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[usenames,dvipsnames]{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{plotmarks}
+\usetikzlibrary{shapes,snakes,arrows}
+\begin{document}
+\begin{tikzpicture}[xscale=1.36364,yscale=0.35058]
+\draw[xstep=1,ystep=8,thin,dotted,color=Black] (-0.4,0.745401) grid (8.39434,60.0331);
+\begin{scope}
+  \clip (-0.4,0.745401) rectangle (8.39434,60.0331);
+  \definecolor{hvColor}{RGB}{128,0,0}
+  \draw[color=hvColor, fill=hvColor, fill opacity=0.4] (0,3.44362) -- (0,7.08789) -- (2,5.23347) -- (3,5.09216) -- (4,4.90294) -- (5,3.78305) -- (6,3.44362) -| (8,3.44362) -- cycle;
+  \definecolor{pLineColor}{RGB}{128,0,0}
+  \definecolor{pPointColor}{RGB}{0,40,240}
+  \draw[thick,color=pPointColor] (0,7.08789) node[draw,color=pPointColor,fill=pPointColor, inner sep = 0pt, minimum size=2mm] {} -- (2,5.23347) node[draw,color=pPointColor,fill=pPointColor, inner sep = 0pt, minimum size=2mm] {} -- (3,5.09216) node[draw,color=pPointColor,fill=pPointColor, inner sep = 0pt, minimum size=2mm] {} -- (4,4.90294) node[draw,color=pPointColor,fill=pPointColor, inner sep = 0pt, minimum size=2mm] {} -- (5,3.78305) node[draw,color=pPointColor,fill=pPointColor, inner sep = 0pt, minimum size=2mm] {} -- (6,3.44362) node[draw,color=pPointColor,fill=pPointColor, inner sep = 0pt, minimum size=2mm] {};
+  \definecolor{pLineColor}{RGB}{200,0,0}
+  \definecolor{pPointColor}{RGB}{200,0,0}
+  \draw[thick,color=pPointColor] (0,12.5672) node[draw,color=pPointColor,fill=pPointColor, inner sep = 0pt, minimum size=2mm] {} -- (5,3.85111) node[draw,color=pPointColor,fill=pPointColor, inner sep = 0pt, minimum size=2mm] {} -- (8,3.72059) node[draw,color=pPointColor,fill=pPointColor, inner sep = 0pt, minimum size=2mm] {};
+  \definecolor{pLineColor}{RGB}{255,16,16}
+  \definecolor{pPointColor}{RGB}{255,16,16}
+  \draw[thick,color=pPointColor] (0,57.408) node[draw,color=pPointColor,fill=pPointColor, inner sep = 0pt, minimum size=2mm] {} -- (1,46.9644) node[draw,color=pPointColor,fill=pPointColor, inner sep = 0pt, minimum size=2mm] {} -- (2,32.9107) node[draw,color=pPointColor,fill=pPointColor, inner sep = 0pt, minimum size=2mm] {} -- (3,16.658) node[draw,color=pPointColor,fill=pPointColor, inner sep = 0pt, minimum size=2mm] {} -- (4,15.7666) node[draw,color=pPointColor,fill=pPointColor, inner sep = 0pt, minimum size=2mm] {} -- (5,4.07137) node[draw,color=pPointColor,fill=pPointColor, inner sep = 0pt, minimum size=2mm] {} -- (7,3.85111) node[draw,color=pPointColor,fill=pPointColor, inner sep = 0pt, minimum size=2mm] {};
+  \definecolor{pLineColor}{RGB}{255,88,88}
+  \definecolor{pPointColor}{RGB}{255,88,88}
+  \draw[thick,color=pPointColor] (5,8.74559) node[draw,color=pPointColor,fill=pPointColor, inner sep = 0pt, minimum size=2mm] {} -- (6,6.10203) node[draw,color=pPointColor,fill=pPointColor, inner sep = 0pt, minimum size=2mm] {};
+\end{scope}
+\draw[->,>=triangle 45] (-0.4,0.745401) -- coordinate (x axis mid) (8.39434,0.745401);
+\node[below=1cm,anchor=center] at (x axis mid) {nombre de mobiles ratés};
+\foreach \x in {0,1,2,3,4,5,6,7,8}
+  \draw (\x,0.745401) -- (\x,0.745401) node[anchor=north] {\x};
+\draw[->,>=triangle 45] (-0.4,0.745401) -- coordinate (y axis mid) (-0.4,60.0331);
+\node[left=1cm,rotate=90,anchor=center] at (y axis mid) {temps de la pire tournée};
+\foreach \y in {8,16,24,32,40,48,56}
+  \draw (-0.4,\y) -- (-0.4,\y) node[anchor=east] {\y};
+\end{tikzpicture}
+\end{document}

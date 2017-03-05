@@ -1,0 +1,16 @@
+NB SOLUTIONS
+6
+
+FIRST OBJECTIVE
+nombre de mobiles ratés
+
+SECOND OBJECTIVE
+temps de la pire tournée
+
+SOLUTIONS
+12	21.6559	0
+22	15.147	1
+27	7.74618	2
+12	6.64534	3
+13	14.5307	4
+17	7.13526	5
