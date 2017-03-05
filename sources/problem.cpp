@@ -151,7 +151,7 @@ void Problem::write(const char * filename) const
 		if (std::isfinite(i->range())) {
 			output << i->range();
 		} else {
-			output << "5e+308";
+			output << "1e+308";
 		}
 		output << std::endl;
 	}
