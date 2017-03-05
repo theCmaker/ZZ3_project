@@ -30,6 +30,9 @@ message ( STATUS "Compiler flags: ${CMAKE_CXX_FLAGS}" )
 # Debug
 #set(CMAKE_BUILD_TYPE DEBUG)
 
+# Release
+set(CMAKE_BUILD_TYPE RELEASE)
+
 # Sources #-----------------------------------------------------------------------------------------
 set ( ZZ3_HEADERS
       sources/depot.hpp
@@ -93,6 +96,12 @@ add_executable ( ${CMAKE_PROJECT_NAME}_exec
                  ${ZZ3_SOURCES}
                )
 
+add_executable ( gen
+				 sources/gen.cpp
+				 ${ZZ3_HEADERS}
+				 ${ZZ3_SOURCES}
+			   )
+
 add_executable ( ${CMAKE_PROJECT_NAME}_test
                  tests/tests.cpp
                  ${ZZ3_HEADERS}
@@ -109,6 +118,12 @@ add_executable ( vnd_benchmark
 # Build #-------------------------------------------------------------------------------------------
 set_target_properties ( ${CMAKE_PROJECT_NAME}_exec PROPERTIES LINKER_LANGUAGE C )
 target_link_libraries ( ${CMAKE_PROJECT_NAME}_exec ${CMAKE_THREAD_LIBS_INIT} )
+
+set_target_properties ( gen PROPERTIES LINKER_LANGUAGE C )
+target_link_libraries ( gen ${CMAKE_THREAD_LIBS_INIT} )
+
+set_target_properties ( brkga_exec PROPERTIES LINKER_LANGUAGE C )
+target_link_libraries ( brkga_exec ${CMAKE_THREAD_LIBS_INIT} )
 
 set_target_properties ( ${CMAKE_PROJECT_NAME}_test PROPERTIES LINKER_LANGUAGE C )
 target_link_libraries ( ${CMAKE_PROJECT_NAME}_test ${CMAKE_THREAD_LIBS_INIT} )
