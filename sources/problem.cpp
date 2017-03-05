@@ -9,7 +9,7 @@ Problem::Problem() {}
 
 Problem::Problem(unsigned nb_interceptors, unsigned nb_mobiles, unsigned nb_depots, bool)
 {
-	static std::mt19937 gen;
+	static std::mt19937_64 gen(std::random_device{}());
 	unsigned depot_index;
 	_interceptors.reserve(nb_interceptors);
 	_mobiles.reserve(nb_mobiles);
@@ -147,7 +147,13 @@ void Problem::write(const char * filename) const
 	output << "INTERCEPTORS" << std::endl;
 	for (VInterceptors::const_iterator i = _interceptors.begin(); i != _interceptors.end(); ++i)
 	{
-		output << i->depot()->id() << ' ' << i->speed() << std::endl;
+		output << i->depot()->id() << ' ' << i->speed() << ' ';
+		if (std::isfinite(i->range())) {
+			output << i->range();
+		} else {
+			output << "5e+308";
+		}
+		output << std::endl;
 	}
 }
 
