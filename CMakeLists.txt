@@ -122,9 +122,6 @@ target_link_libraries ( ${CMAKE_PROJECT_NAME}_exec ${CMAKE_THREAD_LIBS_INIT} )
 set_target_properties ( gen PROPERTIES LINKER_LANGUAGE C )
 target_link_libraries ( gen ${CMAKE_THREAD_LIBS_INIT} )
 
-set_target_properties ( brkga_exec PROPERTIES LINKER_LANGUAGE C )
-target_link_libraries ( brkga_exec ${CMAKE_THREAD_LIBS_INIT} )
-
 set_target_properties ( ${CMAKE_PROJECT_NAME}_test PROPERTIES LINKER_LANGUAGE C )
 target_link_libraries ( ${CMAKE_PROJECT_NAME}_test ${CMAKE_THREAD_LIBS_INIT} )
 add_dependencies      ( ${CMAKE_PROJECT_NAME}_test googletest )
