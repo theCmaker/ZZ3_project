@@ -14,7 +14,7 @@ double Solver<C1,C2,DT>::computeHypervolume () {
 	ParetoFrontSolver<DataPoint<C1,C2,DT>> s;
 	s.setPts(_data);
 	s.compute_frontiers();
-	s.getPFrontiers()[0].compute_stats(double(minC2), double(maxC2), double(minC1), double(maxC1));
+	s.getPFrontiers()[0].compute_stats(double(minC1), double(maxC1), double(minC2), double(maxC2));
 	hypervolume = s.getPFrontiers()[0].hypervolumen();
 	return hypervolume;
 }
