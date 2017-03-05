@@ -32,7 +32,13 @@ struct Solver
 		}
 		_data.emplace_back(c1,c2,dt);
 	}
-	void clear () { _data.clear(); hypervolume = std::numeric_limits<double>::infinity(); }
+	void clear () {
+		minC1 = std::numeric_limits<C1>::max();
+		maxC1 = std::numeric_limits<C1>::min();
+		minC2 = std::numeric_limits<C2>::max();
+		maxC2 = std::numeric_limits<C2>::min();
+		_data.clear(); hypervolume = std::numeric_limits<double>::infinity();
+	}
 };
 
 template <typename C1, typename C2, typename DT>
