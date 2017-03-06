@@ -31,7 +31,7 @@ const std::vector<Move *> MY_VND::movements = {
 		new MoveSwap2Routes<FirstAvailablePolicy>};
 
 int main(int argc, const char *argv[]){
-	if (argc == 1) {
+	if (argc == 2) {
 
 		Problem p(argv[1]);
 		struct cmp {
@@ -44,22 +44,14 @@ int main(int argc, const char *argv[]){
 		};
 
 		MS_ELS<5,5,10, MY_VND, Problem, Solution, cmp> multi_start;
+		auto start = std::chrono::steady_clock::now();
 		Solution s = multi_start(p);
+		auto end = std::chrono::steady_clock::now();
+		std::chrono::duration<double,std::micro> diff = end-start;
 
-
-		std::cerr << s.worstInterceptionTime() << ' ' << s.totalInterceptionCount() << std::endl;
-
-//		auto start = std::chrono::steady_clock::now();
-//		h0a.run();
-//		auto end = std::chrono::steady_clock::now();
-//		std::chrono::duration<double,std::micro> diff = end-start;
-//		std::cout << "H0 >>> Computing time (without cache): " << diff.count() << "µs" << std::endl;
-
-//		start = std::chrono::steady_clock::now();
-//		h0b.run();
-//		end = std::chrono::steady_clock::now();
-//		diff = end-start;
-//		std::cout << "H0 >>> Computing time (with cache): " << diff.count() << "µs" << std::endl;
+		std::cout << argv[1] << ": ";
+		std::cout << s.worstInterceptionTime() << ' ' << p.nbMobiles() - s.totalInterceptionCount() << std::endl;
+		std::cout << "Computing time: " << diff.count() << "µs" << std::endl;
 
 	} else if (argc > 3) {
 		Problem p(argv[1]);
@@ -95,6 +87,39 @@ int main(int argc, const char *argv[]){
 				tikzgraph(sequence.solution());
 			}
 			tikz_output_graph_file << tikzgraph;
+		} else if (strcmp(argv[2],"CHRONO") == 0) {
+
+			std::cout << argv[1] << std::endl;
+
+			auto start = std::chrono::steady_clock::now();
+			for (unsigned i = 0; i < 100; ++i) {
+				Heuristic_fastest<SimpleCachePolicy> fastest_cache(p);
+				fastest_cache.run();
+			}
+			auto end = std::chrono::steady_clock::now();
+			std::chrono::duration<double,std::micro> diff = end-start;
+			std::cout << "Computing time (with cache): " << diff.count()/100 << "µs" << std::endl;
+
+			start = std::chrono::steady_clock::now();
+			for (unsigned i = 0; i < 100; ++i) {
+				Heuristic_fastest<NoCachePolicy> fastest_nocache(p);
+				fastest_nocache.run();
+			}
+			end = std::chrono::steady_clock::now();
+			diff = end-start;
+			std::cout << "Computing time (without cache): " << diff.count()/100 << "µs" << std::endl;
+		} else if (strcmp(argv[2],"VND") == 0) {
+			std::cout << argv[1] << std::endl;
+			sequence.run();
+			Solution s = sequence.solution();
+			VND<> vnd;
+			VND<30>::before(s);
+			auto start = std::chrono::steady_clock::now();
+			vnd(s);
+			auto end = std::chrono::steady_clock::now();
+			std::chrono::duration<double,std::micro> diff = end-start;
+			std::cout << s.worstInterceptionTime() << ' ' << p.nbMobiles() - s.totalInterceptionCount() << std::endl;
+			std::cout << "Computing time: " << diff.count() << "µs" << std::endl;
 		}
 	}
 	return 0;
