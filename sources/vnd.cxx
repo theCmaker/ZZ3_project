@@ -80,7 +80,14 @@ void VND<max_itr>::operator() (Solution & sol) {
 		unsigned itr = 1;
 		do {
 			if (_list[k]->scan(sol)) {
+//				Solution sol_before = sol;
 				_list[k]->commit(sol);
+				if (!sol.check()) {
+					std::cerr << "Context data:" << std::endl
+//							  << "Solution before: " << sol_before
+							  << std::endl << "Failed at movement " << k << ". Iteration " << itr << '.' << std::endl;
+					abort();
+				}
 				k = 0;
 				++itr;
 			} else ++k;

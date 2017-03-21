@@ -105,6 +105,9 @@ void MoveInsert<Policy>::commit(Solution & solution)
 	}
 	solution.recomputeFrom(*_best_mobile_candidate);
 
+
+	assert(round(1.0e+6*_best_interception_date) == round(1.0e+6*solution.lastInterceptionTime(*_best_interceptor)));
+
 	assert((!std::isnan(solution.worstInterceptionTime())));
 	assert((std::isfinite(solution.worstInterceptionTime())));
 }
@@ -183,9 +186,12 @@ bool MoveExtract<Policy>::scan(const Solution & solution)
 template <typename Policy>
 void MoveExtract<Policy>::commit(Solution & solution)
 {
+	const Interceptor * best_interceptor = solution.mobile(_best_mobile_candidate->id())._interceptor;
 	solution.remove(*_best_mobile_candidate);
-	if (_best_recompute_from != nullptr)
+	if (_best_recompute_from != nullptr) {
 		solution.recomputeFrom(*_best_recompute_from);
+		assert(round(1.0e+6*_best_interception_date) == round(1.0e+6*solution.lastInterceptionTime(*best_interceptor)));
+	}
 	assert((!std::isnan(solution.worstInterceptionTime())));
 	assert((std::isfinite(solution.worstInterceptionTime())));
 }
@@ -456,6 +462,7 @@ void MoveReplace<Policy>::commit(Solution & solution)
 	solution.remove(*_best_mobile_out);
 	solution.recomputeFrom(*_best_mobile_in);
 
+	assert(round(1.0e+6*_best_interception_date) == round(1.0e+6*solution.lastInterceptionTime(*_best_interceptor)));
 	assert((!std::isnan(solution.worstInterceptionTime())));
 	assert((std::isfinite(solution.worstInterceptionTime())));
 }
@@ -627,6 +634,7 @@ void MoveMove1Route<Policy>::commit(Solution & solution)
 	}
 	solution.recomputeFrom(solution.firstOfRoute(*_best_interceptor)._mobile);
 
+	assert(round(1.0e+6*_best_interception_date) == round(1.0e+6*solution.lastInterceptionTime(*_best_interceptor)));
 	assert((!std::isnan(solution.worstInterceptionTime())));
 	assert((std::isfinite(solution.worstInterceptionTime())));
 }
@@ -769,6 +777,7 @@ template<typename Policy>
 void MoveMove2Routes<Policy>::commit(Solution & solution)
 {
 	int extraction_next_index = solution.mobile(_best_mobile_candidate->id())._next;
+	const Interceptor * best_interceptor_extraction =  solution.mobile(_best_mobile_candidate->id())._interceptor;
 	solution.remove(*_best_mobile_candidate);
 	if (_best_mobile_insertion_prev != nullptr) {
 		solution.insertAfter(*_best_mobile_insertion_prev, *_best_interceptor_insertion, *_best_mobile_candidate, _best_interception_date);
@@ -780,6 +789,7 @@ void MoveMove2Routes<Policy>::commit(Solution & solution)
 	}
 	solution.recomputeFrom(*_best_mobile_candidate);
 
+	assert(round(_best_interception_date*1.0e+6) == round(std::max(solution.lastInterceptionTime(*_best_interceptor_insertion),solution.lastInterceptionTime(*best_interceptor_extraction))*1.0e+6));
 	assert((!std::isnan(solution.worstInterceptionTime())));
 	assert((std::isfinite(solution.worstInterceptionTime())));
 }
@@ -919,6 +929,7 @@ void MoveSwap1Route<Policy>::commit(Solution & solution)
 	}
 	solution.recomputeFrom(solution[_best_interceptor->id()]._first);
 
+	assert(round(1.0e+6*_best_interception_date) == round(1.0e+6*solution.lastInterceptionTime(*_best_interceptor)));
 	assert((!std::isnan(solution.worstInterceptionTime())));
 	assert((std::isfinite(solution.worstInterceptionTime())));
 }
@@ -1091,6 +1102,7 @@ void MoveSwap2Routes<Policy>::commit(Solution & solution)
 	solution.recomputeFrom(*_best_mobile_swap1);
 	solution.recomputeFrom(*_best_mobile_swap2);
 
+	assert(round(1.0e+6*_best_interception_date) == round(1.0e+6*std::max(solution.lastInterceptionTime(*_best_interceptor1),solution.lastInterceptionTime(*_best_interceptor2))));
 	assert((!std::isnan(solution.worstInterceptionTime())));
 	assert((std::isfinite(solution.worstInterceptionTime())));
 }
