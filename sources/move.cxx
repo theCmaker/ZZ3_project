@@ -673,14 +673,12 @@ bool MoveMove2Routes<Policy>::scan(const Solution & solution)
 	unsigned interceptor_insertion_id;
 	const Solution::MobileNode * previousNode;
 
-	// Find a route
+	// Find a route for extraction
 	while (interceptor_extraction_id < problem.nbInterceptors() && Policy::keepOn()) {
 		interceptor_extraction = &(problem.interceptors()[interceptor_extraction_id]);
 		Solution::const_iterator position_extraction_it = solution.begin(*interceptor_extraction);
 		// Find a mobile for extraction
 		while (position_extraction_it != solution.end(*interceptor_extraction) && Policy::keepOn()) {
-			interceptor_insertion_id = 0;
-			// Find an insertion route
 			//Extraction
 			if (position_extraction_it->_prev < 0) {
 				// First of route
@@ -698,6 +696,8 @@ bool MoveMove2Routes<Policy>::scan(const Solution & solution)
 				// Not end of route
 				extraction_interception_date += solution.evaluate(extraction_interceptor_position, extraction_interception_date, *interceptor_extraction, problem.mobiles()[position_extraction_it->_next], solution.lastOfRoute(*interceptor_extraction)._mobile);
 			}
+			// Find an insertion route
+			interceptor_insertion_id = 0;
 			while (interceptor_insertion_id < problem.nbInterceptors() && Policy::keepOn() && std::isfinite(extraction_interception_date)) {
 				if (interceptor_extraction_id != interceptor_insertion_id) {
 					interceptor_insertion = &(problem.interceptors()[interceptor_insertion_id]);
@@ -712,7 +712,6 @@ bool MoveMove2Routes<Policy>::scan(const Solution & solution)
 
 						//Catch the mobile
 						insertion_interception_date += interceptor_insertion->computeInterception(insertion_interceptor_position, position_extraction_it->_mobile, insertion_interception_date);
-						insertion_interceptor_position = position_extraction_it->_mobile.position(insertion_interception_date);
 
 						//Compare
 						if (std::isfinite(insertion_interception_date)
@@ -737,8 +736,8 @@ bool MoveMove2Routes<Policy>::scan(const Solution & solution)
 							// Into the route
 							previousNode = &(solution.mobile((unsigned) position_insertion_it->_prev));
 
-							insertion_interception_date = position_insertion_it->_date;
-							insertion_interceptor_position = position_insertion_it->_mobile.position(insertion_interception_date);
+							insertion_interception_date = previousNode->_date;
+							insertion_interceptor_position = previousNode->_mobile.position(insertion_interception_date);
 						}
 						// Catch the mobile
 						insertion_interception_date += interceptor_insertion->computeInterception(insertion_interceptor_position, position_extraction_it->_mobile, insertion_interception_date);
