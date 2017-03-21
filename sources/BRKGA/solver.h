@@ -33,9 +33,9 @@ struct Solver
 		_data.emplace_back(c1,c2,dt);
 	}
 	void clear () {
-		minC1 = std::numeric_limits<C1>::max();
+		minC1 = 0;
 		maxC1 = std::numeric_limits<C1>::min();
-		minC2 = std::numeric_limits<C2>::max();
+		minC2 = 0;
 		maxC2 = std::numeric_limits<C2>::min();
 		_data.clear(); hypervolume = std::numeric_limits<double>::infinity();
 	}

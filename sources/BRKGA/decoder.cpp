@@ -46,6 +46,10 @@ double Decoder::decode (std::vector<double> & chromosome)
 			solver.add((double)(n - sol.totalInterceptionCount()), sol.worstInterceptionTime(),sol);
 		}
 
+		for (auto sol : solutions) {
+			solver.add((double)(n - sol.totalInterceptionCount()), sol.worstInterceptionTime(),sol);
+		}
+
 		solver.computeHypervolume();
 	} else {
 		std::cerr << "What dafuck" << std::endl;
