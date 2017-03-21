@@ -113,7 +113,7 @@ int main(int argc, const char *argv[]){
 			sequence.run();
 			Solution s = sequence.solution();
 			VND<> vnd;
-			VND<30>::before(s);
+			VND<>::before(s);
 			auto start = std::chrono::steady_clock::now();
 			vnd(s);
 			auto end = std::chrono::steady_clock::now();
