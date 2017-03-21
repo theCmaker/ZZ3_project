@@ -546,6 +546,90 @@ bool Solution::isEmpty(const Interceptor & i) const
 	return (_interceptors[i.id()]._first == -1);
 }
 
+bool Solution::check() const
+{
+	//TODO: check dates
+	bool ok = true;
+	std::vector<unsigned> mobiles(_problem.nbMobiles());
+	std::vector<unsigned> interceptors(_problem.nbInterceptors());
+
+	for (auto & i : mobiles) {
+		i = 0;
+	}
+	for (auto & i : interceptors) {
+		i = 0;
+	}
+
+	int route = _first;
+	while (route != -1 && interceptors[route] == 0) {
+		interceptors[route]++;
+		const_iterator itr = begin(_problem.interceptors()[route]);
+		while (itr != end(_problem.interceptors()[route]) && mobiles[itr->_mobile.id()] == 0) {
+			mobiles[itr->_mobile.id()]++;
+			++itr;
+		}
+		if (itr != end(_problem.interceptors()[route])) {
+			ok = false;
+			std::cerr << "Mobile " << itr->_mobile << " found twice." << std::endl;
+		}
+
+		//Check dates
+		if (lastInterceptionTime(route) != evaluate(_problem.interceptors()[route].position(),0.,_problem.interceptors()[route],firstOfRoute(_problem.interceptors()[route])._mobile,lastOfRoute(_problem.interceptors()[route])._mobile)) {
+			std::cerr << "Dates for route " << route << " are wrong." << std::endl;
+			ok = false;
+		}
+		route = _interceptors[route]._next;
+	}
+	if (route != -1) {
+		ok = false;
+		std::cerr << "Route for interceptor " << route << " found twice." << std::endl;
+	}
+
+	//TODO: check all the uncaught mobiles and unused routes. They must be empty and clean.
+	for (auto & route : _interceptors) {
+		if (interceptors[route._interceptor.id()] == 0) {
+			if (route._next != -1) {
+				ok = false;
+				std::cerr << "Route " << route._interceptor.id() << ": Next must be -1." << std::endl;
+			}
+			if (route._prev != -1) {
+				ok = false;
+				std::cerr << "Route " << route._interceptor.id() << ": Prev must be -1." << std::endl;
+			}
+			if (route._first != -1) {
+				ok = false;
+				std::cerr << "Route " << route._interceptor.id() << ": First must be -1." << std::endl;
+			}
+			if (route._last != -1) {
+				ok = false;
+				std::cerr << "Route " << route._interceptor.id() << ": Last must be -1." << std::endl;
+			}
+		}
+	}
+
+	for (auto & interception : _sequence) {
+		if (mobiles[interception._mobile.id()] == 0) {
+			if (interception._next != -1) {
+				ok = false;
+				std::cerr << "Interception " << interception._mobile.id() << ": Next must be -1." << std::endl;
+			}
+			if (interception._prev != -1) {
+				ok = false;
+				std::cerr << "Interception " << interception._mobile.id() << ": Prev must be -1." << std::endl;
+			}
+			if (interception._date != -1) {
+				ok = false;
+				std::cerr << "Interception " << interception._mobile.id() << ": Date must be -1." << std::endl;
+			}
+			if (interception._interceptor != nullptr) {
+				ok = false;
+				std::cerr << "Interception " << interception._mobile.id() << ": Interceptor must be NULL." << std::endl;
+			}
+		}
+	}
+	return ok;
+}
+
 bool Solution::operator<(const Solution &other) const {
 	return worstInterceptionTime() < other.worstInterceptionTime();
 }

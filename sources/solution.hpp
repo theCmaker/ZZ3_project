@@ -483,6 +483,12 @@ public:
 	bool isEmpty(const Interceptor &) const;
 
 	/**
+	 * @brief Check solution integrity
+	 * @return true when current solution is consistent.
+	 */
+	bool check() const;
+
+	/**
 	 * @brief Operator less than
 	 * @param other compared solution
 	 * @return true when solution is better in terms of Time
