@@ -304,18 +304,27 @@ void Solution::remove(unsigned mobile_index)
 		int next_route = _interceptors[interceptor->id()]._next;
 		int prev_route = _interceptors[interceptor->id()]._prev;
 		if (next_route != -1) {
+			// Next route exists, re-chain previous route
 			_interceptors[next_route]._prev = prev_route;
 		} else {
-			//_last = next_route;
+			// No route after, update _last
 			_last = prev_route;
 		}
 		if (prev_route != -1) {
+			// Previous route exists, re-chain next route
 			_interceptors[prev_route]._next = next_route;
 		} else {
+			// No route before, update _first
 			_first = next_route;
 		}
+		// Reset the route chainings
+		_interceptors[interceptor->id()]._next = -1;
+		_interceptors[interceptor->id()]._prev = -1;
+		_interceptors[interceptor->id()]._first = -1;
+		_interceptors[interceptor->id()]._last = -1;
 	}
 
+	// Reset the interception info
 	m_node._next = -1;
 	m_node._prev = -1;
 	m_node._date = -1.;
