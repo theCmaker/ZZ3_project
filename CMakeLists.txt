@@ -30,6 +30,9 @@ message ( STATUS "Compiler flags: ${CMAKE_CXX_FLAGS}" )
 # Debug
 #set(CMAKE_BUILD_TYPE DEBUG)
 
+# Release
+set(CMAKE_BUILD_TYPE RELEASE)
+
 # Sources #-----------------------------------------------------------------------------------------
 set ( ZZ3_HEADERS
       sources/depot.hpp
@@ -37,6 +40,7 @@ set ( ZZ3_HEADERS
       sources/heuristic.hpp
 	  sources/heuristic_fastest.hpp
       sources/heuristic_sequence.hpp
+	  sources/heuristic_sequence_multisol.hpp
       sources/interceptor.hpp
       sources/mobile.hpp
       sources/problem.hpp
@@ -47,6 +51,7 @@ set ( ZZ3_HEADERS
 	  sources/move_policies.hpp
 	  sources/move.hpp
 	  sources/vnd.hpp
+	  sources/ms_els.hpp
     )
 
 set ( ZZ3_SOURCES
@@ -54,6 +59,7 @@ set ( ZZ3_SOURCES
 	  sources/cache_policy.cpp
 	  sources/heuristic.cpp
       sources/heuristic_sequence.cpp
+	  sources/heuristic_sequence_multisol.cpp
       sources/interceptor.cpp
       sources/mobile.cpp
       sources/problem.cpp
@@ -62,7 +68,6 @@ set ( ZZ3_SOURCES
       sources/tikzifyer.cpp
 	  sources/tikzgrapher.cpp
 	  sources/move_policies.cpp
-	  sources/vnd.cpp
     )
 
 set ( ZZ3_HEADERS_TEST
@@ -84,6 +89,21 @@ set ( ZZ3_HEADERS_TEST
 set ( ZZ3_SOURCES_TEST
     )
 
+set ( ZZ3_BRKGA_HEADERS
+	  sources/BRKGA/BRKGA.h
+	  sources/BRKGA/Population.h
+	  sources/BRKGA/paretofront.h
+	  sources/BRKGA/decoder.h
+	  sources/BRKGA/solver.h
+	  sources/BRKGA/datapoint.h
+	  sources/BRKGA/paretofrontsolver.h
+	)
+
+set ( ZZ3_BRKGA_SOURCES
+	  sources/BRKGA/Population.cpp
+	  sources/BRKGA/decoder.cpp
+	)
+
 include_directories ( sources/ )
 
 # Executables #-------------------------------------------------------------------------------------
@@ -92,6 +112,12 @@ add_executable ( ${CMAKE_PROJECT_NAME}_exec
                  ${ZZ3_HEADERS}
                  ${ZZ3_SOURCES}
                )
+
+add_executable ( gen
+				 sources/gen.cpp
+				 ${ZZ3_HEADERS}
+				 ${ZZ3_SOURCES}
+			   )
 
 add_executable ( ${CMAKE_PROJECT_NAME}_test
                  tests/tests.cpp
@@ -105,10 +131,24 @@ add_executable ( vnd_benchmark
 				sources/VND_benchmark/VNDBenchmark.cpp
 				${ZZ3_HEADERS}
 				${ZZ3_SOURCES}
-)
+			   )
+
+add_executable ( brkga_exec
+				sources/BRKGA/main.cpp
+				${ZZ3_BRKGA_HEADERS}
+				${ZZ3_HEADERS}
+				${ZZ3_BRKGA_SOURCES}
+				${ZZ3_SOURCES}
+			   )
 # Build #-------------------------------------------------------------------------------------------
 set_target_properties ( ${CMAKE_PROJECT_NAME}_exec PROPERTIES LINKER_LANGUAGE C )
 target_link_libraries ( ${CMAKE_PROJECT_NAME}_exec ${CMAKE_THREAD_LIBS_INIT} )
+
+set_target_properties ( gen PROPERTIES LINKER_LANGUAGE C )
+target_link_libraries ( gen ${CMAKE_THREAD_LIBS_INIT} )
+
+set_target_properties ( brkga_exec PROPERTIES LINKER_LANGUAGE C )
+target_link_libraries ( brkga_exec ${CMAKE_THREAD_LIBS_INIT} )
 
 set_target_properties ( ${CMAKE_PROJECT_NAME}_test PROPERTIES LINKER_LANGUAGE C )
 target_link_libraries ( ${CMAKE_PROJECT_NAME}_test ${CMAKE_THREAD_LIBS_INIT} )

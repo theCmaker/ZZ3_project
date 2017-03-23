@@ -1,16 +1,19 @@
 #include "solution.hpp"
+#include "heuristic_sequence.hpp"
+#include <random>
+#include <algorithm>
 
 //******************************************************
 // INTERNAL STRUCTS
 //******************************************************
 
 //Mobile
-Solution::MobileNode::MobileNode(const Mobile &m, const Time d, const Interceptor *i) :
+Solution::MobileNode::MobileNode(const Mobile &m, const Time d, const Interceptor *i, int prev, int next) :
 	_date(d),
 	_mobile(m),
 	_interceptor(i),
-	_next(-1),
-	_prev(-1)
+	_next(next),
+	_prev(prev)
 {}
 
 Solution::MobileNode::MobileNode(const Mobile &m) :
@@ -22,12 +25,12 @@ Solution::MobileNode::MobileNode(const Mobile &m) :
 {}
 
 //Interceptor
-Solution::InterceptorNode::InterceptorNode(const Interceptor &i) :
+Solution::InterceptorNode::InterceptorNode(const Interceptor &i, int first, int last, int prev, int next) :
 	_interceptor(i),
-	_first(-1),
-	_last(-1),
-	_next(-1),
-	_prev(-1)
+	_first(first),
+	_last(last),
+	_next(next),
+	_prev(prev)
 {}
 
 //******************************************************
@@ -51,9 +54,70 @@ Solution::Solution(const Solution & s) : _problem(s._problem), _sequence(s._sequ
 
 Solution::~Solution() {}
 
+Solution &Solution::operator=(const Solution & other) {
+	if ((this != &other) && (&_problem) == (&(other._problem))) {
+		_sequence.clear();
+		for (std::vector<MobileNode>::const_iterator itr = other._sequence.begin(); itr != other._sequence.end(); ++itr) {
+			_sequence.emplace_back(itr->_mobile, itr->_date, itr->_interceptor, itr->_prev, itr->_next);
+		}
+		_interceptors.clear();
+		for (std::vector<InterceptorNode>::const_iterator itr = other._interceptors.begin(); itr != other._interceptors.end(); ++itr) {
+			_interceptors.emplace_back(itr->_interceptor, itr->_first, itr->_last, itr->_prev, itr->_next);
+		}
+		_first = other._first;
+		_last = other._last;
+	}
+	return *this;
+}
+
 const Problem & Solution::problem() const
 {
 	return _problem;
+}
+
+void Solution::shake()
+{
+	// Check that solution is not empty, otherwise shake is useless.
+	if (_first != -1) {
+		static std::mt19937 rand;
+
+		// Get the sequence
+		std::vector<unsigned> sequence;
+		for (VInterceptors::const_iterator interceptor = _problem.interceptors().begin(); interceptor != _problem.interceptors().end(); ++interceptor) {
+			for (iterator interception = begin(*interceptor); interception != end(*interceptor); ++interception) {
+				sequence.push_back(interception->_mobile.id());
+			}
+		}
+
+		// Shake the sequence
+		// Realise (min 2, max n/6) swap operations between mobiles in the sequence
+		for (unsigned i = 0; i < std::max(2u, (unsigned) sequence.size()/6u); ++i) {
+			std::swap(sequence[sequence.size() * (rand() / rand.max())],
+					  sequence[sequence.size() * (rand() / rand.max())]);
+		}
+
+
+
+		// Rebuild the solution
+		Heuristic_sequence h(_problem);
+		h.run(sequence);
+		*this = h.solution();
+	}
+}
+
+Solution Solution::random(const Problem &p)
+{
+	// Initialize the sequence and shake it
+	std::vector<unsigned> mobile_seq(p.nbMobiles());
+	std::iota(mobile_seq.begin(),mobile_seq.end(),0);
+	std::random_shuffle(mobile_seq.begin(),mobile_seq.end());
+
+	// Run the heuristic sequence
+	Heuristic_sequence h(p);
+	h.run(mobile_seq);
+
+	// Return the solution
+	return h.solution();
 }
 
 //******************************************************
@@ -240,18 +304,27 @@ void Solution::remove(unsigned mobile_index)
 		int next_route = _interceptors[interceptor->id()]._next;
 		int prev_route = _interceptors[interceptor->id()]._prev;
 		if (next_route != -1) {
+			// Next route exists, re-chain previous route
 			_interceptors[next_route]._prev = prev_route;
 		} else {
-			//_last = next_route;
+			// No route after, update _last
 			_last = prev_route;
 		}
 		if (prev_route != -1) {
+			// Previous route exists, re-chain next route
 			_interceptors[prev_route]._next = next_route;
 		} else {
+			// No route before, update _first
 			_first = next_route;
 		}
+		// Reset the route chainings
+		_interceptors[interceptor->id()]._next = -1;
+		_interceptors[interceptor->id()]._prev = -1;
+		_interceptors[interceptor->id()]._first = -1;
+		_interceptors[interceptor->id()]._last = -1;
 	}
 
+	// Reset the interception info
 	m_node._next = -1;
 	m_node._prev = -1;
 	m_node._date = -1.;
@@ -473,6 +546,94 @@ bool Solution::isEmpty(const Interceptor & i) const
 	return (_interceptors[i.id()]._first == -1);
 }
 
+bool Solution::check() const
+{
+	//TODO: check dates
+	bool ok = true;
+	std::vector<unsigned> mobiles(_problem.nbMobiles());
+	std::vector<unsigned> interceptors(_problem.nbInterceptors());
+
+	for (auto & i : mobiles) {
+		i = 0;
+	}
+	for (auto & i : interceptors) {
+		i = 0;
+	}
+
+	int route = _first;
+	while (route != -1 && interceptors[route] == 0) {
+		interceptors[route]++;
+		const_iterator itr = begin(_problem.interceptors()[route]);
+		while (itr != end(_problem.interceptors()[route]) && mobiles[itr->_mobile.id()] == 0) {
+			mobiles[itr->_mobile.id()]++;
+			++itr;
+		}
+		if (itr != end(_problem.interceptors()[route])) {
+			ok = false;
+			std::cerr << "Mobile " << itr->_mobile << " found twice." << std::endl;
+		}
+
+		//Check dates
+		if (lastInterceptionTime(route) != evaluate(_problem.interceptors()[route].position(),0.,_problem.interceptors()[route],firstOfRoute(_problem.interceptors()[route])._mobile,lastOfRoute(_problem.interceptors()[route])._mobile)) {
+			std::cerr << "Dates for route " << route << " are wrong." << std::endl;
+			ok = false;
+		}
+		route = _interceptors[route]._next;
+	}
+	if (route != -1) {
+		ok = false;
+		std::cerr << "Route for interceptor " << route << " found twice." << std::endl;
+	}
+
+	//TODO: check all the uncaught mobiles and unused routes. They must be empty and clean.
+	for (auto & route : _interceptors) {
+		if (interceptors[route._interceptor.id()] == 0) {
+			if (route._next != -1) {
+				ok = false;
+				std::cerr << "Route " << route._interceptor.id() << ": Next must be -1." << std::endl;
+			}
+			if (route._prev != -1) {
+				ok = false;
+				std::cerr << "Route " << route._interceptor.id() << ": Prev must be -1." << std::endl;
+			}
+			if (route._first != -1) {
+				ok = false;
+				std::cerr << "Route " << route._interceptor.id() << ": First must be -1." << std::endl;
+			}
+			if (route._last != -1) {
+				ok = false;
+				std::cerr << "Route " << route._interceptor.id() << ": Last must be -1." << std::endl;
+			}
+		}
+	}
+
+	for (auto & interception : _sequence) {
+		if (mobiles[interception._mobile.id()] == 0) {
+			if (interception._next != -1) {
+				ok = false;
+				std::cerr << "Interception " << interception._mobile.id() << ": Next must be -1." << std::endl;
+			}
+			if (interception._prev != -1) {
+				ok = false;
+				std::cerr << "Interception " << interception._mobile.id() << ": Prev must be -1." << std::endl;
+			}
+			if (interception._date != -1) {
+				ok = false;
+				std::cerr << "Interception " << interception._mobile.id() << ": Date must be -1." << std::endl;
+			}
+			if (interception._interceptor != nullptr) {
+				ok = false;
+				std::cerr << "Interception " << interception._mobile.id() << ": Interceptor must be NULL." << std::endl;
+			}
+		}
+	}
+	return ok;
+}
+
+bool Solution::operator<(const Solution &other) const {
+	return worstInterceptionTime() < other.worstInterceptionTime();
+}
+
 Solution::const_iterator Solution::begin(const Interceptor & i) const
 {
 	return Solution::const_iterator(&(_sequence[0]) + _interceptors[i.id()]._first);
@@ -483,67 +644,6 @@ Solution::const_iterator Solution::end(const Interceptor & i) const
 	return Solution::const_iterator(&(_sequence[0]) - 1);
 }
 
-//******************************************************
-// ITERATORS
-//******************************************************
-
-Solution::iterator::iterator(MobileNode *s) :
-	_solution(s)
-{}
-
-Solution::iterator::~iterator() {}
-
-Solution::MobileNode & Solution::iterator::operator* ()
-{
-	return *_solution;
-}
-
-Solution::MobileNode * Solution::iterator::operator-> ()
-{
-	return _solution;
-}
-
-Solution::iterator & Solution::iterator::operator++ ()
-{
-	_solution = _solution - int(_solution->_mobile.id()) + _solution->_next;
-	return *this;
-}
-
-bool Solution::iterator::operator!= (Solution::iterator itr)
-{
-	return _solution != itr._solution;
-}
-
-//******************************************************
-// CONST ITERATORS
-//******************************************************
-
-Solution::const_iterator::const_iterator(const MobileNode *s) :
-	_solution(s)
-{}
-
-Solution::const_iterator::~const_iterator() {}
-
-const Solution::MobileNode & Solution::const_iterator::operator* () const
-{
-	return *_solution;
-}
-
-const Solution::MobileNode * Solution::const_iterator::operator-> () const
-{
-	return _solution;
-}
-
-Solution::const_iterator & Solution::const_iterator::operator++ ()
-{
-	_solution = _solution - int(_solution->_mobile.id()) + _solution->_next;
-	return *this;
-}
-
-bool Solution::const_iterator::operator!= (Solution::const_iterator itr)
-{
-	return _solution != itr._solution;
-}
 
 //******************************************************
 // STANDARD OPERATORS

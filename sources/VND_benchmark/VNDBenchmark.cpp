@@ -280,7 +280,7 @@ void run_random_benchmark() {
 			AvailablePolicy::minAcceptableCount() = solution.problem().nbMobiles() - 1.1 * (solution.problem().nbMobiles() - solution.totalInterceptionCount());
 
 			//Run the VND
-			VND vnd(sequence);
+			VND<> vnd(sequence);
 			auto start = std::chrono::steady_clock::now();
 			vnd.run(solution);
 			auto end = std::chrono::steady_clock::now();

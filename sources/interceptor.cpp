@@ -129,12 +129,6 @@ Time Interceptor::computeInterception(Location position, const Mobile & m, Time 
 	Direction v0 = m.direction();
 	Location l0 = m.position(t);
 
-	/* Variable liees a l'obtention de l'angle alpha */
-	double a = l0._y-l1._y;
-	double b = l1._x-l0._x;
-	double c = (a*v0._sx+b*v0._sy)/v1;
-	alpha = Interceptor::computeAlpha(a,b,c); /* Nombre compris entre -Pi et Pi ou Pi à priori vu la résolution de l'équation */
-
 	/* Variables liees a l'obtention du temps d'interception */
 	Time t1, t2;
 	Distance epsilon = 0.0001;
@@ -149,6 +143,11 @@ Time Interceptor::computeInterception(Location position, const Mobile & m, Time 
 		tres = 0.; /* temps d'interception nul, on est déjà au bon endroit */
 
 	} else {
+		/* Variable liees a l'obtention de l'angle alpha */
+		double a = l0._y-l1._y;
+		double b = l1._x-l0._x;
+		double c = (a*v0._sx+b*v0._sy)/v1;
+		alpha = Interceptor::computeAlpha(a,b,c); /* Nombre compris entre -Pi et Pi ou Pi à priori vu la résolution de l'équation */
 		if (alpha != 42) /* Code d'erreur (manque d'inspiration) */
 		{
 			t1 =  -b/(-v0._sx+v1*cos(alpha));
@@ -190,13 +189,6 @@ Time Interceptor::computeInterception(Location position, const Mobile & m, Time 
 	}
 	return tres;
 }
-
-Time Interceptor::timeFromTo(const Location & departure, const Location & arrival) const
-{
-	Distance d = std::sqrt((arrival._x - departure._x)*(arrival._x - departure._x) + (arrival._y - departure._y)*(arrival._y - departure._y));
-	return d / _speed;
-}
-
 
 std::ostream & operator << (std::ostream & o, const Interceptor & i) {
 	o << "[" << i.id() << " pos(" << i.position()._x << "," << i.position()._y << ");spd(" << i.speed() << ");range(" << i.range() << ")]";

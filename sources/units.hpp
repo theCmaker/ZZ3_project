@@ -38,7 +38,10 @@ struct Location
 	 * @param x Abscissa
 	 * @param y Ordinate
 	 */
-	Location(Distance = 0., Distance = 0.);
+	inline Location(Distance x = 0., Distance y = 0.) :
+		_x(x),
+		_y(y)
+	{}
 
 	/**
 	 * @brief Equality test with optional precision parameter.
@@ -46,7 +49,13 @@ struct Location
 	 * @param epsilon Precision
 	 * @return true when locations are the same at more or minus epsilon
 	 */
-	bool equals(const Location &, Distance = 0.) const;
+	inline bool equals(const Location & other, Distance epsilon = 0.) const
+	{
+		return (other._x - epsilon) <= _x
+				&& (other._x + epsilon) >= _x
+				&& (other._y - epsilon) <= _y
+				&& (other._y + epsilon) >= _y;
+	}
 };
 
 /**

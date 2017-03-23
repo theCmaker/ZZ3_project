@@ -32,14 +32,6 @@ const Location & Mobile::position() const
 	return _position;
 }
 
-Location Mobile::position(Time t) const
-{
-	Location new_position;
-	new_position._x = _position._x + _direction._sx * t;
-	new_position._y = _position._y + _direction._sy * t;
-	return new_position;
-}
-
 const Direction & Mobile::direction() const
 {
 	return _direction;

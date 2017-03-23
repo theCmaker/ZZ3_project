@@ -1,0 +1,20 @@
+NB SOLUTIONS
+10
+
+FIRST OBJECTIVE
+nombre de mobiles ratés
+
+SECOND OBJECTIVE
+temps de la pire tournée
+
+SOLUTIONS
+9	3.0158	0
+8	3.0158	1
+7	3.0158	2
+6	3.0158	3
+5	4.41054	4
+4	6.14226	5
+3	6.81689	6
+2	8.59572	7
+1	15.1743	8
+0	40.4317	9
