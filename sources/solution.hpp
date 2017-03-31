@@ -292,8 +292,12 @@ public:
 	 */
 	void insertAfter(const Mobile & m_prev, const Interceptor & i, const Mobile & m, const Time & d);
 
-	//TODO: documentation
-	// called after removeSeqFrom to insert at the end of the route the removed sequence.
+
+	/**
+	  * @brief Insertion of a sequence of mobiles at the end of a route. Called after removeSeqFrom.
+	  * @param i interceptor of the route to insert
+	  * @param m first mobile in the sequence to insert
+	  */
 	void appendSeq(const Interceptor & i, const Mobile & m);
 
 	/**
@@ -308,9 +312,10 @@ public:
 	 */
 	void remove(unsigned mobile_index);
 
-	//TODO: documentation
-	// removes a sequence of nodes in a route. Datas in MobileNode are NOT change as the sequence
-	// will be inserted as given in an other route with appendSeq() (used in Move2Opt).
+	/**
+	  * @brief Removes a sequence of nodes in a route. Datas in MobileNode are NOT change as the sequence will be inserted as given in an other route with appendSeq() (used in Move2Opt).
+	  * @param m first mobile of the sequence to remove.
+	  */
 	void removeSeqFrom(const Mobile & m);
 
 	/**
