@@ -186,7 +186,9 @@ bool MoveExtract<Policy>::scan(const Solution & solution)
 template <typename Policy>
 void MoveExtract<Policy>::commit(Solution & solution)
 {
+#ifndef NDEBUG
 	const Interceptor * best_interceptor = solution.mobile(_best_mobile_candidate->id())._interceptor;
+#endif
 	solution.remove(*_best_mobile_candidate);
 	if (_best_recompute_from != nullptr) {
 		solution.recomputeFrom(*_best_recompute_from);
@@ -776,7 +778,9 @@ template<typename Policy>
 void MoveMove2Routes<Policy>::commit(Solution & solution)
 {
 	int extraction_next_index = solution.mobile(_best_mobile_candidate->id())._next;
+#ifndef NDEBUG
 	const Interceptor * best_interceptor_extraction =  solution.mobile(_best_mobile_candidate->id())._interceptor;
+#endif
 	solution.remove(*_best_mobile_candidate);
 	if (_best_mobile_insertion_prev != nullptr) {
 		solution.insertAfter(*_best_mobile_insertion_prev, *_best_interceptor_insertion, *_best_mobile_candidate, _best_interception_date);
@@ -829,7 +833,7 @@ bool MoveSwap1Route<Policy>::scan(const Solution & solution)
 	{
 		//std::cout << "interceptor: " << interceptor_id << std::endl;
 		interceptor = &(problem.interceptors()[interceptor_id]);
-		_best_interception_date = solution.lastInterceptionTime(*interceptor);
+		//_best_interception_date = solution.lastInterceptionTime(*interceptor);
 		mobile_it_first = solution.begin(*interceptor);
 		// for each mobile in the route
 		while(mobile_it_first != solution.end(*interceptor) && Policy::keepOn())
@@ -851,7 +855,7 @@ bool MoveSwap1Route<Policy>::scan(const Solution & solution)
 				if(mobile_it_first->_prev != -1)
 				{
 					//std::cout << "before mob1" << std::endl;
-					interception_date += solution.evaluate(interceptor->position(),interception_date,*interceptor,solution.begin(*interceptor)->_mobile,problem.mobiles()[mobile_it_first->_prev]);
+					interception_date = solution.mobile(mobile_it_first->_prev)._date;
 					interceptor_position = problem.mobiles()[mobile_it_first->_prev].position(interception_date);
 
 					//std::cout << "date prev mob1: " << interception_date << std::endl;
@@ -926,6 +930,7 @@ void MoveSwap1Route<Policy>::commit(Solution & solution)
 	{
 		solution.insertAfter(mobile_prev1, _best_interceptor->id(), _best_mobile_swap2->id(), _best_interception_date);
 	}
+	//TODO: recompute from swap2 may be more efficient
 	solution.recomputeFrom(solution[_best_interceptor->id()]._first);
 
 	assert(round(1.0e+6*_best_interception_date) == round(1.0e+6*solution.lastInterceptionTime(*_best_interceptor)));
