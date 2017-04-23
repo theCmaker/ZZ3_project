@@ -1,4 +1,4 @@
-#include "paretofrontsolver.h"
+#include "Pareto/paretofrontsolver.h"
 
 template <typename C1, typename C2, typename DT>
 C1 Solver<C1,C2,DT>::minC1 = std::numeric_limits<C1>::max();

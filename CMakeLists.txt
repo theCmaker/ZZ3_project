@@ -34,6 +34,9 @@ message ( STATUS "Compiler flags: ${CMAKE_CXX_FLAGS}" )
 set(CMAKE_BUILD_TYPE RELEASE)
 
 # Sources #-----------------------------------------------------------------------------------------
+
+include_directories ( sources/ )
+
 set ( ZZ3_HEADERS
       sources/depot.hpp
 	  sources/cache_policy.hpp
@@ -89,14 +92,20 @@ set ( ZZ3_HEADERS_TEST
 set ( ZZ3_SOURCES_TEST
     )
 
+set ( ZZ3_BENCHMARK_HEADERS
+	  sources/VND_benchmark/benchmarkresult.hpp
+	  sources/VND_benchmark/VNDBenchmark.hpp
+	)
+
+set ( ZZ3_BENCHMARK_SOURCES
+	  sources/VND_benchmark/benchmarkresult.cpp
+	)
+
 set ( ZZ3_BRKGA_HEADERS
 	  sources/BRKGA/BRKGA.h
 	  sources/BRKGA/Population.h
-	  sources/BRKGA/paretofront.h
 	  sources/BRKGA/decoder.h
 	  sources/BRKGA/solver.h
-	  sources/BRKGA/datapoint.h
-	  sources/BRKGA/paretofrontsolver.h
 	)
 
 set ( ZZ3_BRKGA_SOURCES
@@ -104,7 +113,12 @@ set ( ZZ3_BRKGA_SOURCES
 	  sources/BRKGA/decoder.cpp
 	)
 
-include_directories ( sources/ )
+set ( ZZ3_PARETO_HEADERS
+	  sources/Pareto/datapoint.h
+	  sources/Pareto/paretofrontsolver.h
+	  sources/Pareto/paretofront.h
+	)
+
 
 # Executables #-------------------------------------------------------------------------------------
 add_executable ( ${CMAKE_PROJECT_NAME}_exec
@@ -128,8 +142,11 @@ add_executable ( ${CMAKE_PROJECT_NAME}_test
                )
 
 add_executable ( vnd_benchmark
-				sources/VND_benchmark/VNDBenchmark.cpp
+				sources/VND_benchmark/main.cpp
+				${ZZ3_BENCHMARK_HEADERS}
 				${ZZ3_HEADERS}
+				${ZZ3_PARETO_HEADERS}
+				${ZZ3_BENCHMARK_SOURCES}
 				${ZZ3_SOURCES}
 			   )
 
@@ -137,6 +154,7 @@ add_executable ( brkga_exec
 				sources/BRKGA/main.cpp
 				${ZZ3_BRKGA_HEADERS}
 				${ZZ3_HEADERS}
+				${ZZ3_PARETO_HEADERS}
 				${ZZ3_BRKGA_SOURCES}
 				${ZZ3_SOURCES}
 			   )

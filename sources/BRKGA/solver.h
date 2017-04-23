@@ -2,7 +2,7 @@
 
 #include <vector>
 #include <limits>
-#include "datapoint.h"
+#include "Pareto/datapoint.h"
 #include "problem.hpp"
 
 template <typename C1, typename C2, typename DT>

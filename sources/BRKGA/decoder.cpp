@@ -34,8 +34,8 @@ double Decoder::decode (std::vector<double> & chromosome)
 		s.compute_frontiers();
 
 		for (auto point : s.getPFrontiers()[0]) {
-			solver.add((double)(n - point->getInfo().totalInterceptionCount()), point->getInfo().worstInterceptionTime(),point->getInfo());
-			enhancements.emplace_back(point->getInfo());
+			solver.add((double)(n - point.getInfo().totalInterceptionCount()), point.getInfo().worstInterceptionTime(),point.getInfo());
+			enhancements.emplace_back(point.getInfo());
 			VND<20>::before(enhancements.back());
 			VND<20> vnd;
 			vnd(enhancements.back());
