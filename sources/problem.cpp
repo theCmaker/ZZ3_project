@@ -9,7 +9,7 @@ Problem::Problem() {}
 
 Problem::Problem(unsigned nb_interceptors, unsigned nb_mobiles, unsigned nb_depots, bool)
 {
-	static std::mt19937_64 gen(std::random_device{}());
+	static std::mt19937_64 gen(/*std::random_device{}()*/0);
 	unsigned depot_index;
 	_interceptors.reserve(nb_interceptors);
 	_mobiles.reserve(nb_mobiles);
