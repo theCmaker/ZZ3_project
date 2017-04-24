@@ -125,7 +125,7 @@ std::vector< typename VNDBenchmark<INSTANCES, VND_VARIANTS>::vnd_variant_t > VND
 		//For each variant
 		for (unsigned variant_id = 0; variant_id < VND_VARIANTS; ++variant_id) {
 			//Run the VND
-			Solution & solution = basic_solutions[instance_id];
+			Solution solution = basic_solutions[instance_id];
 
 			// Start the chrono...
 			auto start = std::chrono::steady_clock::now();
@@ -171,17 +171,26 @@ std::vector< typename VNDBenchmark<INSTANCES, VND_VARIANTS>::vnd_variant_t > VND
 	for (std::vector<ParetoFront<DataPoint> >::iterator front = frontsVector.begin(); front != frontsVector.end(); ++front) {
 		for (auto sol = front->begin(); sol != front->end(); ++sol) {
 			++scores[sol->getInfo()];
-			best_variants.push_back(variants_ids[sol->getInfo()]);
 		}
 	}
 
-	for (auto val : scores) {
-		std::cerr << val << " ";
-	}
-	std::cerr << std::endl;
+	// Sort the results, get the best variant ids.
+	std::array<unsigned,VND_VARIANTS> benchmark;
+	std::iota(begin(benchmark), end(benchmark), 0u);
+	std::sort(begin(benchmark), end(benchmark), [&](size_t i, size_t j) { return (scores[i] > scores[j]); });
 
-	std::cout << "End" << std::endl;
-	//TODO: compute the stats
+	// Best individuals: 5% of population
+	unsigned last_index = VND_VARIANTS/20;
+	// Move the last_index ahead until the score is lower.
+	while (last_index+1 < VND_VARIANTS && scores[benchmark[last_index+1]] == scores[benchmark[last_index]]) {
+		++last_index;
+	}
+
+	// Get the best individuals.
+	do {
+		best_variants.push_back(variants_ids[benchmark[last_index]]);
+		--last_index;
+	} while (last_index > 0);
 
 	return best_variants;
 }
