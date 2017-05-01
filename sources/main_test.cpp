@@ -21,14 +21,14 @@ public:
 	}
 };
 const std::vector<Move *> MY_VND::movements = {
-		new MoveInsert<BestAvailablePolicy>,
-		new MoveSwap1Route<FirstAvailablePolicy>,
-		new MoveExtract<BestAvailablePolicy>,
-		new MoveMove2Routes<BestAvailablePolicy>,
-		new Move2Opt<FirstAvailablePolicy>,
-		new MoveReplace<BestAvailablePolicy>,
-		new MoveMove1Route<FirstAvailablePolicy>,
-		new MoveSwap2Routes<FirstAvailablePolicy>};
+	new MoveExtract<FirstAvailablePolicy>,
+	new MoveSwap2Routes<BestAvailablePolicy>,
+	new MoveInsert<FirstAvailablePolicy>,
+	new Move2Opt<BestAvailablePolicy>,
+	new MoveMove2Routes<BestAvailablePolicy>,
+	new MoveSwap1Route<FirstAvailablePolicy>,
+	new MoveMove1Route<BestAvailablePolicy>,
+	new MoveReplace<FirstAvailablePolicy>};
 
 int main(int argc, const char *argv[]){
 	if (argc == 2) {
