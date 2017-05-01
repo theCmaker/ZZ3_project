@@ -109,7 +109,7 @@ VNDBenchmark<INSTANCES, VND_VARIANTS>::~VNDBenchmark()
 }
 
 template<unsigned INSTANCES, unsigned VND_VARIANTS>
-std::vector< typename VNDBenchmark<INSTANCES, VND_VARIANTS>::vnd_variant_t > VNDBenchmark<INSTANCES, VND_VARIANTS>::operator ()() {
+std::vector< VariantWithScore > VNDBenchmark<INSTANCES, VND_VARIANTS>::operator ()() {
 
 	typedef DataPoint<double, double, unsigned> DataPoint;
 	typedef std::multimap< BenchmarkResult,unsigned > ResultSet;
@@ -164,7 +164,7 @@ std::vector< typename VNDBenchmark<INSTANCES, VND_VARIANTS>::vnd_variant_t > VND
 
 	}
 
-	std::vector<VNDBenchmark::vnd_variant_t> best_variants;
+	std::vector<VariantWithScore> best_variants;
 	std::array<unsigned, VND_VARIANTS> scores;
 	scores.fill(0u);
 
@@ -188,102 +188,30 @@ std::vector< typename VNDBenchmark<INSTANCES, VND_VARIANTS>::vnd_variant_t > VND
 
 	// Get the best individuals.
 	do {
-		best_variants.push_back(variants_ids[benchmark[last_index]]);
+		best_variants.push_back(VariantWithScore(variants_ids[benchmark[last_index]],scores[benchmark[last_index]]));
 		--last_index;
 	} while (last_index > 0);
 
 	return best_variants;
 }
 
-/*void run_random_benchmark(unsigned instance_count = 10, unsigned vnd_variants_count = 1000) {
 
-	unsigned test_id = 0, number_of_tests = 1000, file_id;
-
-	std::vector<const char*> files = {"../examples/test_40m_5i_4d",
-									 "../examples/test_60m_8i_4d",
-									 "../examples/test_100m_8i_5d"};
-	std::vector<Problem *> problems;
-	std::vector<Solution *> solutions;
-
-	std::multimap<const char*,BenchmarkResult> results;
-
-	for (std::vector<const char*>::iterator file = files.begin(); file != files.end(); ++file) {
-		problems.emplace_back(new Problem(*file));
-		Heuristic_fastest<SimpleCachePolicy> fastest(*problems.back());
-		fastest.run();
-		std::cout << *file << ":\tTime: " << fastest.solution().worstInterceptionTime() << ";\tMobiles: " << fastest.solution().totalInterceptionCount() << std::endl;
-		solutions.emplace_back(new Solution(fastest.solution()));
+std::ostream &operator<<(std::ostream & o, const VariantWithScore & v)
+{
+	for (auto i : v.variant) {
+		o << i << ' ';
 	}
+	o << ": " << v.score;
+	return o;
+}
 
 
-
-	// VND sequence to be built
-	std::vector<Move *> sequence;
-	std::vector<unsigned> sequence_ids;
-
-
-	// Number of tests
-	while (test_id != number_of_tests) {
-		// Shake the movements
-		std::random_shuffle(movements.begin(),movements.end(), randomAccess);
-		// Shake the policies
-		std::random_shuffle(policies.begin(),policies.end(), randomAccess);
+VariantWithScore::VariantWithScore(vnd_variant_t variant_p, unsigned score_p)
+{
+	variant = variant_p;
+	score = score_p;
+}
 
 
-		sequence.clear();
-		sequence_ids.clear();
-		// Build the sequence
-		for (std::vector<unsigned>::iterator itr = movements.begin(); itr != movements.end(); ++itr) {
-			sequence.push_back(movementsBuilders[*itr + 8 * policies[*itr]]());
-			sequence_ids.push_back(*itr + 8 * policies[*itr]);
-		}
-
-		//For each solution (i.e. each problem)
-		file_id = 0;
-		for (std::vector<Solution *>::iterator sol = solutions.begin(); sol != solutions.end(); ++sol) {
-			// Get a copy of the solution
-			Solution solution = **sol;
-
-			AvailablePolicy::maxAcceptableTime() = 1.1 * solution.worstInterceptionTime();
-			AvailablePolicy::minAcceptableCount() = solution.problem().nbMobiles() - 1.1 * (solution.problem().nbMobiles() - solution.totalInterceptionCount());
-
-			//Run the VND
-			VND<> vnd(sequence);
-			auto start = std::chrono::steady_clock::now();
-			vnd.run(solution);
-			auto end = std::chrono::steady_clock::now();
-			std::chrono::duration<double,std::milli> diff = end-start;
-			//Store the result
-			if (solution.bestInterceptionCount() > 0) {
-				results.insert(std::pair<const char*,BenchmarkResult>(files[file_id],BenchmarkResult(solution.worstInterceptionTime(),solution.totalInterceptionCount(),sequence_ids, diff.count())));
-			}
-
-			++file_id;
-		}
-		for (std::vector<Move *>::iterator itr = sequence.begin(); itr != sequence.end(); ++itr) {
-			delete *itr;
-		}
-
-		++test_id;
-	}
-
-	std::vector<std::pair<const char*,BenchmarkResult> > fileResults;
-	for (std::vector<const char *>::iterator file = files.begin(); file != files.end(); ++file) {
-		fileResults.clear();
-		auto itr = results.find(*file);
-		auto count = results.count(*file);
-		std::copy_n(itr,count,std::back_inserter(fileResults));
-		std::sort(fileResults.begin(),fileResults.end(),[](std::pair<const char*,BenchmarkResult> a, std::pair<const char*,BenchmarkResult> b) -> bool { return a.second < b.second; });
-		std::cout << itr->first << std::endl;
-		unsigned i = 0;
-		for (std::vector<std::pair<const char*,BenchmarkResult> >::iterator itr = fileResults.begin(); itr != fileResults.end(), i < 100; ++itr, ++i) {
-			std::cout << itr->second << std::endl;
-		}
-		std::cout << std::endl;
-	}
-
-	for (unsigned i = 0; i < problems.size(); ++i) {
-		delete problems[i];
-		delete solutions[i];
-	}
-}*/
+VariantWithScore::~VariantWithScore()
+{}
