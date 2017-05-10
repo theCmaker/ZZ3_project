@@ -17,8 +17,6 @@ TEST (ExtractMoveTest, Scan_true)
 	Heuristic_sequence h(p);
 	h.run(expected_sequence);
 
-	std::cout << h << std::endl;
-
 	Solution s = h.solution();
 
 	Move * move = new MoveExtract<FirstAvailablePolicy>;
@@ -70,8 +68,6 @@ TEST (ExtractMoveTest, Commit_DeletionLastMobile)
 	h.run(expected_sequence);
 
 	Solution s = h.solution();
-
-	std::cout << h << std::endl;
 
 	Move * move = new MoveExtract<FirstAvailablePolicy>;
 	resultScan = move->scan(s);

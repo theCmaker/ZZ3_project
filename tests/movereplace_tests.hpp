@@ -19,8 +19,6 @@ TEST (MoveReplaceTest, Scan_true)
 
 	Solution s = h.solution();
 
-	std::cout << h << std::endl;
-
 	Move * move = new MoveReplace<FirstAvailablePolicy>;
 	resultScan = move->scan(s);
 
@@ -49,12 +47,12 @@ TEST (MoveReplaceTest, Commit_ReplaceRoute1Mobile)
 	move->commit(s);
 
 	// interceptor 1
-	EXPECT_EQ(s[1]._first,4);
-	EXPECT_EQ(s.mobile(4)._next,-1);
+	EXPECT_EQ(s[1]._first,3);
+	EXPECT_EQ(s.mobile(3)._next,-1);
 
 	Problem p1("../tests/data/test_40m_1i_1");
 	Heuristic_sequence h1(p1);
-	h1.run({4});
+	h1.run({3});
 	Solution s1 = h1.solution();
 
 	EXPECT_NEAR(s.lastInterceptionTime(1),s1.lastInterceptionTime(0),1e-6);

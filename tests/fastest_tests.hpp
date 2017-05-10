@@ -11,19 +11,20 @@ TEST (FastestTest, Test_5m_1i)
 	h0.run();
 	
 	Solution s = h0.solution();
+	Location expected(0.,2.);
 	
 	// interceptor
 	EXPECT_EQ(s.first(),0);
 	
 	// mobile 0 ; pos(0,2) ; t(1)
 	EXPECT_EQ(s[0]._first,0);
-	EXPECT_EQ(s.mobile(0)._mobile.position(s.mobile(0)._date),Location(0.,2.));
-	EXPECT_EQ(s.mobile(0)._date,1);
+	EXPECT_EQ(expected.equals(s.mobile(0)._mobile.position(s.mobile(0)._date),1e-6),true);
+	EXPECT_NEAR(s.mobile(0)._date,1.0,1e-6);
 	
 	// mobile 1 ; pos(0,2) ; t(1)
 	EXPECT_EQ(s.mobile(0)._next,1);
-	EXPECT_EQ(s.mobile(1)._mobile.position(s.mobile(1)._date),Location(0.,2.));
-	EXPECT_EQ(s.mobile(1)._date,1);
+	EXPECT_EQ(expected.equals(s.mobile(1)._mobile.position(s.mobile(1)._date),1e-6),true);
+	EXPECT_NEAR(s.mobile(1)._date,1.0,1e-6);
 	
 	// mobile 4 ; pos(-2.384821,-0.615179) ; t(2.769642)
 	EXPECT_EQ(s.mobile(1)._next,4);

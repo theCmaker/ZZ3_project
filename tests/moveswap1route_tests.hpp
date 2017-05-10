@@ -15,8 +15,6 @@ TEST (MoveSwap1Route, Scan_true)
 
 	Solution s = h.solution();
 
-	std::cout << h << std::endl;
-
 	Move * move = new MoveSwap1Route<FirstAvailablePolicy>;
 	resultScan = move->scan(s);
 

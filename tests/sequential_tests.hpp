@@ -17,15 +17,15 @@ TEST (SequentialTest, Test_5m_1i)
 	
 	// mobile 0 ; pos(0,2) ; t(1)
 	EXPECT_EQ(s[0]._first,0);
-	EXPECT_EQ(s.mobile(0)._mobile.position(s.mobile(0)._date)._x,0);
-	EXPECT_EQ(s.mobile(0)._mobile.position(s.mobile(0)._date)._y,2);
-	EXPECT_EQ(s.mobile(0)._date,1);
+	EXPECT_NEAR(s.mobile(0)._mobile.position(s.mobile(0)._date)._x,0,1e-6);
+	EXPECT_NEAR(s.mobile(0)._mobile.position(s.mobile(0)._date)._y,2,1e-6);
+	EXPECT_NEAR(s.mobile(0)._date,1,1e-6);
 	
 	// mobile 1 ; pos(0,2) ; t(1)
 	EXPECT_EQ(s.mobile(0)._next,1);
-	EXPECT_EQ(s.mobile(1)._mobile.position(s.mobile(1)._date)._x,0);
-	EXPECT_EQ(s.mobile(1)._mobile.position(s.mobile(1)._date)._y,2);
-	EXPECT_EQ(s.mobile(1)._date,1);
+	EXPECT_NEAR(s.mobile(1)._mobile.position(s.mobile(1)._date)._x,0,1e-6);
+	EXPECT_NEAR(s.mobile(1)._mobile.position(s.mobile(1)._date)._y,2,1e-6);
+	EXPECT_NEAR(s.mobile(1)._date,1.0,1e-6);
 	
 	// mobile 2 ; pos(7.323262,6.596979) ; t(5.323262)
 	EXPECT_EQ(s.mobile(1)._next,2);
@@ -107,7 +107,7 @@ TEST (SequentialTest, Test_6m_1i)
 	EXPECT_NEAR(s.mobile(5)._date,26.246245,1e-6);
 	
 	// pas d'autre mobile
-	EXPECT_EQ(s.mobile(3)._next,-1);
+	EXPECT_EQ(s.mobile(5)._next,-1);
 	
 	// pas d'autre intercepteur
 	EXPECT_EQ(s[0]._next,-1);
