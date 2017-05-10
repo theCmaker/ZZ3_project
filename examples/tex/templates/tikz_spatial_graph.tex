@@ -1,0 +1,36 @@
+\documentclass{standalone}
+\usepackage[utf8]{inputenc} %encodage entrée
+\usepackage[T1]{fontenc}
+\usepackage[usenames,dvipsnames]{xcolor} %couleurs
+\usepackage{tikz} %schémas
+\usepackage{xlop}
+\usetikzlibrary{calc}
+\usetikzlibrary{positioning}
+\usepackage[frenchb]{babel} %langue
+\usepackage{MnSymbol}
+
+\input{settings/math}
+
+%styles et formatage
+\newcommand{\TikZ}{Ti{\color{orange}\textit{k}}Z}
+
+
+\newcommand{\mobile}{\Large{$+$}}
+\newcommand{\cross}{\Large{$\times$}}
+\newcommand{\interceptor}{\Large{$\square$}}
+\tikzset{%styles schémas
+    interceptor/.style={thick,color=Blue},  %intercepteur
+    mobile/.style={color=LimeGreen},  %mobile
+    camino/.style={mobile,dashed}, %chemin mobile
+    speed/.style={mobile, thick, >=latex,->}, %vitesse mobile
+    caught/.style={color=OrangeRed},  %mobile attrapé
+    grided/.style={dotted,color=Black!20},    %grille
+    h0/.style={color=Purple},
+    h1/.style={color=RoyalBlue}
+}
+
+\begin{document}
+  \begin{tikzpicture}%[scale=0.1]
+    \input{../tikz-content}
+  \end{tikzpicture}
+\end{document}

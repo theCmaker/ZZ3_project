@@ -1,0 +1,38 @@
+%intervals
+\newcommand{\interval}[4]{\mathopen{#1}#2\mathclose{}\mathpunct{};#3\mathclose{#4}}
+\newcommand{\icc}[2]{\interval{[}{#1}{#2}{]}}
+\newcommand{\ioc}[2]{\interval{]}{#1}{#2}{]}}
+\newcommand{\ico}[2]{\interval{[}{#1}{#2}{[}}
+\newcommand{\ioo}[2]{\interval{]}{#1}{#2}{[}}
+\newcommand{\coord}[2]{\interval{(}{#1}{#2}{)}}
+%sets
+\newcommand{\mathset}[1]{\mathbb{#1}}
+\newcommand{\N}{\mathset{N}} %integers
+\newcommand{\Z}{\mathset{Z}} %relative integers
+\newcommand{\Q}{\mathset{Q}} %rationnals
+\newcommand{\R}{\mathset{R}} %reals
+\newcommand{\C}{\mathset{C}} %complex
+%setas
+\newcommand{\setas}[2]{\left\{#1\mathrel{}\middle|\mathrel{}#2\right\}}
+%diff
+\newcommand{\diff}{\mathop{}\mathopen{}\mathrm{d}}
+%abs and norm
+\newcommand{\abs}[1]{\left\lvert#1\right\rvert}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+%dot product
+\newcommand{\dotprod}[2]{#1\cdot#2}
+\newcommand{\dotproda}[2]{\left\langle#1,#2\right\rangle}
+%geometry
+\newcommand{\curve}{\mathscr{C}}
+%text
+\newcommand{\qtext}[1]{\quad\text{#1}\quad}
+\newcommand{\qqtext}[1]{\qquad\text{#1}\qquad}
+%compleces
+\renewcommand{\Re}{\mathfrak{Re}}
+\renewcommand{\Im}{\mathfrak{Im}}
+%vectors
+\newcommand{\vect}[1]{\overrightarrow{#1}}
+\newcommand{\vPLANco}[2]{\begin{pmatrix}#1\\#2\end{pmatrix}}
+\newcommand{\vSPACEco}[3]{\begin{pmatrix}#1\\#2\\#3\end{pmatrix}}
+%statistics
+\DeclareMathOperator{\card}{card}

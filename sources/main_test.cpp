@@ -61,7 +61,7 @@ int main(int argc, const char *argv[]){
 			Tikzifyer::addStyle("thick,color=OrangeRed,dotted,line width=1mm");
 			Tikzifyer::addStyle("thick,color=Green,dashed");
 			Tikzifyer tikzify;
-			std::ofstream tikz_output_test_file("../tests/tikz-content.tex");
+			std::ofstream tikz_output_test_file("../examples/tex/tikz-content.tex");
 			tikzify(p);
 			if (strcmp(argv[3],"FASTEST") == 0) {
 				fastest.run();
@@ -72,7 +72,7 @@ int main(int argc, const char *argv[]){
 			}
 			tikz_output_test_file << tikzify;
 		} else if (strcmp(argv[2],"TEMPORAL") == 0) {
-			std::ofstream tikz_output_graph_file("../tests/tikz-graph.tex");
+			std::ofstream tikz_output_graph_file("../examples/tex/tikz-graph.tex");
 			TikzGrapher::addStyle("thick,color=Green");
 			TikzGrapher::addStyle("thick,color=OrangeRed");
 			TikzGrapher::addStyle("thick,color=Cyan");
