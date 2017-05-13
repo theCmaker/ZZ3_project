@@ -123,6 +123,8 @@
  *
  */
 
+#include <movements/movements.hpp>
+
 template <unsigned max_itr>
 VND<max_itr>::VND() :
 	_list({

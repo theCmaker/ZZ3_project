@@ -6,8 +6,8 @@
 #ifndef __HEURISTIC_HPP__
 #define __HEURISTIC_HPP__
 
-#include "solution.hpp"
-#include "problem.hpp"
+#include <core/solution.hpp>
+#include <core/problem.hpp>
 
 /**
  * @brief Heuristic computing, abstract class.

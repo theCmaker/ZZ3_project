@@ -2,13 +2,13 @@
 #include <fstream>
 #include <chrono>
 #include <cstring>
-#include "heuristic_fastest.hpp"
-#include "heuristic_sequence.hpp"
-#include "tikzifyer.hpp"
-#include "tikzgrapher.hpp"
-#include "move.hpp"
-#include "vnd.hpp"
-#include "ms_els.hpp"
+#include <heuristics/heuristic_fastest.hpp>
+#include <heuristics/heuristic_sequence.hpp>
+#include <export/tikzifyer.hpp>
+#include <export/tikzgrapher.hpp>
+#include <movements/movements.hpp>
+#include <metaheuristics/vnd.hpp>
+#include <metaheuristics/ms_els.hpp>
 
 class MY_VND : public VND<30> {
 	static const std::vector<Move *> movements;

@@ -1,8 +1,8 @@
 #pragma once
 
 #include <vector>
-#include <problem.hpp>
-#include <solution.hpp>
+#include <core/problem.hpp>
+#include <core/solution.hpp>
 #include "solver.h"
 
 // the decoder to be used in BRKGA

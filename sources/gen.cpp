@@ -2,8 +2,8 @@
 #include <fstream>
 #include <chrono>
 #include <cstring>
-#include "problem.hpp"
-#include "tikzifyer.hpp"
+#include <core/problem.hpp>
+#include <export/tikzifyer.hpp>
 
 
 int main(int argc, const char *argv[]){

@@ -5,7 +5,7 @@
 
 #ifndef __TIKZIFYER_HPP__
 #define __TIKZIFYER_HPP__
-#include "solution.hpp"
+#include <core/solution.hpp>
 
 /**
  * @brief Solution pointers vector.

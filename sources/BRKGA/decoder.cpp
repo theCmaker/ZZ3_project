@@ -1,7 +1,7 @@
 #include "decoder.h"
 #include <algorithm>
-#include <heuristic_sequence_multisol.hpp>
-#include <vnd.hpp>
+#include <heuristics/heuristic_sequence_multisol.hpp>
+#include <metaheuristics/vnd.hpp>
 
 unsigned Decoder::VNDcounter = 0;
 

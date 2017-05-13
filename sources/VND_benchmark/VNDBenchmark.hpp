@@ -1,7 +1,7 @@
 #ifndef __VNDBENCHMARK_HPP__
 #define __VNDBENCHMARK_HPP__
 
-#include <vnd.hpp>
+#include <metaheuristics/vnd.hpp>
 #include <functional>
 #include <map>
 #include "benchmarkresult.hpp"

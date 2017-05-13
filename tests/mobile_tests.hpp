@@ -1,7 +1,7 @@
 #ifndef __MOBILE_TESTS_HPP__
 #define __MOBILE_TESTS_HPP__
 
-#include "mobile.hpp"
+#include <core/mobile.hpp>
 
 //--------- Tests de mobile.hpp ------------------------------------------------
 

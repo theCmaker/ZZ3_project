@@ -38,40 +38,48 @@ set(CMAKE_BUILD_TYPE RELEASE)
 include_directories ( sources/ )
 
 set ( ZZ3_HEADERS
-      sources/depot.hpp
-	  sources/cache_policy.hpp
-      sources/heuristic.hpp
-	  sources/heuristic_fastest.hpp
-      sources/heuristic_sequence.hpp
-	  sources/heuristic_sequence_multisol.hpp
-      sources/interceptor.hpp
-      sources/mobile.hpp
-      sources/problem.hpp
-      sources/solution.hpp
-      sources/units.hpp
-      sources/tikzifyer.hpp
-      sources/tikzgrapher.hpp
-	  sources/move_policies.hpp
-	  sources/move.hpp
-	  sources/vnd.hpp
-	  sources/ms_els.hpp
-    )
+	  sources/core/depot.hpp
+	  sources/heuristics/cache_policy.hpp
+	  sources/heuristics/heuristic.hpp
+	  sources/heuristics/heuristic_fastest.hpp
+	  sources/heuristics/heuristic_sequence.hpp
+	  sources/heuristics/heuristic_sequence_multisol.hpp
+	  sources/core/interceptor.hpp
+	  sources/core/mobile.hpp
+	  sources/core/problem.hpp
+	  sources/core/solution.hpp
+	  sources/core/units.hpp
+	  sources/export/tikzifyer.hpp
+	  sources/export/tikzgrapher.hpp
+	  sources/movements/movements.hpp
+	  sources/movements/move_policies.hpp
+	  sources/movements/move_insert.hpp
+	  sources/movements/move_extract.hpp
+	  sources/movements/move_move1route.hpp
+	  sources/movements/move_move2routes.hpp
+	  sources/movements/move_swap1route.hpp
+	  sources/movements/move_swap2routes.hpp
+	  sources/movements/move_replace.hpp
+	  sources/movements/move_2opt.hpp
+	  sources/metaheuristics/vnd.hpp
+	  sources/metaheuristics/ms_els.hpp
+	)
 
 set ( ZZ3_SOURCES
-	  sources/depot.cpp
-	  sources/cache_policy.cpp
-	  sources/heuristic.cpp
-      sources/heuristic_sequence.cpp
-	  sources/heuristic_sequence_multisol.cpp
-      sources/interceptor.cpp
-      sources/mobile.cpp
-      sources/problem.cpp
-      sources/solution.cpp
-      sources/units.cpp
-      sources/tikzifyer.cpp
-	  sources/tikzgrapher.cpp
-	  sources/move_policies.cpp
-    )
+	  sources/core/depot.cpp
+	  sources/heuristics/cache_policy.cpp
+	  sources/heuristics/heuristic.cpp
+	  sources/heuristics/heuristic_sequence.cpp
+	  sources/heuristics/heuristic_sequence_multisol.cpp
+	  sources/core/interceptor.cpp
+	  sources/core/mobile.cpp
+	  sources/core/problem.cpp
+	  sources/core/solution.cpp
+	  sources/core/units.cpp
+	  sources/export/tikzifyer.cpp
+	  sources/export/tikzgrapher.cpp
+	  sources/movements/move_policies.cpp
+	)
 
 set ( ZZ3_HEADERS_TEST
 	  tests/depot_tests.hpp
@@ -122,7 +130,7 @@ set ( ZZ3_PARETO_HEADERS
 
 # Executables #-------------------------------------------------------------------------------------
 add_executable ( ${CMAKE_PROJECT_NAME}_exec
-                 sources/main_test.cpp
+				 sources/main.cpp
                  ${ZZ3_HEADERS}
                  ${ZZ3_SOURCES}
                )

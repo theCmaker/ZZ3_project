@@ -1,11 +1,10 @@
 #ifndef __INSERTMOVE_TESTS_HPP__
 #define __INSERTMOVE_TESTS_HPP__
 
-#include <iostream>
-#include "heuristic_sequence.hpp"
-#include "move.hpp"
+#include <heuristics/heuristic_sequence.hpp>
+#include <movements/move_insert.hpp>
 
-//-------------- Tests de la class InsertMove dans move.hpp -------------------
+//---------- Tests de la class InsertMove dans move_insert.hpp ----------------
 
 //---ScanTests-----------------------------------------------------------------
 //---InsertMove---Scan---False------------------------------------------------1

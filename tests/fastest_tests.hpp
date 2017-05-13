@@ -1,7 +1,7 @@
 #ifndef __FASTEST_TESTS_HPP__
 #define __FASTEST_TESTS_HPP__
 
-#include "heuristic_fastest.hpp"
+#include <heuristics/heuristic_fastest.hpp>
 
 //----------------------------------------------------------------------------1
 TEST (FastestTest, Test_5m_1i)

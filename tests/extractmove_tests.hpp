@@ -1,13 +1,12 @@
 #ifndef __EXTRACTMOVE_TESTS_HPP__
 #define __EXTRACTMOVE_TESTS_HPP__
 
-#include <iostream>
-#include "heuristic_sequence.hpp"
-#include "move.hpp"
+#include <heuristics/heuristic_sequence.hpp>
+#include <movements/move_extract.hpp>
 
-//-------------- Tests de la class ExtractMove dans move.hpp -------------------
+//---------- Tests de la class ExtractMove dans move_extract.hpp ---------------
 
-//---ScanTests-----------------------------------------------------------------
+//---ScanTests------------------------------------------------------------------
 //---ExtractMove---Scan---True-------------------------------------------------1
 TEST (ExtractMoveTest, Scan_true)
 {

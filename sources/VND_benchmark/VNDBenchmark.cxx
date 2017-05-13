@@ -1,5 +1,5 @@
 #include <iostream>
-#include <heuristic_fastest.hpp>
+#include <heuristics/heuristic_fastest.hpp>
 #include <random>
 #include <algorithm>
 #include <chrono>

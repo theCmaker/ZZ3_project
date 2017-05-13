@@ -1,7 +1,7 @@
 #ifndef __INTERCEPTOR_TESTS_HPP__
 #define __INTERCEPTOR_TESTS_HPP__
 
-#include "interceptor.hpp"
+#include <core/interceptor.hpp>
 
 //--------- Tests de interceptor.hpp ------------------------------------------------
 

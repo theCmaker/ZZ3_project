@@ -1,7 +1,7 @@
 #ifndef __SEQUENTIAL_TESTS_HPP__
 #define __SEQUENTIAL_TESTS_HPP__
 
-#include "heuristic_sequence.hpp"
+#include <heuristics/heuristic_sequence.hpp>
 
 //----------------------------------------------------------------------------1
 TEST (SequentialTest, Test_5m_1i)

@@ -2,7 +2,7 @@
 #define __BENCHMARKRESULT_HPP__
 
 #include <iostream>
-#include <units.hpp>
+#include <core/units.hpp>
 
 struct BenchmarkResult {
 	Time _time;

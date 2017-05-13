@@ -1,5 +1,5 @@
 #include "solution.hpp"
-#include "heuristic_sequence.hpp"
+#include <heuristics/heuristic_sequence.hpp>
 #include <random>
 #include <algorithm>
 

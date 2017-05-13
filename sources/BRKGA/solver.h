@@ -2,8 +2,8 @@
 
 #include <vector>
 #include <limits>
-#include "Pareto/datapoint.h"
-#include "problem.hpp"
+#include <Pareto/datapoint.h>
+#include <core/problem.hpp>
 
 template <typename C1, typename C2, typename DT>
 struct Solver

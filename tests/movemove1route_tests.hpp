@@ -1,9 +1,12 @@
 #ifndef __MOVEMOVE1ROUTE_TESTS_HPP
 #define __MOVEMOVE1ROUTE_TESTS_HPP
 
-//---------- Tests de la classe MoveMove1Route dans move.hpp -----------------
+#include <heuristics/heuristic_sequence.hpp>
+#include <movements/move_move1route.hpp>
 
-//---ScanTests-----------------------------------------------------------------
+//------ Tests de la classe MoveMove1Route dans move_move1route.hpp ----------
+
+//---ScanTests----------------------------------------------------------------
 //---MoveMove1Route---Scan---------------True--------------------------------1
 TEST (MoveMove1Route, Scan_true)
 {

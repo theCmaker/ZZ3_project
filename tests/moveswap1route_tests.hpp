@@ -1,7 +1,10 @@
 #ifndef __MOVESWAP1ROUTE_TESTS_HPP__
 #define __MOVESWAP1ROUTE_TESTS_HPP__
 
-//----------- Tests de la classe MoveSwap1Route dans move.hpp -----------------
+#include <heuristics/heuristic_sequence.hpp>
+#include <movements/move_swap1route.hpp>
+
+//------ Tests de la classe MoveSwap1Route dans move_swap1route.hpp -----------
 
 //---ScanTests-----------------------------------------------------------------
 //---MoveSwap1Route---Scan---------------True---------------------------------1

@@ -1,11 +1,10 @@
 #ifndef __MOVEREPLACE_TESTS_HPP__
 #define __MOVEREPLACE_TESTS_HPP__
 
-#include <iostream>
-#include "heuristic_sequence.hpp"
-#include "move.hpp"
+#include <heuristics/heuristic_sequence.hpp>
+#include <movements/move_replace.hpp>
 
-//-------------- Tests de la class ReplaceMove dans move.hpp -------------------
+//---------- Tests de la class ReplaceMove dans move_replace.hpp --------------
 
 //---ScanTests-----------------------------------------------------------------
 //---ReplaceMove---Scan---True------------------------------------------------1

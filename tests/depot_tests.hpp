@@ -1,7 +1,7 @@
 #ifndef __DEPOT_TESTS_HPP__
 #define __DEPOT_TESTS_HPP__
 
-#include "depot.hpp"
+#include <core/depot.hpp>
 
 //--------- Tests de depot.hpp ------------------------------------------------
 

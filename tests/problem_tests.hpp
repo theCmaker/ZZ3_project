@@ -1,7 +1,7 @@
 #ifndef __PROBLEM_TESTS_HPP__
 #define __PROBLEM_TESTS_HPP__
 
-#include "problem.hpp"
+#include <core/problem.hpp>
 
 //--------- Tests de problem.hpp ------------------------------------------------
 

@@ -1,7 +1,11 @@
 #ifndef __MOVE2OPT_TESTS_HPP__
 #define __MOVE2OPT_TESTS_HPP__
 
-//-------------- Tests de la class Move2Opt dans move.hpp -------------------
+#include <iostream>
+#include <heuristics/heuristic_sequence.hpp>
+#include <movements/move_2opt.hpp>
+
+//------------ Tests de la class Move2Opt dans move_2opt.hpp ------------------
 
 //---ScanTests-----------------------------------------------------------------
 //---Move2Opt---Scan---------------True---------------------------------------1

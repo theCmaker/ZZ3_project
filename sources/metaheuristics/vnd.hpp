@@ -6,7 +6,7 @@
 #ifndef __VND_HPP__
 #define __VND_HPP__
 
-#include "move.hpp"
+#include <movements/move.hpp>
 #include <vector>
 
 /**
