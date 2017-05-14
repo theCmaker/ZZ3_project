@@ -128,44 +128,47 @@ set ( ZZ3_PARETO_HEADERS
 	  sources/Pareto/paretofront.h
 	)
 
+# Librairies #--------------------------------------------------------------------------------------
+
+set(ENABLE_EXPORTS true)
+add_library ( lib_${CMAKE_PROJECT_NAME} OBJECT
+			  ${ZZ3_HEADERS}
+			  ${ZZ3_SOURCES}
+			)
+
 
 # Executables #-------------------------------------------------------------------------------------
 add_executable ( ${CMAKE_PROJECT_NAME}_exec
 				 sources/main.cpp
-                 ${ZZ3_HEADERS}
-                 ${ZZ3_SOURCES}
-               )
+				 $<TARGET_OBJECTS:lib_${CMAKE_PROJECT_NAME}>
+			   )
 
 add_executable ( gen
 				 sources/gen.cpp
-				 ${ZZ3_HEADERS}
-				 ${ZZ3_SOURCES}
+				 $<TARGET_OBJECTS:lib_${CMAKE_PROJECT_NAME}>
 			   )
 
 add_executable ( ${CMAKE_PROJECT_NAME}_test
-                 tests/tests.cpp
-                 ${ZZ3_HEADERS}
-                 ${ZZ3_SOURCES}
-                 ${ZZ3_HEADERS_TEST}
-                 ${ZZ3_SOURCES_TEST}
-               )
+				 tests/tests.cpp
+				 $<TARGET_OBJECTS:lib_${CMAKE_PROJECT_NAME}>
+				 ${ZZ3_HEADERS_TEST}
+				 ${ZZ3_SOURCES_TEST}
+			   )
 
 add_executable ( vnd_benchmark
-				sources/VND_benchmark/main.cpp
-				${ZZ3_BENCHMARK_HEADERS}
-				${ZZ3_HEADERS}
-				${ZZ3_PARETO_HEADERS}
-				${ZZ3_BENCHMARK_SOURCES}
-				${ZZ3_SOURCES}
+				 sources/VND_benchmark/main.cpp
+				 $<TARGET_OBJECTS:lib_${CMAKE_PROJECT_NAME}>
+				 ${ZZ3_BENCHMARK_HEADERS}
+				 ${ZZ3_PARETO_HEADERS}
+				 ${ZZ3_BENCHMARK_SOURCES}
 			   )
 
 add_executable ( brkga_exec
-				sources/BRKGA/main.cpp
-				${ZZ3_BRKGA_HEADERS}
-				${ZZ3_HEADERS}
-				${ZZ3_PARETO_HEADERS}
-				${ZZ3_BRKGA_SOURCES}
-				${ZZ3_SOURCES}
+				 sources/BRKGA/main.cpp
+				 $<TARGET_OBJECTS:lib_${CMAKE_PROJECT_NAME}>
+				 ${ZZ3_BRKGA_HEADERS}
+				 ${ZZ3_PARETO_HEADERS}
+				 ${ZZ3_BRKGA_SOURCES}
 			   )
 # Build #-------------------------------------------------------------------------------------------
 set_target_properties ( ${CMAKE_PROJECT_NAME}_exec PROPERTIES LINKER_LANGUAGE C )
