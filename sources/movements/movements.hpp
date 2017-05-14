@@ -1,3 +1,8 @@
+/**
+ * @file movements.hpp
+ * @brief List of concrete Local Search optimisation movements.
+ */
+
 #ifndef __MOVEMENTS_HPP__
 #define __MOVEMENTS_HPP__
 

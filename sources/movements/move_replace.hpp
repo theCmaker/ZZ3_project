@@ -1,3 +1,8 @@
+/**
+ * @file move_replace.hpp
+ * @brief Local Search optimisation movement. Try to replace a caught mobile by an uncaught one.
+ */
+
 #ifndef __MOVE_REPLACE_HPP__
 #define __MOVE_REPLACE_HPP__
 

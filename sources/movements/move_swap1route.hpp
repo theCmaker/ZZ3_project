@@ -1,3 +1,8 @@
+/**
+ * @file move_swap1route.hpp
+ * @brief Local Search optimisation movement. Try to exchange two mobiles inside a route.
+ */
+
 #ifndef __MOVE_SWAP1ROUTE_HPP__
 #define __MOVE_SWAP1ROUTE_HPP__
 

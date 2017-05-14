@@ -16,8 +16,8 @@
 template <unsigned max_itr = 30>
 class VND
 {
-	std::vector<Move *> _list;
-	bool _donotclean;
+	std::vector<Move *> _list;	///< List of movements
+	bool _donotclean;			///< Clean flag (set to false with a custom list is given)
 public:
 	/**
 	 * @brief Constructor

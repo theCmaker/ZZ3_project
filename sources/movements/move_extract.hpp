@@ -1,3 +1,8 @@
+/**
+ * @file move_extract.hpp
+ * @brief Local Search optimisation movement. Try to remove a caught mobile.
+ */
+
 #ifndef __MOVE_EXTRACT_HPP__
 #define __MOVE_EXTRACT_HPP__
 

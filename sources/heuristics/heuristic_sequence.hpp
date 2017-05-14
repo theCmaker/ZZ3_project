@@ -25,7 +25,15 @@ public:
 	 */
 	virtual ~Heuristic_sequence();
 
+	/**
+	 * @brief Start the Heuristic
+	 */
 	void run();
+
+	/**
+	 * @brief Start the Heuristic (specific version)
+	 * @param Id sequence
+	 */
 	void run(const std::vector<unsigned> &);
 
 };

@@ -10,14 +10,6 @@ std::mt19937 g(/*time(0)*/0);
 
 int randomAccess (int i) { return g()%i; }
 
-template< typename tPair >
-struct second_t {
-	typename tPair::second_type operator()( const tPair& p ) const { return     p.second; }
-};
-
-template< typename tMap >
-second_t< typename tMap::value_type > second( const tMap& m ) { return second_t<     typename tMap::value_type >(); }
-
 // Static members
 template<unsigned INSTANCES, unsigned VND_VARIANTS>
 std::vector<unsigned> VNDBenchmark<INSTANCES, VND_VARIANTS>::movements = {0, 1, 2, 3, 4, 5, 6, 7};

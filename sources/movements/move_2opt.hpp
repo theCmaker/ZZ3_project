@@ -1,3 +1,8 @@
+/**
+ * @file move_2opt.hpp
+ * @brief Local Search optimisation movement. Try to exchange two route endings.
+ */
+
 #ifndef __MOVE_2OPT_HPP__
 #define __MOVE_2OPT_HPP__
 

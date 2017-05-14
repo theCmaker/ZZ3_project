@@ -1,3 +1,8 @@
+/**
+ * @file move_move1route.hpp
+ * @brief Local Search optimisation movement. Try to move a mobile inside a route.
+ */
+
 #ifndef __MOVE_MOVE1ROUTE_HPP__
 #define __MOVE_MOVE1ROUTE_HPP__
 

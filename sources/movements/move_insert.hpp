@@ -1,3 +1,8 @@
+/**
+ * @file move_insert.hpp
+ * @brief Local Search optimisation movement. Try to insert an uncaught mobile.
+ */
+
 #ifndef __MOVE_INSERT_HPP__
 #define __MOVE_INSERT_HPP__
 

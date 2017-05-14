@@ -31,8 +31,14 @@ public:
 	 */
 	virtual ~Heuristic_fastest();
 
+	/**
+	 * @brief Start the Heuristic
+	 */
 	void run();
 
+	/**
+	 * @brief Start the Heuristic
+	 */
 	template <bool = CachePolicy::isCached>
 	void run();
 	

@@ -27,7 +27,14 @@ public:
 	 */
 	virtual ~Heuristic_Sequence_MultiSol();
 
+	/**
+	 * @brief Start the Heuristic
+	 */
 	void run();
+
+	/**
+	 * @brief Start the Heuristic (specific version)
+	 */
 	void run(const std::vector<unsigned> &);
 
 	/**

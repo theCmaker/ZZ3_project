@@ -51,6 +51,7 @@ set ( ZZ3_HEADERS
 	  sources/core/units.hpp
 	  sources/export/tikzifyer.hpp
 	  sources/export/tikzgrapher.hpp
+	  sources/movements/move.hpp
 	  sources/movements/movements.hpp
 	  sources/movements/move_policies.hpp
 	  sources/movements/move_insert.hpp

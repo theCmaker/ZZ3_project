@@ -1,6 +1,6 @@
 /**
  * @file move.hpp
- * @brief Declaration of an abstract class Move and its implementations (Insert, Extract, 2Opt, Replace, Move, Swap).
+ * @brief Declaration of an abstract class for Local Search optimisation movements.
  */
 
 #ifndef __MOVE_HPP__
