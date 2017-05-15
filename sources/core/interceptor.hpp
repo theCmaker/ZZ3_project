@@ -77,6 +77,9 @@ class Interceptor
 		 */
 		~Interceptor();
 
+		// Converter
+		operator unsigned() const;
+
 		// Getters
 		/**
 		 * @brief Return the id.

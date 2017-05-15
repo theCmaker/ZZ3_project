@@ -22,7 +22,7 @@ bool MoveReplace<Policy>::scan(const Solution & solution)
 	Policy::reset();
 	bool improved = false;
 	const Interceptor * interceptor;
-	const Solution::MobileNode * previousNode;
+	const Solution::InterceptionNode * previousNode;
 	Time interception_date;
 	_best_interception_date = Policy::maxAcceptableTime();
 	Location interceptor_position;

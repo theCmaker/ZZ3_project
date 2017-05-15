@@ -29,7 +29,7 @@ bool MoveMove2Routes<Policy>::scan(const Solution & solution)
 	Location insertion_interceptor_position;
 	unsigned interceptor_extraction_id = 0;
 	unsigned interceptor_insertion_id;
-	const Solution::MobileNode * previousNode;
+	const Solution::InterceptionNode * previousNode;
 
 	// Find a route for extraction
 	while (interceptor_extraction_id < problem.nbInterceptors() && Policy::keepOn()) {

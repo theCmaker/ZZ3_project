@@ -45,6 +45,9 @@ class Depot
 		 */
 		~Depot();
 
+		//Converter
+		operator unsigned() const;
+
 		//Getters
 		/**
 		 * @brief Get the depot id.

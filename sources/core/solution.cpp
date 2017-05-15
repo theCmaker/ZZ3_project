@@ -8,7 +8,7 @@
 //******************************************************
 
 //Mobile
-Solution::MobileNode::MobileNode(const Mobile &m, const Time d, const Interceptor *i, int prev, int next) :
+Solution::InterceptionNode::InterceptionNode(const Mobile &m, const Time d, const Interceptor *i, int prev, int next) :
 	_date(d),
 	_mobile(m),
 	_interceptor(i),
@@ -16,7 +16,7 @@ Solution::MobileNode::MobileNode(const Mobile &m, const Time d, const Intercepto
 	_prev(prev)
 {}
 
-Solution::MobileNode::MobileNode(const Mobile &m) :
+Solution::InterceptionNode::InterceptionNode(const Mobile &m) :
 	_date(-1.),
 	_mobile(m),
 	_interceptor(nullptr),
@@ -25,7 +25,7 @@ Solution::MobileNode::MobileNode(const Mobile &m) :
 {}
 
 //Interceptor
-Solution::InterceptorNode::InterceptorNode(const Interceptor &i, int first, int last, int prev, int next) :
+Solution::RouteNode::RouteNode(const Interceptor &i, int first, int last, int prev, int next) :
 	_interceptor(i),
 	_first(first),
 	_last(last),
@@ -57,11 +57,11 @@ Solution::~Solution() {}
 Solution &Solution::operator=(const Solution & other) {
 	if ((this != &other) && (&_problem) == (&(other._problem))) {
 		_sequence.clear();
-		for (std::vector<MobileNode>::const_iterator itr = other._sequence.begin(); itr != other._sequence.end(); ++itr) {
+		for (std::vector<InterceptionNode>::const_iterator itr = other._sequence.begin(); itr != other._sequence.end(); ++itr) {
 			_sequence.emplace_back(itr->_mobile, itr->_date, itr->_interceptor, itr->_prev, itr->_next);
 		}
 		_interceptors.clear();
-		for (std::vector<InterceptorNode>::const_iterator itr = other._interceptors.begin(); itr != other._interceptors.end(); ++itr) {
+		for (std::vector<RouteNode>::const_iterator itr = other._interceptors.begin(); itr != other._interceptors.end(); ++itr) {
 			_interceptors.emplace_back(itr->_interceptor, itr->_first, itr->_last, itr->_prev, itr->_next);
 		}
 		_first = other._first;
@@ -134,19 +134,19 @@ int Solution::last() const
 	return _last;
 }
 
-const Solution::MobileNode &Solution::firstOfRoute(const Interceptor & i) const
+const Solution::InterceptionNode &Solution::firstOfRoute(const Interceptor & i) const
 {
 	return _sequence[_interceptors[i.id()]._first];
 }
 
-const Solution::MobileNode &Solution::lastOfRoute(const Interceptor & i) const
+const Solution::InterceptionNode &Solution::lastOfRoute(const Interceptor & i) const
 {
 	return _sequence[_interceptors[i.id()]._last];
 }
 
 void Solution::append(unsigned interceptor_index, unsigned mobile_index, const Time & d)
 {
-	InterceptorNode * inter_sequence = &(_interceptors[interceptor_index]);
+	RouteNode * inter_sequence = &(_interceptors[interceptor_index]);
 	if (_first == -1)
 	{
 		// No route
@@ -174,14 +174,9 @@ void Solution::append(unsigned interceptor_index, unsigned mobile_index, const T
 	_sequence[mobile_index]._interceptor = &(inter_sequence->_interceptor);
 }
 
-void Solution::append(const Interceptor & i, const Mobile & m, const Time & d)
-{
-	append(i.id(), m.id(), d);
-}
-
 void Solution::prepend(unsigned interceptor_index, unsigned mobile_index, const Time &d)
 {
-	InterceptorNode * inter_sequence = &(_interceptors[interceptor_index]);
+	RouteNode * inter_sequence = &(_interceptors[interceptor_index]);
 	if (_first == -1)
 	{
 		// Empty list of routes
@@ -209,15 +204,10 @@ void Solution::prepend(unsigned interceptor_index, unsigned mobile_index, const 
 	_sequence[mobile_index]._interceptor = &(inter_sequence->_interceptor);
 }
 
-void Solution::prepend(const Interceptor & i, const Mobile & m, const Time & d)
-{
-	prepend(i.id(), m.id(), d);
-}
-
 void Solution::insertAfter(unsigned prev_mobile_index, unsigned interceptor_index, unsigned mobile_index, const Time & d)
 {
 	int next_mobile_index = _sequence[prev_mobile_index]._next;
-	InterceptorNode * inter_sequence = &(_interceptors[interceptor_index]);
+	RouteNode * inter_sequence = &(_interceptors[interceptor_index]);
 
 	_sequence[mobile_index]._prev = (int) prev_mobile_index;
 	_sequence[mobile_index]._next = next_mobile_index;
@@ -233,15 +223,10 @@ void Solution::insertAfter(unsigned prev_mobile_index, unsigned interceptor_inde
 	_sequence[mobile_index]._interceptor = &(inter_sequence->_interceptor);
 }
 
-void Solution::insertAfter(const Mobile & m_prev, const Interceptor & i, const Mobile & m, const Time & d)
-{
-	insertAfter(m_prev.id(), i.id(), m.id(), d);
-}
-
 void Solution::appendSeq(const Interceptor & i, const Mobile & m)
 {
 	int interceptor_index = i.id();
-	InterceptorNode * inter_sequence = &(_interceptors[interceptor_index]);
+	RouteNode * inter_sequence = &(_interceptors[interceptor_index]);
 	int mobile_index = m.id();
 	if (inter_sequence->_first == -1) {
 		// New route needs to be created
@@ -265,7 +250,7 @@ void Solution::appendSeq(const Interceptor & i, const Mobile & m)
 	}
 	_sequence[mobile_index]._prev = inter_sequence->_last;
 
-	MobileNode * mobile_it = &(_sequence[mobile_index]);
+	InterceptionNode * mobile_it = &(_sequence[mobile_index]);
 	while(mobile_it->_next != -1)
 	{
 		mobile_it->_interceptor = &i;
@@ -275,14 +260,9 @@ void Solution::appendSeq(const Interceptor & i, const Mobile & m)
 	inter_sequence->_last = mobile_it->_mobile.id();
 }
 
-void Solution::remove(const Mobile &m)
-{
-	remove(m.id());
-}
-
 void Solution::remove(unsigned mobile_index)
 {
-	MobileNode & m_node = _sequence[mobile_index];
+	InterceptionNode & m_node = _sequence[mobile_index];
 	const Interceptor * interceptor = m_node._interceptor;
 
 	if (m_node._prev == -1) {
@@ -333,7 +313,7 @@ void Solution::remove(unsigned mobile_index)
 
 void Solution::removeSeqFrom(const Mobile & m)
 {
-	MobileNode & m_node = _sequence[m.id()];
+	InterceptionNode & m_node = _sequence[m.id()];
 	const Interceptor * interceptor = m_node._interceptor;
 
 	if (m_node._prev == -1) {
@@ -389,11 +369,6 @@ Time Solution::recomputeFrom(unsigned mobile_index)
 	return interception_date;
 }
 
-Time Solution::recomputeFrom(const Mobile & m)
-{
-	return recomputeFrom(m.id());
-}
-
 Time Solution::evaluate(const Location & start_pos, const Time start_date, const Interceptor & interceptor, const Mobile & first_mobile, const Mobile & last_mobile) const
 {
 	Time interception_date = start_date;
@@ -413,7 +388,7 @@ Time Solution::evaluate(const Location & start_pos, const Time start_date, const
 	return interception_date - start_date;
 }
 
-Time Solution::worstInterceptionTime() const
+Time Solution::lastInterceptionTime() const
 {
 	Time worst_duration = 0.;
 	Time duration;
@@ -442,14 +417,9 @@ const Interceptor & Solution::worstRoute() const
 
 Time Solution::lastInterceptionTime(int interceptor_index) const
 {
-	return _sequence[(unsigned) _interceptors[(unsigned) interceptor_index]._last]._date;
-}
-
-Time Solution::lastInterceptionTime(const Interceptor & i) const
-{
 	Time duration = -1.;
-	if (_interceptors[i.id()]._last != -1) {
-		duration = _sequence[(unsigned) _interceptors[i.id()]._last]._date;
+	if (_interceptors[(unsigned) interceptor_index]._last != -1) {
+		duration = _sequence[(unsigned) _interceptors[(unsigned) interceptor_index]._last]._date;;
 	}
 	return duration;
 }
@@ -490,12 +460,12 @@ unsigned Solution::totalInterceptionCount() const
 	return count;
 }
 
-Solution::InterceptorNode Solution::operator[] (unsigned i)
+Solution::RouteNode Solution::operator[] (unsigned i)
 {
 	return _interceptors[i];
 }
 
-const Solution::InterceptorNode Solution::operator[] (unsigned i) const
+const Solution::RouteNode Solution::operator[] (unsigned i) const
 {
 	return _interceptors[i];
 }
@@ -510,12 +480,12 @@ Location Solution::catchPosition (const Mobile & m) const
 	return m.position(_sequence[m.id()]._date);
 }
 
-Solution::MobileNode & Solution::mobile(unsigned i)
+Solution::InterceptionNode & Solution::mobile(unsigned i)
 {
 	return _sequence[i];
 }
 
-const Solution::MobileNode & Solution::mobile(unsigned i) const
+const Solution::InterceptionNode & Solution::mobile(unsigned i) const
 {
 	return _sequence[i];
 }
@@ -631,7 +601,7 @@ bool Solution::check() const
 }
 
 bool Solution::operator<(const Solution &other) const {
-	return worstInterceptionTime() < other.worstInterceptionTime();
+	return lastInterceptionTime() < other.lastInterceptionTime();
 }
 
 Solution::const_iterator Solution::begin(const Interceptor & i) const
@@ -664,7 +634,7 @@ std::ostream & operator<< (std::ostream & o, const Solution & s)
 			o << "\t[" << s.mobile(mobile_id)._mobile.id() << ";pos" << s.mobile(mobile_id)._mobile.position(s.mobile(mobile_id)._date) << ";t(" << s.mobile(mobile_id)._date << ")]" << std::endl;
 			mobile_id = s.mobile(mobile_id)._next;
 		}
-		Solution::MobileNode last = s.lastOfRoute(s.problem().interceptors()[interceptor_id]);
+		Solution::InterceptionNode last = s.lastOfRoute(s.problem().interceptors()[interceptor_id]);
 		o << "\t[D" << s[interceptor_id]._interceptor.depot()->id() << ";pos" << s[interceptor_id]._interceptor.position()
 		  << ";t(" << last._date + s[interceptor_id]._interceptor.timeFromTo(last._mobile.position(last._date), s[interceptor_id]._interceptor.position())
 		  << ")]" << std::endl;

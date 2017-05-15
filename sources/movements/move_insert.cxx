@@ -20,7 +20,7 @@ bool MoveInsert<Policy>::scan(const Solution & solution)
 	bool improved = false;
 	const Interceptor * interceptor;
 	Time interception_date;
-	_best_interception_date = solution.worstInterceptionTime();
+	_best_interception_date = solution.lastInterceptionTime();
 	//_best_interception_date = Policy::maxAcceptableTime();
 	Location interceptor_position;
 	unsigned interceptor_id = 0;

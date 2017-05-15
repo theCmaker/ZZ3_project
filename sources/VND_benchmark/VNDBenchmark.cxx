@@ -110,7 +110,7 @@ std::vector< VariantWithScore > VNDBenchmark<INSTANCES, VND_VARIANTS>::operator 
 	for (unsigned instance_id = 0; instance_id < INSTANCES; ++instance_id) {
 
 		// Initialise the policies
-		AvailablePolicy::maxAcceptableTime() = 1.1 * basic_solutions[instance_id].worstInterceptionTime();
+		AvailablePolicy::maxAcceptableTime() = 1.1 * basic_solutions[instance_id].lastInterceptionTime();
 		AvailablePolicy::minAcceptableCount() =
 				std::max(0u, unsigned(instances[instance_id]->nbMobiles() - 1.1 * (instances[instance_id]->nbMobiles()
 								  - basic_solutions[instance_id].totalInterceptionCount())));
@@ -127,7 +127,7 @@ std::vector< VariantWithScore > VNDBenchmark<INSTANCES, VND_VARIANTS>::operator 
 
 			// Store the result
 			results[instance_id].insert(std::pair<BenchmarkResult,unsigned> (
-											BenchmarkResult(std::round(solution.worstInterceptionTime()*1.0e+6)/1.0e+6,
+											BenchmarkResult(std::round(solution.lastInterceptionTime()*1.0e+6)/1.0e+6,
 															solution.problem().nbMobiles() - solution.totalInterceptionCount(),
 															diff.count()),
 											variant_id));

@@ -45,6 +45,9 @@ class Mobile
 		 */
 		~Mobile();
 
+		//Converter
+		operator unsigned() const;
+
 		//Getters
 		/**
 		 * @brief Get the mobile id.

@@ -36,6 +36,11 @@ Interceptor::Interceptor(const Depot & d, Speed s, unsigned id, Time range) :
 
 Interceptor::~Interceptor() {}
 
+Interceptor::operator unsigned() const
+{
+	return _id;
+}
+
 // Getters
 const unsigned & Interceptor::id() const
 {

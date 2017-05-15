@@ -19,7 +19,7 @@ public:
 	 * @brief Internal structure describing an interception
 	 * (mobile,interceptor,date).
 	 */
-	struct MobileNode
+	struct InterceptionNode
 	{
 		//Metadata
 		Time				_date;			///< Interception date
@@ -39,21 +39,21 @@ public:
 		 * @param prev previous mobile index
 		 * @param next next mobile index
 		 */
-		MobileNode(const Mobile &, const Time, const Interceptor *, int prev = -1, int next = -1);
+		InterceptionNode(const Mobile &, const Time, const Interceptor *, int prev = -1, int next = -1);
 		/**
 		 * @brief Default constructor.
 		 * @param m the mobile
 		 * @warning a mobile must be provided.
 		 * @note _date defaults to -1.
 		 */
-		MobileNode(const Mobile &);
+		InterceptionNode(const Mobile &);
 	};
 
 	/**
 	 * @brief Internal structure describing a route
 	 * (interceptor, first and last mobile).
 	 */
-	struct InterceptorNode
+	struct RouteNode
 	{
 		//Metadata
 		const Interceptor & _interceptor; ///< Concerned interceptor
@@ -76,7 +76,7 @@ public:
 		 * @param next next route id
 		 * @warning an interceptor must be provided.
 		 */
-		InterceptorNode(const Interceptor &, int first = -1, int last = -1, int prev = -1, int next = -1);
+		RouteNode(const Interceptor &, int first = -1, int last = -1, int prev = -1, int next = -1);
 	};
 
 	/**
@@ -85,13 +85,13 @@ public:
 	class iterator
 	{
 	private:
-		MobileNode * _solution; ///< Pointer to the current interception
+		InterceptionNode * _solution; ///< Pointer to the current interception
 	public:
 		/**
 		 * @brief Constructor.
 		 * @param s the interception node
 		 */
-		inline iterator(MobileNode * s) :
+		inline iterator(InterceptionNode * s) :
 			_solution(s)
 		{}
 		/**
@@ -102,7 +102,7 @@ public:
 		 * @brief Indirection operator.
 		 * @return Current interception
 		 */
-		inline MobileNode & operator* ()
+		inline InterceptionNode & operator* ()
 		{
 			return *_solution;
 		}
@@ -110,7 +110,7 @@ public:
 		 * @brief Arrow operator.
 		 * @return Pointer to current interception
 		 */
-		inline MobileNode * operator-> ()
+		inline InterceptionNode * operator-> ()
 		{
 			return _solution;
 		}
@@ -139,13 +139,13 @@ public:
 	class const_iterator
 	{
 	private:
-		const MobileNode * _solution; ///< Pointer to the current interception
+		const InterceptionNode * _solution; ///< Pointer to the current interception
 	public:
 		/**
 		 * @brief Constructor.
 		 * @param s the interception node
 		 */
-		inline const_iterator(const MobileNode * s) :
+		inline const_iterator(const InterceptionNode * s) :
 			_solution(s)
 		{}
 		/**
@@ -156,7 +156,7 @@ public:
 		 * @brief Indirection operator.
 		 * @return Current interception
 		 */
-		inline const MobileNode & operator* () const
+		inline const InterceptionNode & operator* () const
 		{
 			return *_solution;
 		}
@@ -164,7 +164,7 @@ public:
 		 * @brief Arrow operator.
 		 * @return Pointer to current interception
 		 */
-		inline const MobileNode * operator-> () const
+		inline const InterceptionNode * operator-> () const
 		{
 			return _solution;
 		}
@@ -189,8 +189,8 @@ public:
 	};
 private:
 	const Problem				  & _problem;		///< Routing problem
-	std::vector<MobileNode>			_sequence;		///< Interceptions
-	std::vector<InterceptorNode>	_interceptors;	///< Routes
+	std::vector<InterceptionNode>			_sequence;		///< Interceptions
+	std::vector<RouteNode>	_interceptors;	///< Routes
 
 	//Interceptors
 	int _first;		///< First route
@@ -245,15 +245,6 @@ public:
 	 * @param d interception date
 	 */
 	void append(unsigned interceptor_index, unsigned mobile_index, const Time & d);
-	/**
-	 * @brief Add an interception at the end of a route.
-	 *
-	 * Means mobile m has been caught by interceptor i at date d.
-	 * @param i interceptor
-	 * @param m intercepted mobile
-	 * @param d interception date
-	 */
-	void append(const Interceptor & i, const Mobile & m, const Time & d);
 
 	/**
 	 * @brief Add an interception at the beginning of a route.
@@ -262,15 +253,6 @@ public:
 	 * @param d interception date
 	 */
 	void prepend(unsigned interceptor_index, unsigned mobile_index, const Time & d);
-	/**
-	 * @brief Add an interception at the beginning of a route.
-	 *
-	 * Means mobile m has been caught by interceptor i at date d.
-	 * @param i interceptor
-	 * @param m intercepted mobile
-	 * @param d interception date
-	 */
-	void prepend(const Interceptor & i, const Mobile & m, const Time & d);
 
 	/**
 	 * @brief Add an interception after a mobile in a route.
@@ -281,17 +263,6 @@ public:
 	 * @param d interception date
 	 */
 	void insertAfter(unsigned prev_mobile_index, unsigned interceptor_index, unsigned mobile_index, const Time & d);
-	/**
-	 * @brief Add an interception after a mobile in a route.
-	 *
-	 * Means mobile m has been caught by interceptor i at date d, after m_prev.
-	 * @param m_prev mobile before the intercepted mobile
-	 * @param i interceptor
-	 * @param m intercepted mobile
-	 * @param d interception date
-	 */
-	void insertAfter(const Mobile & m_prev, const Interceptor & i, const Mobile & m, const Time & d);
-
 
 	/**
 	  * @brief Insertion of a sequence of mobiles at the end of a route. Called after removeSeqFrom.
@@ -299,12 +270,6 @@ public:
 	  * @param m first mobile in the sequence to insert
 	  */
 	void appendSeq(const Interceptor & i, const Mobile & m);
-
-	/**
-	 * @brief Remove a mobile from its route.
-	 * @param m mobile to be removed
-	 */
-	void remove(const Mobile & m);
 
 	/**
 	 * @brief Remove a mobile from its route.
@@ -324,12 +289,6 @@ public:
 	 * @return last interception date for the recomputed route
 	 */
 	Time recomputeFrom(unsigned mobile_index);
-	/**
-	 * @brief Recompute the interception dates in a route, starting from the given mobile.
-	 * @param m last mobile with a valid interception time
-	 * @return last interception date for the recomputed route
-	 */
-	Time recomputeFrom(const Mobile & m);
 
 	/**
 	 * @brief Evaluate the time needed by an interceptor to go from a mobile to
@@ -354,7 +313,7 @@ public:
 	 * @brief Get the last interception date for all routes.
 	 * @return The last interception date for all routes
 	 */
-	Time worstInterceptionTime() const;
+	Time lastInterceptionTime() const;
 	/**
 	 * @brief Get the longest route in time.
 	 * @return The interceptor for the longest route in time
@@ -366,12 +325,6 @@ public:
 	 * @return last interception date for interceptor id interceptor_index
 	 */
 	Time lastInterceptionTime(int interceptor_index) const;
-	/**
-	 * @brief Get the last interception date for the given interceptor.
-	 * @param i interceptor
-	 * @return last interception date for interceptor i
-	 */
-	Time lastInterceptionTime(const Interceptor & i) const;
 
 	/**
 	 * @brief Get the highest amount of caught mobiles (by route)
@@ -398,27 +351,27 @@ public:
 	 * @param i Interceptor attached to the route
 	 * @return First interception info
 	 */
-	const MobileNode & firstOfRoute(const Interceptor & i) const;
+	const InterceptionNode & firstOfRoute(const Interceptor & i) const;
 
 	/**
 	 * @brief Get the last interception info for the given route.
 	 * @param i Interceptor attached to the route
 	 * @return Last interception info
 	 */
-	const MobileNode & lastOfRoute(const Interceptor & i) const;
+	const InterceptionNode & lastOfRoute(const Interceptor & i) const;
 
 	/**
 	 * @brief Subscript operator to get a route.
 	 * @param i route index (or interceptor index)
 	 * @return route
 	 */
-	InterceptorNode operator[] (unsigned);
+	RouteNode operator[] (unsigned);
 	/**
 	 * @brief Subscript operator to get a route (const).
 	 * @param i route index (or interceptor index)
 	 * @return route
 	 */
-	const InterceptorNode operator[] (unsigned) const;
+	const RouteNode operator[] (unsigned) const;
 
 	/**
 	 * @brief Check if a mobile is intercepted.
@@ -439,13 +392,13 @@ public:
 	 * @param i mobile index
 	 * @return interception parameters
 	 */
-	MobileNode & mobile(unsigned);
+	InterceptionNode & mobile(unsigned);
 	/**
 	 * @brief Get interception info on a mobile (const).
 	 * @param i mobile index
 	 * @return interception parameters
 	 */
-	const MobileNode & mobile(unsigned) const;
+	const InterceptionNode & mobile(unsigned) const;
 
 	/**
 	 * @brief Get all the mobiles that have not been caught.

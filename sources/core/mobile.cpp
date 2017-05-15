@@ -21,6 +21,11 @@ Mobile::Mobile(Distance x, Distance y, Distance dx, Distance dy, unsigned id) :
 
 Mobile::~Mobile() {}
 
+Mobile::operator unsigned() const
+{
+	return _id;
+}
+
 //Getters
 const unsigned & Mobile::id() const
 {

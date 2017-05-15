@@ -20,7 +20,7 @@ bool MoveExtract<Policy>::scan(const Solution & solution)
 		const Problem & _p = solution.problem();
 		//TODO: comment it!
 		Policy::reset();
-		const Solution::MobileNode * previousNode;
+		const Solution::InterceptionNode * previousNode;
 		const Interceptor & interceptor = solution.worstRoute();
 		Time interception_date;
 		//unsigned best_mobile_number = solution.totalInterceptionCount();

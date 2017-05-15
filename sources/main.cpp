@@ -36,10 +36,10 @@ int main(int argc, const char *argv[]){
 		Problem p(argv[1]);
 		struct cmp {
 			bool operator() (const Solution & s1, const Solution & s2) {
-				Time record = s2.worstInterceptionTime();
+				Time record = s2.lastInterceptionTime();
 				unsigned count_record = s2.bestInterceptionCount();
 
-				return BestAvailablePolicy::update(s1.worstInterceptionTime(), record, s1.bestInterceptionCount(), count_record);
+				return BestAvailablePolicy::update(s1.lastInterceptionTime(), record, s1.bestInterceptionCount(), count_record);
 			}
 		};
 
@@ -50,7 +50,7 @@ int main(int argc, const char *argv[]){
 		std::chrono::duration<double,std::micro> diff = end-start;
 
 		std::cout << argv[1] << ": ";
-		std::cout << s.worstInterceptionTime() << ' ' << p.nbMobiles() - s.totalInterceptionCount() << std::endl;
+		std::cout << s.lastInterceptionTime() << ' ' << p.nbMobiles() - s.totalInterceptionCount() << std::endl;
 		std::cout << "Computing time: " << diff.count() << "µs" << std::endl;
 
 	} else if (argc > 3) {
@@ -118,7 +118,7 @@ int main(int argc, const char *argv[]){
 			vnd(s);
 			auto end = std::chrono::steady_clock::now();
 			std::chrono::duration<double,std::micro> diff = end-start;
-			std::cout << s.worstInterceptionTime() << ' ' << p.nbMobiles() - s.totalInterceptionCount() << std::endl;
+			std::cout << s.lastInterceptionTime() << ' ' << p.nbMobiles() - s.totalInterceptionCount() << std::endl;
 			std::cout << "Computing time: " << diff.count() << "µs" << std::endl;
 		}
 	}

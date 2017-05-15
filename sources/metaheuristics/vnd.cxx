@@ -195,7 +195,7 @@ template <unsigned max_itr>
 void VND<max_itr>::before(const Solution & s)
 {
 	unsigned count = s.problem().nbMobiles() - 1.1 * (s.problem().nbMobiles() - s.totalInterceptionCount());
-	AvailablePolicy::maxAcceptableTime() = 1.1 * s.worstInterceptionTime();
+	AvailablePolicy::maxAcceptableTime() = 1.1 * s.lastInterceptionTime();
 	AvailablePolicy::minAcceptableCount() = (count > 0) ? count : 1u;
 }
 

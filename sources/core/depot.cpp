@@ -17,6 +17,11 @@ Depot::Depot(Location & l, unsigned id) :
 
 Depot::~Depot() {}
 
+Depot::operator unsigned() const
+{
+	return _id;
+}
+
 const unsigned & Depot::id() const
 {
 	return _id;

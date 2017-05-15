@@ -11,7 +11,7 @@ TikzGrapher::TikzGrapher()
 void TikzGrapher::operator()(const Solution & s)
 {
 	_solutions.push_back(&s);
-	addToBounds(Location(s.worstInterceptionTime(),s.bestInterceptionCount()));
+	addToBounds(Location(s.lastInterceptionTime(),s.bestInterceptionCount()));
 }
 
 void TikzGrapher::operator()(const Problem & p)
