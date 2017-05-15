@@ -5,3 +5,5 @@ Mobile objects identification is a common vehicle routing optimisation problem w
 To solve this problem, we implemented two route-building heuristics to generate feasible but not optimal solutions and a memory cache strategy was designed to speed-up the heuristics. Then, local search procedures were coded to look for improvements on the solutions and a Vertical Neighbourhood Descent was built to combine these procedures. After that, BRKGA and multi-start metaheuristics were used to generate better solutions on both time and amount criteria.
 
 Development was made with the C++ programming language. We provide text output for all our executables. But we also have some adapters for LaTeX code output (with TikZ) on spatial and temporal points of view.
+
+This project is under GPLv3 licence as it uses [BRKGA](https://github.com/rfrancotoso/brkgaAPI) as a dependency.
