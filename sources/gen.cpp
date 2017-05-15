@@ -15,7 +15,7 @@ int main(int argc, const char *argv[]){
 		Tikzifyer::addStyle("thick,color=OrangeRed,dotted,line width=1mm");
 		Tikzifyer::addStyle("thick,color=Green,dashed");
 		Tikzifyer tikzify;
-		std::ofstream tikz_output_test_file("../tests/tikz-content.tex");
+		std::ofstream tikz_output_test_file("../examples/tex/tikz-content.tex");
 
 		tikzify(p2);
 
